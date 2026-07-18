@@ -8,7 +8,11 @@
 export default function PillarHero({ slug, alt }: { slug: string; alt: string }) {
   return (
     <div className="-mx-5 -mt-6 overflow-hidden md:-mx-8 md:-mt-8">
-      <img src={`/images/pillars/${slug}.jpg`} alt={alt} className="h-28 w-full object-cover sm:h-36" />
+      <img
+        src={`/images/pillars/${slug}.jpg`}
+        alt={alt}
+        className="h-28 w-full object-cover brightness-125 contrast-105 sm:h-36"
+      />
     </div>
   )
 }

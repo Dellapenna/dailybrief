@@ -11,12 +11,12 @@ import { Link } from 'react-router-dom'
  */
 const ZONES: { to: string; label: string; top: number; height: number; left: number; width: number }[] = [
   { to: '/mission-control', label: 'Mission Control', top: 22, height: 15, left: 20, width: 60 },
-  { to: '/body', label: 'Body', top: 36, height: 16, left: 2, width: 45 },
-  { to: '/mind', label: 'Mind', top: 36, height: 16, left: 53, width: 45 },
-  { to: '/spirit', label: 'Spirit', top: 57, height: 15, left: 20, width: 60 },
-  { to: '/life', label: 'Life', top: 72, height: 15, left: 2, width: 45 },
-  { to: '/work', label: 'Work', top: 72, height: 15, left: 53, width: 45 },
-  { to: '/intelligence', label: 'Intelligence', top: 86, height: 11, left: 20, width: 60 },
+  { to: '/body', label: 'Body', top: 32, height: 15, left: 2, width: 45 },
+  { to: '/mind', label: 'Mind', top: 32, height: 15, left: 53, width: 45 },
+  { to: '/spirit', label: 'Spirit', top: 50, height: 14, left: 20, width: 60 },
+  { to: '/life', label: 'Life', top: 64, height: 14, left: 2, width: 45 },
+  { to: '/work', label: 'Work', top: 64, height: 14, left: 53, width: 45 },
+  { to: '/intelligence', label: 'Intelligence', top: 78, height: 13, left: 20, width: 60 },
 ]
 
 export default function NavMapPage() {
@@ -25,7 +25,11 @@ export default function NavMapPage() {
       <h1 className="sr-only">Mission Control</h1>
 
       <div className="relative">
-        <img src="/images/nav-map.jpg" alt="RDP 2.0 navigation map" className="block w-full" />
+        <img
+          src="/images/nav-map.jpg"
+          alt="RDP 2.0 navigation map"
+          className="block w-full brightness-125 contrast-105"
+        />
 
         {ZONES.map((zone) => (
           <Link
