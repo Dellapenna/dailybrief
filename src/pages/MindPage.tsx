@@ -1,4 +1,5 @@
 import Disclosure from '@/components/Disclosure'
+import PillarHero from '@/components/PillarHero'
 import MotivationCard from '@/features/motivation/MotivationCard'
 import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
@@ -9,7 +10,8 @@ import PillarGoals from '@/features/goals/PillarGoals'
 export default function MindPage() {
   return (
     <div>
-      <h1 className="font-display text-2xl font-semibold tracking-tight text-rdp-text">Mind</h1>
+      <PillarHero slug="mind" alt="Mind" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Mind</h1>
       <p className="mt-1 text-sm text-rdp-text-dim">Focus. Learn. Grow. Sharpen your mind every day.</p>
 
       <div className="mt-5 space-y-3">

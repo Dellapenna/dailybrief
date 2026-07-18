@@ -13,7 +13,7 @@
 -- Deliberately not detailed (no sets/reps/weight/pace) per the chosen
 -- scope — can add structured fields later if wanted.
 -- ─────────────────────────────────────────────────────────────────────────
-create table public.exercise_logs (
+create table if not exists public.exercise_logs (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references public.profiles (id) on delete cascade,
   category text not null check (category in ('strength', 'aerobic', 'stretching')),
@@ -27,7 +27,7 @@ create table public.exercise_logs (
 alter table public.exercise_logs enable row level security;
 -- No policies — default-deny, service-role key only. See DATABASE_SCHEMA.md.
 
-create index exercise_logs_user_logged_idx on public.exercise_logs (user_id, logged_at);
+create index if not exists exercise_logs_user_logged_idx on public.exercise_logs (user_id, logged_at);
 
 -- ─────────────────────────────────────────────────────────────────────────
 -- Seed Prayer and Breathing Meditation as Spirit-pillar habits, so
@@ -35,8 +35,13 @@ create index exercise_logs_user_logged_idx on public.exercise_logs (user_id, log
 -- system instead of new parallel logic. These two rows are found by name
 -- in the Spirit Functions rather than by a hardcoded ID (simpler than
 -- threading generated UUIDs through migration + application code).
+-- Guarded with a not-exists check (no unique constraint to hang an
+-- ON CONFLICT off of) so this migration is safe to re-run.
 -- ─────────────────────────────────────────────────────────────────────────
 insert into public.habits (user_id, name, pillar_id, frequency, target)
-values
-  ('11111111-1111-1111-1111-111111111111', 'Prayer', 'spirit', 'daily', 1),
-  ('11111111-1111-1111-1111-111111111111', 'Breathing Meditation', 'spirit', 'daily', 1);
+select '11111111-1111-1111-1111-111111111111', 'Prayer', 'spirit', 'daily', 1
+where not exists (select 1 from public.habits where name = 'Prayer' and pillar_id = 'spirit');
+
+insert into public.habits (user_id, name, pillar_id, frequency, target)
+select '11111111-1111-1111-1111-111111111111', 'Breathing Meditation', 'spirit', 'daily', 1
+where not exists (select 1 from public.habits where name = 'Breathing Meditation' and pillar_id = 'spirit');

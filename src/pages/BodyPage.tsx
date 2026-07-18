@@ -1,4 +1,5 @@
 import Disclosure from '@/components/Disclosure'
+import PillarHero from '@/components/PillarHero'
 import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
 import HealthTrends from '@/features/exercise/HealthTrends'
 import PillarHabits from '@/features/habits/PillarHabits'
@@ -8,7 +9,8 @@ import PillarGoals from '@/features/goals/PillarGoals'
 export default function BodyPage() {
   return (
     <div>
-      <h1 className="font-display text-2xl font-semibold tracking-tight text-rdp-text">Body</h1>
+      <PillarHero slug="body" alt="Body" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Body</h1>
       <p className="mt-1 text-sm text-rdp-text-dim">Train. Fuel. Recover. Optimize your physical potential.</p>
 
       <div className="mt-5 space-y-3">

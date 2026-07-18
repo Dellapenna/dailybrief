@@ -10,13 +10,13 @@ import { Link } from 'react-router-dom'
  * pixel-perfect; nudge specific zones based on feedback once live.
  */
 const ZONES: { to: string; label: string; top: number; height: number; left: number; width: number }[] = [
-  { to: '/mission-control', label: 'Mission Control', top: 26, height: 13, left: 20, width: 60 },
-  { to: '/body', label: 'Body', top: 40, height: 14, left: 2, width: 45 },
-  { to: '/mind', label: 'Mind', top: 40, height: 14, left: 53, width: 45 },
-  { to: '/spirit', label: 'Spirit', top: 61, height: 13, left: 20, width: 60 },
-  { to: '/life', label: 'Life', top: 76, height: 13, left: 2, width: 45 },
-  { to: '/work', label: 'Work', top: 76, height: 13, left: 53, width: 45 },
-  { to: '/intelligence', label: 'Intelligence', top: 90, height: 9, left: 20, width: 60 },
+  { to: '/mission-control', label: 'Mission Control', top: 22, height: 15, left: 20, width: 60 },
+  { to: '/body', label: 'Body', top: 36, height: 16, left: 2, width: 45 },
+  { to: '/mind', label: 'Mind', top: 36, height: 16, left: 53, width: 45 },
+  { to: '/spirit', label: 'Spirit', top: 57, height: 15, left: 20, width: 60 },
+  { to: '/life', label: 'Life', top: 72, height: 15, left: 2, width: 45 },
+  { to: '/work', label: 'Work', top: 72, height: 15, left: 53, width: 45 },
+  { to: '/intelligence', label: 'Intelligence', top: 86, height: 11, left: 20, width: 60 },
 ]
 
 export default function NavMapPage() {

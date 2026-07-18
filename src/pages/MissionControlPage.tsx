@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import Disclosure from '@/components/Disclosure'
+import PillarHero from '@/components/PillarHero'
 import MissionProgress from '@/features/dashboard/MissionProgress'
 import PillarTaskSummary from '@/features/pillarSummary/PillarTaskSummary'
 import CalendarSection from '@/features/calendar/CalendarSection'
@@ -54,7 +55,8 @@ function TodaysMission() {
 export default function MissionControlPage() {
   return (
     <div>
-      <h1 className="font-display text-2xl font-semibold tracking-tight text-rdp-text">Mission Control</h1>
+      <PillarHero slug="mission-control" alt="Mission Control" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Mission Control</h1>
       <p className="mt-1 text-sm text-rdp-text-dim">Your dashboard. Command your day.</p>
 
       <div className="mt-5 space-y-3">
