@@ -26,7 +26,7 @@ export default function FrameShell({
   return (
     <div className="-mx-5 -mt-6 md:-mx-8 md:-mt-8">
       <div className="relative mx-auto" style={{ maxWidth: 560 }}>
-        <img src={frameSrc} alt={frameAlt} className="block w-full brightness-125 contrast-105" />
+        <img src={frameSrc} alt={frameAlt} className="block w-full brightness-[1.375] contrast-105" />
         <div
           className="absolute overflow-y-auto rounded-sm"
           style={{

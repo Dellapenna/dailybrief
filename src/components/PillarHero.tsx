@@ -11,7 +11,7 @@ export default function PillarHero({ slug, alt }: { slug: string; alt: string })
       <img
         src={`/images/pillars/${slug}.jpg`}
         alt={alt}
-        className="h-28 w-full object-cover brightness-125 contrast-105 sm:h-36"
+        className="h-28 w-full object-cover brightness-[1.375] contrast-105 sm:h-36"
       />
     </div>
   )

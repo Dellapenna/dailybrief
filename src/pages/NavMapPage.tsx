@@ -14,9 +14,9 @@ const ZONES: { to: string; label: string; top: number; height: number; left: num
   { to: '/body', label: 'Body', top: 32, height: 15, left: 2, width: 45 },
   { to: '/mind', label: 'Mind', top: 32, height: 15, left: 53, width: 45 },
   { to: '/spirit', label: 'Spirit', top: 50, height: 14, left: 20, width: 60 },
-  { to: '/life', label: 'Life', top: 64, height: 14, left: 2, width: 45 },
-  { to: '/work', label: 'Work', top: 64, height: 14, left: 53, width: 45 },
-  { to: '/intelligence', label: 'Intelligence', top: 78, height: 13, left: 20, width: 60 },
+  { to: '/life', label: 'Life', top: 58, height: 13, left: 2, width: 45 },
+  { to: '/work', label: 'Work', top: 58, height: 13, left: 53, width: 45 },
+  { to: '/intelligence', label: 'Intelligence', top: 70, height: 12, left: 20, width: 60 },
 ]
 
 export default function NavMapPage() {
@@ -28,7 +28,7 @@ export default function NavMapPage() {
         <img
           src="/images/nav-map.jpg"
           alt="RDP 2.0 navigation map"
-          className="block w-full brightness-125 contrast-105"
+          className="block w-full brightness-[1.375] contrast-105"
         />
 
         {ZONES.map((zone) => (
