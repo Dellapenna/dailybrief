@@ -72,8 +72,12 @@ export default function AppLayout() {
           <Outlet />
         </main>
 
-        {/* Mobile bottom nav */}
-        <nav className="fixed inset-x-0 bottom-0 flex border-t border-rdp-line bg-rdp-panel md:hidden">
+               {/* Mobile bottom nav */}
+        <nav
+          className="fixed inset-x-0 bottom-0 flex border-t border-rdp-line bg-rdp-panel md:hidden"
+          style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+        >
+
           {mobileNav.map((item) => (
             <NavLink
               key={item.to}
