@@ -12,13 +12,17 @@ type Quote = {
 
 export default function StocksPage() {
   const [quotes, setQuotes] = useState<Quote[] | null>(null)
+  const [failures, setFailures] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     api
-      .get<{ quotes: Quote[] }>('/stocks')
-      .then((res) => setQuotes(res.quotes))
+      .get<{ quotes: Quote[]; failures?: string[] }>('/stocks')
+      .then((res) => {
+        setQuotes(res.quotes)
+        setFailures(res.failures ?? [])
+      })
       .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load'))
       .finally(() => setLoading(false))
   }, [])
@@ -52,6 +56,16 @@ export default function StocksPage() {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {failures.length > 0 && (
+        <div className="mt-3 rounded-lg border border-rdp-risk/40 bg-rdp-risk/10 p-3">
+          {failures.map((f, i) => (
+            <p key={i} className="text-xs text-rdp-risk">
+              {f}
+            </p>
+          ))}
         </div>
       )}
 
