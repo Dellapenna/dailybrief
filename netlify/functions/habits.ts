@@ -82,12 +82,16 @@ export default async (req: Request, _context: Context) => {
     const userId = getPrimaryUserId()
 
     if (req.method === 'GET' && !id) {
-      const { data: habits, error } = await supabase
+      const pillar = url.searchParams.get('pillar')
+      let habitsQuery = supabase
         .from('habits')
         .select('*')
         .eq('user_id', userId)
         .eq('archived', false)
         .order('sort_order', { ascending: true })
+      if (pillar) habitsQuery = habitsQuery.eq('pillar_id', pillar)
+
+      const { data: habits, error } = await habitsQuery
       if (error) return errorResponse(error, 500)
 
       const results = await Promise.all(

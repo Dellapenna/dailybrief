@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import type { Goal } from '@/types/goal'
+import type { PillarId } from '@/types/pillar'
 
-export function useGoals() {
+export function useGoals(pillar?: PillarId) {
   const [goals, setGoals] = useState<Goal[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -11,14 +12,15 @@ export function useGoals() {
     setLoading(true)
     setError(null)
     try {
-      const res = await api.get<{ goals: Goal[] }>('/goals')
+      const query = pillar ? `/goals?pillar=${pillar}` : '/goals'
+      const res = await api.get<{ goals: Goal[] }>(query)
       setGoals(res.goals)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load goals')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [pillar])
 
   useEffect(() => {
     reload()
@@ -26,7 +28,7 @@ export function useGoals() {
 
   async function createGoal(title: string) {
     try {
-      await api.post('/goals', { title })
+      await api.post('/goals', { title, pillarId: pillar ?? null })
       reload()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create goal')

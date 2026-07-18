@@ -56,14 +56,16 @@ it becomes unreliable under real use. Favorite teams are currently
 hardcoded (Eagles/Phillies/76ers/Flyers) — configurable teams via
 preferences is a later improvement.
 
-### Stock Market — not connected
+### Stock Market — live via Finnhub
 
-`stocks.ts` is a stub, same shape as the Google/Outlook Calendar stubs.
-Financial data needs a real, reliable provider — there's no free-no-key
-option worth trusting instead. Options with real free tiers (still
-require signup): Alpha Vantage, Finnhub, Twelve Data. Set
-`MARKET_DATA_API_KEY` once you have one and swap the function body — the
-frontend (`StocksPage`) needs no changes.
+`stocks.ts` uses Finnhub's free tier (60 calls/min, no credit card
+required) — real quotes, never fabricated. Set `MARKET_DATA_API_KEY` to a
+Finnhub API key (finnhub.io → sign up → dashboard shows your key). Watchlist is currently hardcoded to
+DIA/SPY/QQQ/IWM (ETF proxies for Dow/S&P 500/Nasdaq 100/Russell 2000,
+since free-tier providers generally don't expose raw index values) —
+configurable symbols via preferences is a later improvement, same as
+Sports' hardcoded teams. 15-minute cache. Informational only, never
+individualized investment advice, per the brief.
 
 
 ### Weather — National Weather Service (live, no setup needed)

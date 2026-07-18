@@ -26,12 +26,14 @@ export default async (req: Request, _context: Context) => {
 
     if (req.method === 'GET' && !id) {
       const status = url.searchParams.get('status')
+      const pillar = url.searchParams.get('pillar')
       let query = supabase
         .from('goals')
         .select('*')
         .eq('user_id', userId)
         .order('created_at', { ascending: false })
       if (status) query = query.eq('status', status)
+      if (pillar) query = query.eq('pillar_id', pillar)
 
       const { data, error } = await query
       if (error) return errorResponse(error, 500)

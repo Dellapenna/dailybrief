@@ -2,9 +2,18 @@ import QuickAddBar from './QuickAddBar'
 import TaskRow from './TaskRow'
 import { useTasks, type TaskView } from './useTasks'
 import type { Task } from '@/types/task'
+import type { PillarId } from '@/types/pillar'
 
-export default function TaskList({ view, quickAddPlaceholder }: { view: TaskView; quickAddPlaceholder?: string }) {
-  const { tasks, loading, error, createTask, updateTask, deleteTask } = useTasks(view)
+export default function TaskList({
+  view,
+  pillar,
+  quickAddPlaceholder,
+}: {
+  view: TaskView
+  pillar?: PillarId
+  quickAddPlaceholder?: string
+}) {
+  const { tasks, loading, error, createTask, updateTask, deleteTask } = useTasks(view, pillar)
 
   function toggleComplete(task: Task) {
     updateTask(task.id, { status: task.status === 'completed' ? 'inbox' : 'completed' })

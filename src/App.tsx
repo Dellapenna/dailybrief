@@ -1,7 +1,13 @@
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import AppLayout from '@/layouts/AppLayout'
 import NavMapPage from '@/pages/NavMapPage'
-import BriefingPage from '@/pages/BriefingPage'
+import MissionControlPage from '@/pages/MissionControlPage'
+import BodyPage from '@/pages/BodyPage'
+import MindPage from '@/pages/MindPage'
+import SpiritPage from '@/pages/SpiritPage'
+import LifePage from '@/pages/LifePage'
+import WorkPage from '@/pages/WorkPage'
+import IntelligencePage from '@/pages/IntelligencePage'
 import GoalsPage from '@/pages/GoalsPage'
 import HabitsPage from '@/pages/HabitsPage'
 import TasksPage from '@/pages/TasksPage'
@@ -27,17 +33,31 @@ import NotFoundPage from '@/pages/NotFoundPage'
  * code — see docs/INTEGRATIONS.md). Every route below is reachable once
  * past that gate; there's no second in-app login layer.
  *
- * "/" and "/mission-control" are the tappable nav map (NavMapPage) — the
- * dashboard content that used to live there moved to "/briefing", now the
- * full Daily Briefing dashboard.
+ * v4 pillar-based rebuild: "/" is the tappable nav map (NavMapPage, now
+ * 7 zones instead of 15). "/mission-control" is now the actual dashboard
+ * (leaner than the old Briefing page — Weather/Horoscope/News moved to
+ * Intelligence). "/briefing" redirects there for anyone with an old
+ * bookmark/link. Six new pillar pages (Body/Mind/Spirit/Life/Work/
+ * Intelligence) each aggregate existing feature components behind
+ * collapsible Disclosure sections, filtered by pillar where relevant
+ * (Tasks/Goals/Habits). Old single-topic pages (Calendar, Horoscope,
+ * News, Sports, Stocks, Motivation, Word of the Day, Fun Fact, Dad Joke,
+ * Progress) still work standalone — not linked from the map anymore, but
+ * not removed either.
  */
 function App() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<NavMapPage />} />
-        <Route path="/mission-control" element={<NavMapPage />} />
-        <Route path="/briefing" element={<BriefingPage />} />
+        <Route path="/mission-control" element={<MissionControlPage />} />
+        <Route path="/briefing" element={<Navigate to="/mission-control" replace />} />
+        <Route path="/body" element={<BodyPage />} />
+        <Route path="/mind" element={<MindPage />} />
+        <Route path="/spirit" element={<SpiritPage />} />
+        <Route path="/life" element={<LifePage />} />
+        <Route path="/work" element={<WorkPage />} />
+        <Route path="/intelligence" element={<IntelligencePage />} />
         <Route path="/goals" element={<GoalsPage />} />
         <Route path="/habits" element={<HabitsPage />} />
         <Route path="/tasks" element={<TasksPage />} />

@@ -1,10 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import type { Task, TaskStatus } from '@/types/task'
+import type { PillarId } from '@/types/pillar'
 
 export type TaskView = 'today' | TaskStatus
 
-export function useTasks(view: TaskView) {
+export function useTasks(view: TaskView, pillar?: PillarId) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -13,14 +14,15 @@ export function useTasks(view: TaskView) {
     setLoading(true)
     setError(null)
     try {
-      const res = await api.get<{ tasks: Task[] }>(`/tasks?view=${view}`)
+      const query = pillar ? `/tasks?view=${view}&pillar=${pillar}` : `/tasks?view=${view}`
+      const res = await api.get<{ tasks: Task[] }>(query)
       setTasks(res.tasks)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load tasks')
     } finally {
       setLoading(false)
     }
-  }, [view])
+  }, [view, pillar])
 
   useEffect(() => {
     reload()
@@ -33,7 +35,7 @@ export function useTasks(view: TaskView) {
       user_id: '',
       title,
       notes: null,
-      pillar_id: null,
+      pillar_id: pillar ?? null,
       project: null,
       status,
       flagged: false,
@@ -47,7 +49,7 @@ export function useTasks(view: TaskView) {
     }
     setTasks((prev) => [optimistic, ...prev])
     try {
-      await api.post('/tasks', { title, status, ...defaults })
+      await api.post('/tasks', { title, status, pillarId: pillar ?? null, ...defaults })
       reload()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create task')

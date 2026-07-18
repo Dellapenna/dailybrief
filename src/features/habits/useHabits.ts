@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import type { Habit } from '@/types/habit'
+import type { PillarId } from '@/types/pillar'
 
-export function useHabits() {
+export function useHabits(pillar?: PillarId) {
   const [habits, setHabits] = useState<Habit[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -11,14 +12,15 @@ export function useHabits() {
     setLoading(true)
     setError(null)
     try {
-      const res = await api.get<{ habits: Habit[] }>('/habits')
+      const query = pillar ? `/habits?pillar=${pillar}` : '/habits'
+      const res = await api.get<{ habits: Habit[] }>(query)
       setHabits(res.habits)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load habits')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [pillar])
 
   useEffect(() => {
     reload()
@@ -26,7 +28,7 @@ export function useHabits() {
 
   async function createHabit(name: string) {
     try {
-      await api.post('/habits', { name })
+      await api.post('/habits', { name, pillarId: pillar ?? null })
       reload()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to create habit')

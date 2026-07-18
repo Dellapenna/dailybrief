@@ -373,3 +373,80 @@ no phase assignment yet. Revisit only when directly requested.
   `ARCHITECTURE.md`.
 - Placeholder design tokens and Phase 0 nav chrome are throwaway — Phase 1
   is where real visual design work happens, not before.
+
+## Pillar-based navigation rebuild (on request, post-v9)
+
+Given a new reference home-screen image with a different taxonomy —
+Mission Control / Body / Mind / Spirit / Life / Work / Intelligence,
+replacing the earlier flat 15-category map — the app was restructured
+around six life pillars plus a dashboard hub, rather than a flat category
+list.
+
+**Final pillar mapping:**
+- **Mission Control** (`/mission-control`, now the actual dashboard,
+  leaner than the old Briefing page): Progress + cross-pillar To-Do
+  summary, Calendar, Today's Mission, Morning Check-in
+- **Body** (`/body`): Exercise Log (new), Health Trends (new, read-only
+  history of Check-in data), Habits/Tasks/Goals filtered to Body
+- **Mind** (`/mind`): Motivation Quote, Word of the Day, Spanish Word of
+  the Day (new), Habits/Tasks/Goals filtered to Mind (Spanish practice
+  lives here as an ordinary habit, not a separate system)
+- **Spirit** (`/spirit`): Prayer prompts (new) and Breathing Meditation
+  (new) — both seeded as Spirit-pillar habits (migration `0006`) so they
+  get real streak tracking for free from the existing habits system
+  rather than parallel tracking logic; Tasks/Goals filtered to Spirit
+- **Life** (`/life`): Daily Dad Joke, Idea Vault, Evening Review,
+  Habits/Tasks/Goals filtered to Life
+- **Work** (`/work`): Tasks (primary), Goals, Habits filtered to Work
+- **Intelligence** (`/intelligence`): Weather, News, Stock Market, Crypto
+  Market (new), Sports, Horoscope, Fun Fact of the Day, World Clock (new)
+
+**New features, all following existing patterns:**
+- **Exercise Log** — quick log only (category + activity + duration +
+  notes), no sets/reps/weight/pace, per the chosen scope.
+- **Health Trends** — read-only; the Check-in *form* stays on Mission
+  Control (daily ritual), this just surfaces the resulting data.
+- **Spanish Word of the Day** — a bundled, curated word list rather than
+  a free translation API (more reliable, zero fabrication risk, no
+  external dependency to break).
+- **Crypto Market** — CoinGecko's free public API, no key.
+- **World Clock** — pure client-side timezone conversion (Spain,
+  Guatemala, Austin), no backend at all.
+- **Cross-pillar To-Do summary** — `/api/tasks/summary` returns counts
+  per pillar; `tasks.ts`/`goals.ts`/`habits.ts` all gained an optional
+  `?pillar=` filter (existing `pillar_id` columns from earlier
+  migrations already supported this — no schema change needed there).
+
+**What stayed the same:** every existing feature component (WeatherCard,
+NewsCard, HoroscopeCard, etc.) was *relocated*, not rebuilt — several
+(Motivation, Word of the Day, Fun Fact, Dad Joke, Sports, Stocks, Idea
+Vault) were extracted from page-only implementations into reusable
+`*Card`/`*Section` components so both their original standalone page and
+the new pillar page can use the same component. Old standalone pages
+(`/calendar`, `/horoscope`, `/news`, `/sports`, `/stocks`, `/motivation`,
+`/word-of-the-day`, `/fun-fact`, `/dad-joke`, `/progress`) still work —
+just not linked from the map anymore. `/briefing` redirects to
+`/mission-control` for anyone with an old bookmark. Global "all pillars"
+views for Tasks/Goals/Habits/Idea Vault/Reviews still exist, demoted to
+the More page / desktop sidebar rather than primary nav.
+
+**Migration `0006_pillar_rebuild.sql`:** adds `exercise_logs`; seeds two
+Spirit-pillar habits ("Prayer", "Breathing Meditation") found by name in
+the frontend (`useSpiritHabit`) rather than a hardcoded ID.
+
+## Working Copy (iOS) deployment note
+
+The user is deploying via **Working Copy** (a Git client for iPhone —
+there's no computer in this workflow) rather than a desktop terminal.
+Practical implications worth remembering:
+- iOS's Files app does **not** reliably preserve nested folder structure
+  when multi-selecting items to move between apps — this caused several
+  failed deploys (only loose top-level files landing in the repo, no
+  `src`/`netlify`/etc). The reliable fix: package a single zip and use
+  Working Copy's built-in **"Extract to existing repository"** feature,
+  which does a real unzip in place rather than a manual multi-file copy.
+- For small code fixes, giving the person full file contents to
+  copy/paste directly into Working Copy's built-in editor is faster and
+  more reliable than another zip-extract cycle.
+- Multiple similarly-named zips across a long conversation caused mix-ups
+  (wrong version extracted). Naming matters — be explicit and distinct.

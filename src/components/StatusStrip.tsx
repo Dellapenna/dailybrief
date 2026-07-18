@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 /**
- * The one signature element this design is built around -- a persistent
+ * The one signature element this design is built around — a persistent
  * instrument-panel readout, styled after flight-deck/telemetry status
  * bars rather than a generic app header. Deliberately quiet everywhere
  * else so this carries the "tech" identity on its own.

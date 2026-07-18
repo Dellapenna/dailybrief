@@ -225,5 +225,13 @@ manual database changes" rule. So far:
 `0003_horoscope.sql` (Phase 2, added on request),
 `0004_ideas_and_habits.sql` (Phase 2 follow-up),
 `0005_goals_checkins_reviews.sql` (Phase 2 follow-up — completes the
-original Phase 2 scope). None have been run against a real Supabase
-project yet — that's a manual step still pending (see `BUILD_PLAN.md`).
+original Phase 2 scope),
+`0006_pillar_rebuild.sql` (adds `exercise_logs`, seeds Spirit-pillar
+habits). All six have now been run against a real, connected Supabase
+project (GitHub → Netlify Functions → Supabase all confirmed live).
+
+### `exercise_logs` — **implemented** in `0006_pillar_rebuild.sql`
+Body pillar's exercise tracking. `category`
+(`strength | aerobic | stretching`), `activity` (free text), `duration_minutes`,
+`notes`, `logged_at`. Deliberately a quick log, not detailed tracking — no
+sets/reps/weight/pace fields, per the chosen scope.
