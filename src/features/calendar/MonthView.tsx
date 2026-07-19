@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { api } from '@/lib/api'
 import type { CalendarEvent } from '@/types/calendar'
+import { useSportsAsEvents } from './useSportsAsEvents'
 
 const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -27,6 +28,7 @@ export default function MonthView() {
   const [events, setEvents] = useState<CalendarEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const { sportsEvents } = useSportsAsEvents()
 
   const monthStart = useMemo(() => startOfMonth(cursor), [cursor])
   const monthEnd = useMemo(() => endOfMonth(cursor), [cursor])
@@ -63,13 +65,13 @@ export default function MonthView() {
 
   const eventsByDay = useMemo(() => {
     const map = new Map<string, CalendarEvent[]>()
-    for (const e of events) {
+    for (const e of [...events, ...sportsEvents]) {
       const key = e.starts_at.slice(0, 10)
       if (!map.has(key)) map.set(key, [])
       map.get(key)!.push(e)
     }
     return map
-  }, [events])
+  }, [events, sportsEvents])
 
   const today = toDateKey(new Date())
 

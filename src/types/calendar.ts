@@ -1,4 +1,4 @@
-export type CalendarProvider = 'icloud' | 'google' | 'outlook'
+export type CalendarProvider = 'icloud' | 'google' | 'outlook' | 'sports'
 
 export type CalendarEvent = {
   id: string

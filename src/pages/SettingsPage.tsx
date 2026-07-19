@@ -27,6 +27,7 @@ const providerLabels: Record<CalendarProvider, string> = {
   icloud: 'iCloud Calendar',
   google: 'Google Calendar',
   outlook: 'Outlook / Microsoft 365',
+  sports: 'Sports Schedule (display-only, not a real connection)',
 }
 
 function LocationSettings() {
