@@ -1,10 +1,7 @@
-export type PillarId = 'body' | 'mind' | 'spirit' | 'life' | 'work' | 'intelligence'
+export type PillarId = 'body' | 'mind' | 'soul'
 
 export const PILLAR_LABELS: Record<PillarId, string> = {
   body: 'Body',
   mind: 'Mind',
-  spirit: 'Spirit',
-  life: 'Life',
-  work: 'Work',
-  intelligence: 'Intelligence',
+  soul: 'Soul',
 }

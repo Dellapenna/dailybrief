@@ -2,20 +2,18 @@ import { NavLink, Outlet } from 'react-router-dom'
 import StatusStrip from '@/components/StatusStrip'
 
 /**
- * Desktop sidebar — pillar-based nav rebuild. Home is the tappable map;
- * Mission Control is the actual dashboard. Goals/Habits/Idea Vault/
- * Reviews moved off the primary nav (now embedded per-pillar) — reachable
- * via More instead, alongside Settings.
+ * Desktop sidebar — consolidated 5-zone nav rebuild. Home is the
+ * tappable map; Mission Control is goals/planning; Daily Dashboard is
+ * today's info + check-in. Goals/Habits/Idea Vault/Reviews moved off
+ * the primary nav (now embedded per-pillar) — reachable via More.
  */
 const desktopNav = [
   { to: '/', label: 'Home' },
   { to: '/mission-control', label: 'Mission Control' },
+  { to: '/daily-dashboard', label: 'Daily Dashboard' },
   { to: '/body', label: 'Body' },
   { to: '/mind', label: 'Mind' },
-  { to: '/spirit', label: 'Spirit' },
-  { to: '/life', label: 'Life' },
-  { to: '/work', label: 'Work' },
-  { to: '/intelligence', label: 'Intelligence' },
+  { to: '/soul', label: 'Soul' },
   { to: '/tasks', label: 'All Tasks' },
   { to: '/settings', label: 'Settings' },
 ]
@@ -24,8 +22,8 @@ const desktopNav = [
 const mobileNav = [
   { to: '/', label: 'Home', short: 'Home' },
   { to: '/mission-control', label: 'Mission Control', short: 'Mission' },
+  { to: '/daily-dashboard', label: 'Daily Dashboard', short: 'Daily' },
   { to: '/tasks', label: 'Plan', short: 'Plan' },
-  { to: '/progress', label: 'Progress', short: 'Progress' },
   { to: '/more', label: 'More', short: 'More' },
 ]
 

@@ -227,8 +227,15 @@ manual database changes" rule. So far:
 `0005_goals_checkins_reviews.sql` (Phase 2 follow-up — completes the
 original Phase 2 scope),
 `0006_pillar_rebuild.sql` (adds `exercise_logs`, seeds Spirit-pillar
-habits). All six have now been run against a real, connected Supabase
+habits — bug-fixed by `0007` since `life_pillars` wasn't updated to
+match),
+`0007_fix_life_pillars.sql` (adds missing spirit/work/intelligence rows
+to `life_pillars`),
+`0008_consolidate_to_three_pillars.sql` (renames spirit→soul, drops
+life/work/intelligence as taggable pillars, seeds Gratitude/Service
+habits). All eight have been run against a real, connected Supabase
 project (GitHub → Netlify Functions → Supabase all confirmed live).
+Current taxonomy: `body | mind | soul` only.
 
 ### `exercise_logs` — **implemented** in `0006_pillar_rebuild.sql`
 Body pillar's exercise tracking. `category`

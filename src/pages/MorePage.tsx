@@ -17,10 +17,7 @@ import { NavLink } from 'react-router-dom'
 const pillarLinks = [
   { to: '/body', label: 'Body' },
   { to: '/mind', label: 'Mind' },
-  { to: '/spirit', label: 'Spirit' },
-  { to: '/life', label: 'Life' },
-  { to: '/work', label: 'Work' },
-  { to: '/intelligence', label: 'Intelligence' },
+  { to: '/soul', label: 'Soul' },
 ]
 
 const otherLinks = [

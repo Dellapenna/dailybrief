@@ -3,6 +3,8 @@ import PillarHero from '@/components/PillarHero'
 import MotivationCard from '@/features/motivation/MotivationCard'
 import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
+import BreathingTimer from '@/features/mind/BreathingTimer'
+import IdeaVaultSection from '@/features/ideas/IdeaVaultSection'
 import PillarHabits from '@/features/habits/PillarHabits'
 import TaskList from '@/features/tasks/TaskList'
 import PillarGoals from '@/features/goals/PillarGoals'
@@ -27,7 +29,15 @@ export default function MindPage() {
           <SpanishWordCard />
         </Disclosure>
 
-        <Disclosure title="Habits" subtitle="Includes Spanish practice" defaultOpen>
+        <Disclosure title="Meditate" subtitle="Breathing Meditation" defaultOpen>
+          <BreathingTimer />
+        </Disclosure>
+
+        <Disclosure title="Idea Vault">
+          <IdeaVaultSection />
+        </Disclosure>
+
+        <Disclosure title="Habits" subtitle="Includes Spanish practice">
           <PillarHabits pillar="mind" />
         </Disclosure>
 

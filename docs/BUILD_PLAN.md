@@ -450,3 +450,57 @@ Practical implications worth remembering:
   more reliable than another zip-extract cycle.
 - Multiple similarly-named zips across a long conversation caused mix-ups
   (wrong version extracted). Naming matters — be explicit and distinct.
+
+## Consolidation from 6 pillars to 4 zones + Daily Dashboard (on request)
+
+After the 6-pillar rebuild proved hard to keep tap zones aligned (a
+stacked-row image layout), and on reflection about whether 6 was more
+granularity than needed, consolidated to a cleaner structure per a new
+reference image with a 2x2 quadrant layout (Body/Mind top, Soul/Mission
+Control bottom) plus Daily Dashboard called out as a genuinely separate
+5th destination.
+
+**Final structure:**
+- **Body** (`/body`) — unchanged: Exercise Log, Health Trends,
+  Body-tagged Habits/Tasks/Goals
+- **Mind** (`/mind`) — gained Idea Vault and Breathing Meditation (moved
+  from Soul, per the reference image putting "Meditate" under Mind, not
+  Soul): Motivation Quote, Word of the Day, Spanish Word of the Day,
+  Breathing Meditation, Idea Vault, Mind-tagged Habits/Tasks/Goals
+- **Soul** (`/soul`, renamed from Spirit) — Prayer (Faith), Gratitude
+  (new), Service (new), Evening Review (moved here as "Reflection"),
+  Soul-tagged Habits/Tasks/Goals
+- **Mission Control** (`/mission-control`) — re-scoped to
+  goals/planning/execution per the reference image's own tagline ("Plan.
+  Execute. Win. You are the captain."): Executive Summary (new),
+  Progress/cross-pillar summary ("Analyze"), all-pillars Tasks ("Plan"),
+  all-pillars Goals
+- **Daily Dashboard** (`/daily-dashboard`, new route) — what Mission
+  Control used to contain: Weather, Calendar, Morning Check-in, News,
+  Stock Market, Crypto Market, Sports, Horoscope, Fun Fact, Daily Dad
+  Joke, World Clock
+
+**Data model simplified from 6 pillars to 3 real tags** (`body | mind |
+soul`) — Mission Control and Daily Dashboard aren't things a task/goal/
+habit gets tagged *as*, they're hub pages. Migration `0008` renames
+spirit→soul, untags anything that was tagged life/work/intelligence (no
+clean 1:1 replacement existed for those under the new model — this is a
+design consolidation, not a bug, so untagging rather than guessing wrong
+felt like the right call), and seeds Gratitude/Service as new Soul-pillar
+habits alongside the existing Prayer.
+
+**Executive Summary** (new, in Mission Control): real rules-based stats
+(active/completed/paused goal counts, tasks completed this week, tasks
+overdue, 7-day habit completion rate) plus a short AI-written assessment
+that comments on those real numbers — explicitly prompted to be direct
+and not automatically encouraging, matching the app's "honest coaching"
+principle. The AI never invents its own numbers; if the assessment call
+fails, the stats still render on their own.
+
+**Pages removed:** `WorkPage`, `IntelligencePage`, `LifePage` (renamed to
+`SoulPage`) — content fully redistributed above, no clean single
+replacement existed for any of the three individually, so no redirect
+was added for their old routes (they 404 via `NotFoundPage` now).
+`/briefing` now redirects to `/daily-dashboard` instead of
+`/mission-control`, since Daily Dashboard is the closer semantic match to
+what that page used to be.

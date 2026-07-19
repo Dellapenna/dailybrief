@@ -6,10 +6,7 @@ import { PILLAR_LABELS, type PillarId } from '@/types/pillar'
 const PILLAR_ROUTES: Record<PillarId, string> = {
   body: '/body',
   mind: '/mind',
-  spirit: '/spirit',
-  life: '/life',
-  work: '/work',
-  intelligence: '/intelligence',
+  soul: '/soul',
 }
 
 export default function PillarTaskSummary() {

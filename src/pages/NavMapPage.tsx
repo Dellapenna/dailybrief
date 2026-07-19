@@ -1,28 +1,28 @@
 import { Link } from 'react-router-dom'
 
 /**
- * Home / navigation hub — v4, rebuilt for the pillar-based structure
- * (Mission Control / Body / Mind / Spirit / Life / Work / Intelligence),
- * replacing the earlier flat 15-category map. Same image-with-tap-zones
- * technique as before. Coordinates are estimated by eye against the new
- * image's layout (3 centered items — Mission Control/Spirit/Intelligence
- * — alternating with 2 left/right pairs — Body+Mind, Life+Work) — not
- * pixel-perfect; nudge specific zones based on feedback once live.
+ * Home / navigation hub — v5, consolidated to 4 quadrant zones (Body,
+ * Mind, Soul, Mission Control) plus Daily Dashboard called out
+ * separately at the bottom, per a new reference image. Quadrant layout
+ * should be far more forgiving to align than the earlier stacked-row
+ * images — each zone occupies a clearly separated quarter of the image
+ * rather than a thin horizontal band.
+ *
+ * Coordinates still estimated by eye, not pixel-verified — tell me
+ * which zone (if any) needs adjusting once it's live.
  */
 const ZONES: { to: string; label: string; top: number; height: number; left: number; width: number }[] = [
-  { to: '/mission-control', label: 'Mission Control', top: 22, height: 15, left: 20, width: 60 },
-  { to: '/body', label: 'Body', top: 32, height: 15, left: 2, width: 45 },
-  { to: '/mind', label: 'Mind', top: 32, height: 15, left: 53, width: 45 },
-  { to: '/spirit', label: 'Spirit', top: 50, height: 14, left: 20, width: 60 },
-  { to: '/life', label: 'Life', top: 58, height: 13, left: 2, width: 45 },
-  { to: '/work', label: 'Work', top: 58, height: 13, left: 53, width: 45 },
-  { to: '/intelligence', label: 'Intelligence', top: 70, height: 12, left: 20, width: 60 },
+  { to: '/body', label: 'Body', top: 20, height: 20, left: 3, width: 45 },
+  { to: '/mind', label: 'Mind', top: 20, height: 20, left: 52, width: 45 },
+  { to: '/soul', label: 'Soul', top: 58, height: 20, left: 3, width: 45 },
+  { to: '/mission-control', label: 'Mission Control', top: 58, height: 20, left: 52, width: 45 },
+  { to: '/daily-dashboard', label: 'Daily Dashboard', top: 82, height: 10, left: 20, width: 60 },
 ]
 
 export default function NavMapPage() {
   return (
     <div className="-mx-5 -mt-6 md:-mx-8 md:-mt-8">
-      <h1 className="sr-only">Mission Control</h1>
+      <h1 className="sr-only">Home</h1>
 
       <div className="relative">
         <img
