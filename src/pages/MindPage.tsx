@@ -4,6 +4,8 @@ import MotivationCard from '@/features/motivation/MotivationCard'
 import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
 import BreathingTimer from '@/features/mind/BreathingTimer'
+import CommunicationTipCard from '@/features/communication/CommunicationTipCard'
+import CommunicationJournalCard from '@/features/communication/CommunicationJournalCard'
 import IdeaVaultSection from '@/features/ideas/IdeaVaultSection'
 import PillarHabits from '@/features/habits/PillarHabits'
 import TaskList from '@/features/tasks/TaskList'
@@ -32,6 +34,14 @@ export default function MindPage() {
 
         <Disclosure title="Meditate" subtitle="Breathing Meditation" defaultOpen>
           <BreathingTimer />
+        </Disclosure>
+
+        <Disclosure title="Communication Tip" defaultOpen>
+          <CommunicationTipCard />
+        </Disclosure>
+
+        <Disclosure title="Communication Practice Journal" subtitle="Log real interactions, reflect" defaultOpen>
+          <CommunicationJournalCard />
         </Disclosure>
 
         <Disclosure title="Idea Vault">
