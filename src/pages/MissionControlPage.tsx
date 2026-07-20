@@ -1,5 +1,5 @@
+import FrameShell from '@/components/FrameShell'
 import Disclosure from '@/components/Disclosure'
-import PillarHero from '@/components/PillarHero'
 import ExecutiveSummaryCard from '@/features/executiveSummary/ExecutiveSummaryCard'
 import MissionProgress from '@/features/dashboard/MissionProgress'
 import PillarTaskSummary from '@/features/pillarSummary/PillarTaskSummary'
@@ -36,19 +36,22 @@ function AllGoals() {
 
 /**
  * Mission Control — "Plan. Execute. Win. You are the captain." per the
- * reference image: goals, planning, execution, analysis, and the
- * Executive Summary. Today's info (weather/news/calendar/check-in) lives
- * on Daily Dashboard instead — a real split from the earlier version of
- * this page, per the 4-then-5-zone consolidation.
+ * reference image. Now using the full FrameShell treatment (parchment
+ * scroll frame, content scrolls in a window over the blank area) rather
+ * than a small hero banner — this frame has a much more generous,
+ * cleanly centered blank area than the earlier Life frame attempt, so
+ * worth trying again here specifically. Window coordinates estimated by
+ * eye, not pixel-verified — expect to adjust once seen live.
  */
 export default function MissionControlPage() {
   return (
-    <div>
-      <PillarHero slug="mission-control" alt="Mission Control" />
-      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Mission Control</h1>
-      <p className="mt-1 text-sm text-rdp-text-dim">Plan. Execute. Win. You are the captain.</p>
-
-      <div className="mt-5 space-y-3">
+    <FrameShell
+      frameSrc="/images/frames/mission-control.jpg"
+      frameAlt="Mission Control — Plan. Execute. Win. You are the captain."
+      window={{ top: 19, left: 8, width: 84, height: 64 }}
+    >
+      <h1 className="sr-only">Mission Control</h1>
+      <div className="space-y-3">
         <Disclosure title="Executive Summary" defaultOpen>
           <ExecutiveSummaryCard />
         </Disclosure>
@@ -68,6 +71,6 @@ export default function MissionControlPage() {
           <AllGoals />
         </Disclosure>
       </div>
-    </div>
+    </FrameShell>
   )
 }
