@@ -1,4 +1,6 @@
 import type { Config, Context } from '@netlify/functions'
+import { getSupabaseAdmin } from './shared/supabaseAdmin'
+import { getPrimaryUserId } from './shared/primaryUser'
 import { json, errorResponse } from './shared/http'
 
 /**
@@ -16,15 +18,16 @@ import { json, errorResponse } from './shared/http'
  * sports data providers, TheSportsDB included. Confirmed not needed per
  * the person's own call, so not pursued.
  *
- * v1 assumption: hardcoded favorite teams (Philadelphia Eagles/Phillies/
- * 76ers/Flyers) rather than reading from a preferences table — the brief
- * calls for configurable favorite teams eventually; not built yet.
+ * Favorite teams now come from sports_preferences (editable in Settings)
+ * instead of being hardcoded — falls back to the original 4 Philly teams
+ * if the table is empty (shouldn't happen post-migration, but a
+ * reasonable safety net).
  */
 
 const API_KEY = process.env.SPORTS_DATA_API_KEY || '3'
 const BASE = `https://www.thesportsdb.com/api/v1/json/${API_KEY}`
 
-const FAVORITE_TEAMS = ['Philadelphia Eagles', 'Philadelphia Phillies', 'Philadelphia 76ers', 'Philadelphia Flyers']
+const FALLBACK_TEAMS = ['Philadelphia Eagles', 'Philadelphia Phillies', 'Philadelphia 76ers', 'Philadelphia Flyers']
 
 let cache: { at: number; games: unknown[]; results: unknown[] } | null = null
 const CACHE_MS = 30 * 60 * 1000
@@ -104,9 +107,20 @@ export default async (_req: Request, _context: Context) => {
       return json({ games: cache.games, results: cache.results, cached: true })
     }
 
+    const supabase = getSupabaseAdmin()
+    const userId = getPrimaryUserId()
+
+    const { data: prefs, error: prefsError } = await supabase
+      .from('sports_preferences')
+      .select('team_name')
+      .eq('user_id', userId)
+    if (prefsError) return errorResponse(prefsError, 500)
+
+    const favoriteTeams = prefs && prefs.length > 0 ? prefs.map((p) => p.team_name) : FALLBACK_TEAMS
+
     const [upcomingResults, finalResults] = await Promise.all([
-      Promise.allSettled(FAVORITE_TEAMS.map(fetchUpcoming)),
-      Promise.allSettled(FAVORITE_TEAMS.map(fetchResults)),
+      Promise.allSettled(favoriteTeams.map(fetchUpcoming)),
+      Promise.allSettled(favoriteTeams.map(fetchResults)),
     ])
 
     const games = upcomingResults.flatMap((r) => (r.status === 'fulfilled' ? r.value : []))

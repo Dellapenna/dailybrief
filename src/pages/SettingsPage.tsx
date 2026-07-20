@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { api } from '@/lib/api'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import Disclosure from '@/components/Disclosure'
@@ -143,6 +143,90 @@ function HoroscopeSettings() {
   )
 }
 
+type SportsTeam = { id: string; team_name: string }
+
+function SportsSettings() {
+  const [teams, setTeams] = useState<SportsTeam[]>([])
+  const [newTeam, setNewTeam] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  function load() {
+    api
+      .get<{ teams: SportsTeam[] }>('/sports-preferences')
+      .then((res) => setTeams(res.teams))
+      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load teams'))
+  }
+
+  useEffect(load, [])
+
+  async function addTeam(e: FormEvent) {
+    e.preventDefault()
+    const name = newTeam.trim()
+    if (!name) return
+    setSaving(true)
+    setError(null)
+    try {
+      await api.post('/sports-preferences', { teamName: name })
+      setNewTeam('')
+      load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add team')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function removeTeam(id: string) {
+    setTeams((prev) => prev.filter((t) => t.id !== id))
+    try {
+      await api.delete(`/sports-preferences/${id}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to remove team')
+      load()
+    }
+  }
+
+  return (
+    <Disclosure title="Favorite Teams" subtitle="Drives Sports schedule + scores on Daily Dashboard">
+      {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
+
+      <form onSubmit={addTeam} className="flex gap-2">
+        <input
+          type="text"
+          value={newTeam}
+          onChange={(e) => setNewTeam(e.target.value)}
+          placeholder="e.g. Philadelphia Eagles"
+          className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none focus:ring-2 focus:ring-rdp-signal/20"
+        />
+        <button
+          type="submit"
+          disabled={saving}
+          className="rounded-lg bg-rdp-signal px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
+        >
+          Add
+        </button>
+      </form>
+      <p className="mt-1.5 text-xs text-rdp-text-faint">
+        Use the team's full name as it'd appear on TheSportsDB (e.g. "Philadelphia Eagles", not "Eagles") for the
+        best match.
+      </p>
+
+      <div className="mt-3 space-y-2">
+        {teams.map((t) => (
+          <div key={t.id} className="flex items-center justify-between text-sm">
+            <span className="text-rdp-text">{t.team_name}</span>
+            <button onClick={() => removeTeam(t.id)} className="text-xs text-rdp-text-faint hover:text-rdp-risk">
+              Remove
+            </button>
+          </div>
+        ))}
+        {teams.length === 0 && <p className="text-sm text-rdp-text-faint">No favorite teams set.</p>}
+      </div>
+    </Disclosure>
+  )
+}
+
 function CalendarSettings() {
   const [connections, setConnections] = useState<CalendarConnection[]>([])
   const [syncing, setSyncing] = useState(false)
@@ -217,6 +301,7 @@ export default function SettingsPage() {
       <div className="mt-5 space-y-3">
         <LocationSettings />
         <HoroscopeSettings />
+        <SportsSettings />
         <CalendarSettings />
       </div>
     </div>
