@@ -277,8 +277,9 @@ function SportsSettings() {
 
 function CalendarSettings() {
   const [connections, setConnections] = useState<CalendarConnection[]>([])
-  const [syncing, setSyncing] = useState(false)
+  const [syncingProvider, setSyncingProvider] = useState<CalendarProvider | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [redirectMessage, setRedirectMessage] = useState<{ text: string; success: boolean } | null>(null)
 
   function load() {
     api
@@ -289,28 +290,48 @@ function CalendarSettings() {
 
   useEffect(load, [])
 
-  async function syncIcloud() {
-    setSyncing(true)
+  // After the Google OAuth redirect completes, calendar-oauth-google-callback.ts
+  // sends the result back as query params rather than a bare JSON response.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const message = params.get('calendarMessage')
+    if (message) {
+      setRedirectMessage({ text: message, success: params.get('calendarSuccess') === 'true' })
+      params.delete('calendarMessage')
+      params.delete('calendarSuccess')
+      const newUrl = `${window.location.pathname}${params.toString() ? `?${params}` : ''}`
+      window.history.replaceState({}, '', newUrl)
+    }
+  }, [])
+
+  async function sync(provider: 'icloud' | 'google') {
+    setSyncingProvider(provider)
     setError(null)
     try {
-      await api.post('/calendar/sync/icloud')
+      await api.post(`/calendar/sync/${provider}`)
       load()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Sync failed')
     } finally {
-      setSyncing(false)
+      setSyncingProvider(null)
     }
   }
 
   const statusFor = (provider: CalendarProvider) => connections.find((c) => c.provider === provider)
 
   return (
-    <Disclosure title="Calendars" subtitle="iCloud live now, Google/Outlook not yet connected">
+    <Disclosure title="Calendars" subtitle="iCloud and Google live now, Outlook not yet connected" defaultOpen>
+      {redirectMessage && (
+        <p className={`mb-2 text-sm ${redirectMessage.success ? 'text-rdp-good' : 'text-rdp-risk'}`}>
+          {redirectMessage.text}
+        </p>
+      )}
       {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
 
       <div className="space-y-3">
         {(['icloud', 'google', 'outlook'] as const).map((provider) => {
           const conn = statusFor(provider)
+          const connected = conn?.status === 'connected' || conn?.status === 'error'
           return (
             <div key={provider} className="flex items-center justify-between text-sm">
               <div>
@@ -322,18 +343,28 @@ function CalendarSettings() {
                       ? `Error: ${conn.last_error}`
                       : provider === 'icloud'
                         ? 'Not connected yet — set ICLOUD_APPLE_ID / ICLOUD_APP_SPECIFIC_PASSWORD, see docs/INTEGRATIONS.md'
-                        : 'Not implemented yet — requires OAuth app registration, see docs/INTEGRATIONS.md'}
+                        : provider === 'google'
+                          ? 'Not connected yet — tap Connect'
+                          : 'Not implemented yet — requires OAuth app registration, see docs/INTEGRATIONS.md'}
                 </p>
               </div>
-              {provider === 'icloud' && (
-                <button
-                  onClick={syncIcloud}
-                  disabled={syncing}
-                  className="rounded-lg border border-rdp-line px-3 py-1.5 text-xs font-medium text-rdp-text hover:bg-rdp-void disabled:opacity-50"
-                >
-                  {syncing ? 'Syncing…' : 'Sync now'}
-                </button>
-              )}
+              {(provider === 'icloud' || provider === 'google') &&
+                (provider === 'google' && !connected ? (
+                  <a
+                    href="/api/calendar/oauth/google/start"
+                    className="rounded-lg border border-rdp-line px-3 py-1.5 text-xs font-medium text-rdp-text hover:bg-rdp-void"
+                  >
+                    Connect
+                  </a>
+                ) : (
+                  <button
+                    onClick={() => sync(provider)}
+                    disabled={syncingProvider === provider}
+                    className="rounded-lg border border-rdp-line px-3 py-1.5 text-xs font-medium text-rdp-text hover:bg-rdp-void disabled:opacity-50"
+                  >
+                    {syncingProvider === provider ? 'Syncing…' : 'Sync now'}
+                  </button>
+                ))}
             </div>
           )
         })}

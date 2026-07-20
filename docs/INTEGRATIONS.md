@@ -76,7 +76,7 @@ vars: a short string identifying the app plus a real contact email (NWS
 asks for this so they can reach you if something's misbehaving — not a
 secret, just good API citizenship). US locations only.
 
-### Calendar — iCloud (live), Google + Outlook (not yet)
+### Calendar — iCloud + Google (live), Outlook (not yet)
 
 **iCloud Calendar (CalDAV) — live:**
 1. Go to https://appleid.apple.com → **Sign-In and Security** →
@@ -92,21 +92,37 @@ secret, just good API citizenship). US locations only.
    (see `ARCHITECTURE.md`'s Morning Intelligence generation workflow,
    which this would slot into).
 
-**Google Calendar — not implemented:**
-Requires creating an OAuth app in Google Cloud Console yourself (client
-ID + secret, consent screen) — this is a manual setup step outside this
-codebase; I can't create that app on your behalf. Once you have a client
-ID/secret and a stored refresh token, `calendar-sync-google.ts` is where
-the actual API calls get added — see the comment in that file for the
-exact shape to normalize into.
+**Google Calendar (OAuth) — live:**
+1. console.cloud.google.com → create/select a project → enable the
+   "Google Calendar API" (APIs & Services → Library → search for it →
+   Enable).
+2. APIs & Services → OAuth consent screen → External → fill in the
+   basics → add yourself as a test user if it stays in Testing mode
+   (fine for a single-user app — no need to publish it).
+3. APIs & Services → Credentials → Create Credentials → OAuth client ID
+   → Web application → add this exact redirect URI:
+   `<your-site>/api/calendar/oauth/google/callback`
+4. Set `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (from that client)
+   in Netlify env vars.
+5. In Settings → Calendars → tap **Connect** next to Google Calendar →
+   approve access → redirects back to Settings with a confirmation.
+6. Tap **Sync now** to pull events (same manual-trigger model as
+   iCloud — no scheduled auto-sync yet).
+
+Tokens (access + refresh) are stored on `calendar_connections`
+(`0012_calendar_oauth_tokens.sql`) — `calendar-sync-google.ts` refreshes
+the access token automatically when it's expired, using the stored
+refresh token, so re-connecting shouldn't be needed unless the refresh
+token itself gets revoked (e.g. if access is removed from Google
+Account settings).
 
 **Outlook / Microsoft 365 — not implemented:**
 Same situation via Azure AD app registration (Microsoft Entra admin
 center) instead of Google Cloud. See `calendar-sync-outlook.ts`.
 
-Both stubs return a clear 501 error rather than silently doing nothing,
-and the frontend (`CalendarSettings` in `SettingsPage.tsx`) shows that
-message directly so it's never a mystery why nothing synced.
+The Outlook stub returns a clear 501 error rather than silently doing
+nothing, and the frontend (`CalendarSettings` in `SettingsPage.tsx`)
+shows that message directly so it's never a mystery why nothing synced.
 
 ## Planned external integrations (Phase 5, remaining)
 
