@@ -1,7 +1,7 @@
 import QuickAddBar from './QuickAddBar'
 import TaskRow from './TaskRow'
 import { useTasks, type TaskView } from './useTasks'
-import type { Task, TaskRecurrence } from '@/types/task'
+import type { Task } from '@/types/task'
 import type { PillarId } from '@/types/pillar'
 
 export default function TaskList({
@@ -17,14 +17,6 @@ export default function TaskList({
 
   function toggleComplete(task: Task) {
     updateTask(task.id, { status: task.status === 'completed' ? 'inbox' : 'completed' })
-  }
-
-  function toggleFlag(task: Task) {
-    updateTask(task.id, { flagged: !task.flagged })
-  }
-
-  function changeRecurrence(task: Task, recurrence: TaskRecurrence) {
-    updateTask(task.id, { recurrence })
   }
 
   return (
@@ -44,9 +36,8 @@ export default function TaskList({
               key={task.id}
               task={task}
               onToggleComplete={toggleComplete}
-              onToggleFlag={toggleFlag}
+              onUpdate={(updates) => updateTask(task.id, updates)}
               onDelete={(t) => deleteTask(t.id)}
-              onRecurrenceChange={changeRecurrence}
             />
           ))
         )}
