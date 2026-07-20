@@ -1,3 +1,4 @@
+import FrameShell from '@/components/FrameShell'
 import Disclosure from '@/components/Disclosure'
 import WeatherCard from '@/features/weather/WeatherCard'
 import CalendarSection from '@/features/calendar/CalendarSection'
@@ -19,11 +20,13 @@ import CheckInForm from '@/features/checkin/CheckInForm'
  */
 export default function DailyDashboardPage() {
   return (
-    <div>
-      <h1 className="font-display text-2xl font-semibold tracking-tight text-rdp-text">Daily Dashboard</h1>
-      <p className="mt-1 text-sm text-rdp-text-dim">Your day. Your intelligence. Your edge.</p>
-
-      <div className="mt-5 space-y-3">
+    <FrameShell
+      frameSrc="/images/frames/daily-dashboard.jpg"
+      frameAlt="Daily Dashboard — Your day. Your intelligence. Your edge."
+      window={{ top: 19, left: 8, width: 84, height: 64 }}
+    >
+      <h1 className="sr-only">Daily Dashboard</h1>
+      <div className="space-y-3">
         <Disclosure title="Weather" defaultOpen>
           <WeatherCard />
         </Disclosure>
@@ -68,6 +71,6 @@ export default function DailyDashboardPage() {
           <WorldClockCard />
         </Disclosure>
       </div>
-    </div>
+    </FrameShell>
   )
 }

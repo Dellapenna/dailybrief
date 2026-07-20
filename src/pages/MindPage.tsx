@@ -1,5 +1,5 @@
+import FrameShell from '@/components/FrameShell'
 import Disclosure from '@/components/Disclosure'
-import PillarHero from '@/components/PillarHero'
 import MotivationCard from '@/features/motivation/MotivationCard'
 import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
@@ -11,12 +11,13 @@ import PillarGoals from '@/features/goals/PillarGoals'
 
 export default function MindPage() {
   return (
-    <div>
-      <PillarHero slug="mind" alt="Mind" />
-      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Mind</h1>
-      <p className="mt-1 text-sm text-rdp-text-dim">Focus. Learn. Grow. Sharpen your mind every day.</p>
-
-      <div className="mt-5 space-y-3">
+    <FrameShell
+      frameSrc="/images/frames/mind.jpg"
+      frameAlt="Mind — Focus. Learn. Grow. Sharpen your mind every day."
+      window={{ top: 19, left: 8, width: 84, height: 64 }}
+    >
+      <h1 className="sr-only">Mind</h1>
+      <div className="space-y-3">
         <Disclosure title="Motivation Quote" defaultOpen>
           <MotivationCard />
         </Disclosure>
@@ -49,6 +50,6 @@ export default function MindPage() {
           <PillarGoals pillar="mind" />
         </Disclosure>
       </div>
-    </div>
+    </FrameShell>
   )
 }

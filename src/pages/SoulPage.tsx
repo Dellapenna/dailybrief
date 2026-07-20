@@ -1,5 +1,5 @@
+import FrameShell from '@/components/FrameShell'
 import Disclosure from '@/components/Disclosure'
-import PillarHero from '@/components/PillarHero'
 import PrayerCard from '@/features/soul/PrayerCard'
 import GratitudeCard from '@/features/soul/GratitudeCard'
 import ServiceCard from '@/features/soul/ServiceCard'
@@ -9,12 +9,13 @@ import PillarGoals from '@/features/goals/PillarGoals'
 
 export default function SoulPage() {
   return (
-    <div>
-      <PillarHero slug="soul" alt="Soul" />
-      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Soul</h1>
-      <p className="mt-1 text-sm text-rdp-text-dim">Faith. Purpose. Peace. Strengthen your soul within.</p>
-
-      <div className="mt-5 space-y-3">
+    <FrameShell
+      frameSrc="/images/frames/soul.jpg"
+      frameAlt="Soul — Faith. Purpose. Peace. Strengthen your soul within."
+      window={{ top: 19, left: 8, width: 84, height: 64 }}
+    >
+      <h1 className="sr-only">Soul</h1>
+      <div className="space-y-3">
         <Disclosure title="Faith" subtitle="Prayer" defaultOpen>
           <PrayerCard />
         </Disclosure>
@@ -39,6 +40,6 @@ export default function SoulPage() {
           <PillarGoals pillar="soul" />
         </Disclosure>
       </div>
-    </div>
+    </FrameShell>
   )
 }
