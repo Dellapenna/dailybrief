@@ -2,6 +2,7 @@ import type { Config, Context } from '@netlify/functions'
 import { getSupabaseAdmin } from './shared/supabaseAdmin'
 import { getPrimaryUserId } from './shared/primaryUser'
 import { requireEnv } from './shared/env'
+import { todayInTimezone } from './shared/userTimezone'
 import { json, errorResponse } from './shared/http'
 
 /**
@@ -42,7 +43,13 @@ export default async (_req: Request, _context: Context) => {
       return json({ error: 'No zodiac sign set — add one in Settings.' }, 400)
     }
 
-    const today = new Date().toISOString().slice(0, 10)
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('timezone')
+      .eq('id', userId)
+      .single()
+    if (profileError) return errorResponse(profileError, 500)
+    const today = todayInTimezone(profile?.timezone || 'America/New_York')
 
     const { data: cached, error: cacheError } = await supabase
       .from('horoscopes')

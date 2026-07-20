@@ -22,7 +22,9 @@ export default async (req: Request, _context: Context) => {
     if (req.method === 'PATCH') {
       const body = await req.json()
       const updates: Record<string, unknown> = {}
-      for (const key of ['locationLabel', 'locationLat', 'locationLng', 'weatherUnits', 'zodiacSign'] as const) {
+      for (const key of [
+        'locationLabel', 'locationLat', 'locationLng', 'weatherUnits', 'zodiacSign', 'dailyCalorieGoal',
+      ] as const) {
         if (key in body) {
           const column =
             key === 'locationLabel'
@@ -33,7 +35,9 @@ export default async (req: Request, _context: Context) => {
                   ? 'location_lng'
                   : key === 'zodiacSign'
                     ? 'zodiac_sign'
-                    : 'weather_units'
+                    : key === 'dailyCalorieGoal'
+                      ? 'daily_calorie_goal'
+                      : 'weather_units'
           updates[column] = body[key]
         }
       }

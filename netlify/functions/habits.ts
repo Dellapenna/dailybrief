@@ -1,6 +1,7 @@
 import type { Config, Context } from '@netlify/functions'
 import { getSupabaseAdmin } from './shared/supabaseAdmin'
 import { getPrimaryUserId } from './shared/primaryUser'
+import { todayInTimezone } from './shared/userTimezone'
 import { json, errorResponse } from './shared/http'
 
 /**
@@ -12,28 +13,29 @@ import { json, errorResponse } from './shared/http'
  * stored — see docs/DATABASE_SCHEMA.md. v1 assumption: every habit is
  * treated as daily-frequency regardless of its `frequency` column; that
  * column is stored for future use but doesn't affect this math yet.
+ *
+ * "Today" is computed in the user's stored timezone (profiles.timezone),
+ * not server UTC — bug fix: using UTC meant a US-based user in the
+ * evening could see a habit stay "completed" well into their next local
+ * day, since UTC had already rolled over hours earlier.
  */
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-function toDateStr(d: Date) {
+function addDays(dateStr: string, days: number): string {
+  const d = new Date(dateStr + 'T00:00:00Z')
+  d.setUTCDate(d.getUTCDate() + days)
   return d.toISOString().slice(0, 10)
 }
 
-function computeStreaks(entryDates: Set<string>) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
+function computeStreaks(entryDates: Set<string>, todayStr: string) {
   // Current streak: walk backward from today (or yesterday, so missing
   // today doesn't zero out an otherwise-intact streak) until a gap.
   let current = 0
-  const cursor = new Date(today)
-  if (!entryDates.has(toDateStr(cursor))) {
-    cursor.setDate(cursor.getDate() - 1) // today not logged yet — check from yesterday
-  }
-  while (entryDates.has(toDateStr(cursor))) {
+  let cursor = entryDates.has(todayStr) ? todayStr : addDays(todayStr, -1)
+  while (entryDates.has(cursor)) {
     current += 1
-    cursor.setDate(cursor.getDate() - 1)
+    cursor = addDays(cursor, -1)
   }
 
   // Longest streak: scan all logged dates sorted ascending for the
@@ -41,32 +43,30 @@ function computeStreaks(entryDates: Set<string>) {
   const sorted = Array.from(entryDates).sort()
   let longest = 0
   let run = 0
-  let prev: Date | null = null
+  let prev: string | null = null
   for (const dateStr of sorted) {
-    const d = new Date(dateStr + 'T00:00:00')
     if (prev) {
-      const diffDays = Math.round((d.getTime() - prev.getTime()) / 86400000)
-      run = diffDays === 1 ? run + 1 : 1
+      run = addDays(prev, 1) === dateStr ? run + 1 : 1
     } else {
       run = 1
     }
     longest = Math.max(longest, run)
-    prev = d
+    prev = dateStr
   }
 
   // Success rate over the last 30 days.
   let completedIn30 = 0
+  let d = todayStr
   for (let i = 0; i < 30; i++) {
-    const d = new Date(today)
-    d.setDate(d.getDate() - i)
-    if (entryDates.has(toDateStr(d))) completedIn30 += 1
+    if (entryDates.has(d)) completedIn30 += 1
+    d = addDays(d, -1)
   }
 
   return {
     currentStreak: current,
     longestStreak: longest,
     successRate30d: Math.round((completedIn30 / 30) * 100),
-    completedToday: entryDates.has(toDateStr(today)),
+    completedToday: entryDates.has(todayStr),
   }
 }
 
@@ -80,6 +80,14 @@ export default async (req: Request, _context: Context) => {
   try {
     const supabase = getSupabaseAdmin()
     const userId = getPrimaryUserId()
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('timezone')
+      .eq('id', userId)
+      .single()
+    if (profileError) return errorResponse(profileError, 500)
+    const todayStr = todayInTimezone(profile?.timezone || 'America/New_York')
 
     if (req.method === 'GET' && !id) {
       const pillar = url.searchParams.get('pillar')
@@ -103,7 +111,7 @@ export default async (req: Request, _context: Context) => {
             .eq('completed', true)
           if (entriesError) throw entriesError
           const dates = new Set((entries ?? []).map((e) => e.entry_date as string))
-          return { ...habit, ...computeStreaks(dates) }
+          return { ...habit, ...computeStreaks(dates, todayStr) }
         }),
       )
 
@@ -133,13 +141,11 @@ export default async (req: Request, _context: Context) => {
     }
 
     if (req.method === 'POST' && id && isToggle) {
-      const today = toDateStr(new Date())
-
       const { data: existing, error: existingError } = await supabase
         .from('habit_entries')
         .select('id')
         .eq('habit_id', id)
-        .eq('entry_date', today)
+        .eq('entry_date', todayStr)
         .maybeSingle()
       if (existingError) return errorResponse(existingError, 500)
 
@@ -150,7 +156,7 @@ export default async (req: Request, _context: Context) => {
       } else {
         const { error } = await supabase
           .from('habit_entries')
-          .insert({ habit_id: id, entry_date: today, completed: true })
+          .insert({ habit_id: id, entry_date: todayStr, completed: true })
         if (error) return errorResponse(error, 500)
         return json({ completedToday: true })
       }

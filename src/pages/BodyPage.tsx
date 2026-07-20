@@ -1,6 +1,7 @@
 import FrameShell from '@/components/FrameShell'
 import Disclosure from '@/components/Disclosure'
 import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
+import CalorieCounterCard from '@/features/calories/CalorieCounterCard'
 import HealthTrends from '@/features/exercise/HealthTrends'
 import PillarHabits from '@/features/habits/PillarHabits'
 import TaskList from '@/features/tasks/TaskList'
@@ -17,6 +18,10 @@ export default function BodyPage() {
       <div className="space-y-3">
         <Disclosure title="Exercise Log" subtitle="Strength, aerobic, stretching" defaultOpen>
           <ExerciseLogCard />
+        </Disclosure>
+
+        <Disclosure title="Calorie Counter" subtitle="Fuel — search or log manually" defaultOpen>
+          <CalorieCounterCard />
         </Disclosure>
 
         <Disclosure title="Health Trends" subtitle="Sleep, energy, weight over time">
@@ -38,3 +43,4 @@ export default function BodyPage() {
     </FrameShell>
   )
 }
+

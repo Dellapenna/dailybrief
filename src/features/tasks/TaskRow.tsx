@@ -48,14 +48,20 @@ export default function TaskRow({
       <button
         onClick={() => onToggleFlag(task)}
         aria-label={task.flagged ? 'Remove flag' : 'Flag task'}
-        className={`shrink-0 text-sm ${task.flagged ? 'text-rdp-amber' : 'text-rdp-line opacity-0 group-hover:opacity-100'}`}
+        className={`shrink-0 text-sm ${
+          task.flagged
+            ? 'text-rdp-amber'
+            : 'pointer-events-none text-rdp-line opacity-0 group-hover:pointer-events-auto group-hover:opacity-100'
+        }`}
       >
         ★
       </button>
       <button
-        onClick={() => onDelete(task)}
+        onClick={() => {
+          if (window.confirm(`Delete "${task.title}"? This can't be undone.`)) onDelete(task)
+        }}
         aria-label="Delete task"
-        className="shrink-0 text-xs text-rdp-text-faint opacity-0 hover:text-rdp-risk group-hover:opacity-100"
+        className="pointer-events-none shrink-0 text-xs text-rdp-text-faint opacity-0 hover:text-rdp-risk group-hover:pointer-events-auto group-hover:opacity-100"
       >
         Delete
       </button>

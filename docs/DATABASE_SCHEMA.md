@@ -233,9 +233,12 @@ match),
 to `life_pillars`),
 `0008_consolidate_to_three_pillars.sql` (renames spirit→soul, drops
 life/work/intelligence as taggable pillars, seeds Gratitude/Service
-habits). All eight have been run against a real, connected Supabase
-project (GitHub → Netlify Functions → Supabase all confirmed live).
-Current taxonomy: `body | mind | soul` only.
+habits),
+`0009_sports_preferences.sql` (configurable favorite teams),
+`0010_food_log.sql` (calorie counter: `food_logs` table +
+`daily_calorie_goal` on `user_preferences`). All ten have been run
+against a real, connected Supabase project (GitHub → Netlify Functions →
+Supabase all confirmed live). Current taxonomy: `body | mind | soul` only.
 
 ### `exercise_logs` — **implemented** in `0006_pillar_rebuild.sql`
 Body pillar's exercise tracking. `category`

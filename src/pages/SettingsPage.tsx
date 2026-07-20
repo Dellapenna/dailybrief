@@ -10,6 +10,7 @@ type Preferences = {
   location_lng: number | null
   weather_units: 'imperial' | 'metric'
   zodiac_sign: string | null
+  daily_calorie_goal: number | null
 }
 
 const zodiacSigns = [
@@ -144,6 +145,53 @@ function HoroscopeSettings() {
 }
 
 type SportsTeam = { id: string; team_name: string }
+
+function CalorieSettings() {
+  const [goal, setGoal] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    api
+      .get<{ preferences: Preferences }>('/preferences')
+      .then((res) => setGoal(res.preferences.daily_calorie_goal?.toString() ?? ''))
+      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load preferences'))
+  }, [])
+
+  async function save() {
+    setSaving(true)
+    setError(null)
+    try {
+      await api.patch('/preferences', { dailyCalorieGoal: goal ? Number(goal) : null })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <Disclosure title="Daily Calorie Goal" subtitle="Used by the Calorie Counter on Body">
+      {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
+      <div className="flex gap-2">
+        <input
+          type="number"
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+          placeholder="e.g. 2200"
+          className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+        />
+        <button
+          onClick={save}
+          disabled={saving}
+          className="rounded-lg bg-rdp-signal px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
+        >
+          {saving ? 'Saving…' : 'Save'}
+        </button>
+      </div>
+    </Disclosure>
+  )
+}
 
 function SportsSettings() {
   const [teams, setTeams] = useState<SportsTeam[]>([])
@@ -300,6 +348,7 @@ export default function SettingsPage() {
       <h1 className="font-display text-2xl font-semibold tracking-tight text-rdp-text">Settings</h1>
       <div className="mt-5 space-y-3">
         <LocationSettings />
+        <CalorieSettings />
         <HoroscopeSettings />
         <SportsSettings />
         <CalendarSettings />

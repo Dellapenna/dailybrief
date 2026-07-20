@@ -93,7 +93,12 @@ export default function GoalRow({
           </div>
         </div>
 
-        <button onClick={onDelete} className="text-xs text-rdp-text-faint hover:text-rdp-risk">
+        <button
+          onClick={() => {
+            if (window.confirm(`Delete "${goal.title}"? This can't be undone.`)) onDelete()
+          }}
+          className="text-xs text-rdp-text-faint hover:text-rdp-risk"
+        >
           Delete goal
         </button>
       </div>

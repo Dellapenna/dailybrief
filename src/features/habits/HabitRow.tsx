@@ -31,9 +31,12 @@ export default function HabitRow({
         </p>
       </div>
       <button
-        onClick={() => onDelete(habit)}
+        onClick={() => {
+          if (window.confirm(`Delete "${habit.name}"? This deletes its whole history and can't be undone.`))
+            onDelete(habit)
+        }}
         aria-label="Delete habit"
-        className="shrink-0 text-xs text-rdp-text-faint opacity-0 hover:text-rdp-risk group-hover:opacity-100"
+        className="pointer-events-none shrink-0 text-xs text-rdp-text-faint opacity-0 hover:text-rdp-risk group-hover:pointer-events-auto group-hover:opacity-100"
       >
         Delete
       </button>

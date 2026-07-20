@@ -1,21 +1,26 @@
 import type { Config, Context } from '@netlify/functions'
 import { getSupabaseAdmin } from './shared/supabaseAdmin'
 import { getPrimaryUserId } from './shared/primaryUser'
+import { todayInTimezone } from './shared/userTimezone'
 import { json, errorResponse } from './shared/http'
 
 /**
  * /api/evening-review   GET (today's review, or nulls), PATCH (upsert today's)
+ * "Today" is computed in the user's stored timezone, not server UTC.
  */
-
-function todayStr() {
-  return new Date().toISOString().slice(0, 10)
-}
 
 export default async (req: Request, _context: Context) => {
   try {
     const supabase = getSupabaseAdmin()
     const userId = getPrimaryUserId()
-    const today = todayStr()
+
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('timezone')
+      .eq('id', userId)
+      .single()
+    if (profileError) return errorResponse(profileError, 500)
+    const today = todayInTimezone(profile?.timezone || 'America/New_York')
 
     if (req.method === 'GET') {
       const { data, error } = await supabase
