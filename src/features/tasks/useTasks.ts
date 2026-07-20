@@ -82,5 +82,32 @@ export function useTasks(view: TaskView, pillar?: PillarId) {
     }
   }
 
-  return { tasks, loading, error, createTask, updateTask, deleteTask, reload }
+  async function moveTask(id: string, direction: 'up' | 'down') {
+    const index = tasks.findIndex((t) => t.id === id)
+    if (index === -1) return
+    const swapIndex = direction === 'up' ? index - 1 : index + 1
+    if (swapIndex < 0 || swapIndex >= tasks.length) return
+
+    const reordered = [...tasks]
+    ;[reordered[index], reordered[swapIndex]] = [reordered[swapIndex], reordered[index]]
+
+    // Renumber the whole visible list sequentially — simpler and more
+    // robust than swapping raw sort_order values, which may all still
+    // be the same default (0) if nothing's been reordered before.
+    const renumbered = reordered.map((t, i) => ({ ...t, sort_order: i }))
+    setTasks(renumbered)
+
+    try {
+      const changed = renumbered.filter((t) => {
+        const original = tasks.find((orig) => orig.id === t.id)
+        return !original || original.sort_order !== t.sort_order
+      })
+      await Promise.all(changed.map((t) => api.patch(`/tasks/${t.id}`, { sortOrder: t.sort_order })))
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to reorder tasks')
+      reload()
+    }
+  }
+
+  return { tasks, loading, error, createTask, updateTask, deleteTask, moveTask, reload }
 }

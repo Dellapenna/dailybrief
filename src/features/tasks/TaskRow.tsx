@@ -13,11 +13,15 @@ export default function TaskRow({
   onToggleComplete,
   onUpdate,
   onDelete,
+  onMoveUp,
+  onMoveDown,
 }: {
   task: Task
   onToggleComplete: (task: Task) => void
   onUpdate: (updates: Partial<Task>) => void
   onDelete: (task: Task) => void
+  onMoveUp: (task: Task) => void
+  onMoveDown: (task: Task) => void
 }) {
   const [open, setOpen] = useState(false)
   const [notes, setNotes] = useState(task.notes ?? '')
@@ -66,6 +70,24 @@ export default function TaskRow({
         </button>
 
         {task.flagged && <span className="shrink-0 text-sm text-rdp-amber">★</span>}
+
+        <div className="flex shrink-0 flex-col">
+          <button
+            onClick={() => onMoveUp(task)}
+            aria-label="Move up"
+            className="px-1 text-xs leading-none text-rdp-text-faint hover:text-rdp-signal"
+          >
+            ▲
+          </button>
+          <button
+            onClick={() => onMoveDown(task)}
+            aria-label="Move down"
+            className="px-1 text-xs leading-none text-rdp-text-faint hover:text-rdp-signal"
+          >
+            ▼
+          </button>
+        </div>
+
         <span className={`shrink-0 font-mono text-xs text-rdp-text-faint transition-transform ${open ? 'rotate-180' : ''}`}>
           ▾
         </span>

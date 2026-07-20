@@ -13,7 +13,7 @@ export default function TaskList({
   pillar?: PillarId
   quickAddPlaceholder?: string
 }) {
-  const { tasks, loading, error, createTask, updateTask, deleteTask } = useTasks(view, pillar)
+  const { tasks, loading, error, createTask, updateTask, deleteTask, moveTask } = useTasks(view, pillar)
 
   function toggleComplete(task: Task) {
     updateTask(task.id, { status: task.status === 'completed' ? 'inbox' : 'completed' })
@@ -38,6 +38,8 @@ export default function TaskList({
               onToggleComplete={toggleComplete}
               onUpdate={(updates) => updateTask(task.id, updates)}
               onDelete={(t) => deleteTask(t.id)}
+              onMoveUp={(t) => moveTask(t.id, 'up')}
+              onMoveDown={(t) => moveTask(t.id, 'down')}
             />
           ))
         )}
