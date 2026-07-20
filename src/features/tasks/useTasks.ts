@@ -43,6 +43,7 @@ export function useTasks(view: TaskView, pillar?: PillarId) {
       completed_at: null,
       source: 'manual',
       sort_order: 0,
+      recurrence: 'none',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
       ...defaults,

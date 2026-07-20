@@ -98,7 +98,7 @@ export default function ExerciseLogCard() {
                 onClick={() => {
                   if (window.confirm(`Delete "${log.activity}"? This can't be undone.`)) deleteLog(log.id)
                 }}
-                className="pointer-events-none text-xs text-rdp-text-faint opacity-0 hover:text-rdp-risk group-hover:pointer-events-auto group-hover:opacity-100"
+                className="text-xs text-rdp-text-faint hover:text-rdp-risk"
               >
                 Delete
               </button>

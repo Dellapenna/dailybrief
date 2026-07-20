@@ -36,7 +36,7 @@ export default function HabitRow({
             onDelete(habit)
         }}
         aria-label="Delete habit"
-        className="pointer-events-none shrink-0 text-xs text-rdp-text-faint opacity-0 hover:text-rdp-risk group-hover:pointer-events-auto group-hover:opacity-100"
+        className="shrink-0 text-xs text-rdp-text-faint hover:text-rdp-risk"
       >
         Delete
       </button>

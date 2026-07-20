@@ -1,7 +1,7 @@
 import QuickAddBar from './QuickAddBar'
 import TaskRow from './TaskRow'
 import { useTasks, type TaskView } from './useTasks'
-import type { Task } from '@/types/task'
+import type { Task, TaskRecurrence } from '@/types/task'
 import type { PillarId } from '@/types/pillar'
 
 export default function TaskList({
@@ -23,6 +23,10 @@ export default function TaskList({
     updateTask(task.id, { flagged: !task.flagged })
   }
 
+  function changeRecurrence(task: Task, recurrence: TaskRecurrence) {
+    updateTask(task.id, { recurrence })
+  }
+
   return (
     <div>
       <QuickAddBar onAdd={(title) => createTask(title)} placeholder={quickAddPlaceholder} />
@@ -42,6 +46,7 @@ export default function TaskList({
               onToggleComplete={toggleComplete}
               onToggleFlag={toggleFlag}
               onDelete={(t) => deleteTask(t.id)}
+              onRecurrenceChange={changeRecurrence}
             />
           ))
         )}

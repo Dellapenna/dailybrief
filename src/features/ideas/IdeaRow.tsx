@@ -43,7 +43,7 @@ export default function IdeaRow({
           if (window.confirm(`Delete "${idea.title}"? This can't be undone.`)) onDelete(idea)
         }}
         aria-label="Delete idea"
-        className="pointer-events-none shrink-0 text-xs text-rdp-text-faint opacity-0 hover:text-rdp-risk group-hover:pointer-events-auto group-hover:opacity-100"
+        className="shrink-0 text-xs text-rdp-text-faint hover:text-rdp-risk"
       >
         Delete
       </button>

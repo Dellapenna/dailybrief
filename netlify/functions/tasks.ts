@@ -14,12 +14,25 @@ import { json, errorResponse } from './shared/http'
  * no Areas/tags/nested projects, just status + flagged + due_date. The
  * "Smart Today" view a client asks for via ?view=today is computed here,
  * not stored — it's "status = today" OR "due_date <= today" OR "flagged",
- * excluding completed. ?pillar=body|mind|spirit|life|work|intelligence
- * filters to that pillar's tasks — added for the pillar-based nav
- * rebuild; omitting it returns the global all-pillars view.
+ * excluding completed. ?pillar=body|mind|soul filters to that pillar's
+ * tasks; omitting it returns the global all-pillars view.
+ *
+ * Recurrence (none/daily/weekly/monthly, simple — not a full RRULE
+ * system): completing a recurring task doesn't mark it permanently done.
+ * Instead its due_date advances to the next occurrence and it stays
+ * active, while completed_at still records when it was last done (so
+ * "last done" history exists without needing habit-style entries).
  */
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+function nextOccurrence(baseDateStr: string, recurrence: string): string {
+  const d = new Date(baseDateStr + 'T00:00:00Z')
+  if (recurrence === 'daily') d.setUTCDate(d.getUTCDate() + 1)
+  else if (recurrence === 'weekly') d.setUTCDate(d.getUTCDate() + 7)
+  else if (recurrence === 'monthly') d.setUTCMonth(d.getUTCMonth() + 1)
+  return d.toISOString().slice(0, 10)
+}
 
 export default async (req: Request, _context: Context) => {
   const url = new URL(req.url)
@@ -100,6 +113,7 @@ export default async (req: Request, _context: Context) => {
           status: body.status ?? 'inbox',
           flagged: Boolean(body.flagged),
           due_date: body.dueDate ?? null,
+          recurrence: body.recurrence ?? 'none',
           source: body.source ?? 'manual',
         })
         .select()
@@ -112,14 +126,34 @@ export default async (req: Request, _context: Context) => {
     if (req.method === 'PATCH' && id) {
       const body = await req.json()
       const updates: Record<string, unknown> = {}
-      for (const key of ['title', 'notes', 'pillarId', 'project', 'status', 'flagged', 'dueDate', 'sortOrder'] as const) {
+      for (const key of [
+        'title', 'notes', 'pillarId', 'project', 'status', 'flagged', 'dueDate', 'sortOrder', 'recurrence',
+      ] as const) {
         if (key in body) {
           const column = key === 'pillarId' ? 'pillar_id' : key === 'dueDate' ? 'due_date' : key === 'sortOrder' ? 'sort_order' : key
           updates[column] = body[key]
         }
       }
+
       if (updates.status === 'completed') {
+        const { data: current, error: currentError } = await supabase
+          .from('tasks')
+          .select('recurrence, due_date, status')
+          .eq('id', id)
+          .eq('user_id', userId)
+          .single()
+        if (currentError) return errorResponse(currentError, 500)
+
         updates.completed_at = new Date().toISOString()
+
+        if (current?.recurrence && current.recurrence !== 'none') {
+          // Recurring: don't mark permanently done — advance to the next
+          // occurrence and keep it active. completed_at above still
+          // records this completion as "last done."
+          const baseDate = current.due_date ?? new Date().toISOString().slice(0, 10)
+          updates.due_date = nextOccurrence(baseDate, current.recurrence)
+          updates.status = current.status === 'completed' ? 'today' : current.status
+        }
       }
 
       const { data, error } = await supabase
@@ -149,3 +183,4 @@ export default async (req: Request, _context: Context) => {
 export const config: Config = {
   path: ['/api/tasks', '/api/tasks/:id', '/api/tasks/summary'],
 }
+

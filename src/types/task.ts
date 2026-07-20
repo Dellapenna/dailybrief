@@ -1,4 +1,5 @@
 export type TaskStatus = 'inbox' | 'today' | 'this_week' | 'someday' | 'waiting' | 'completed'
+export type TaskRecurrence = 'none' | 'daily' | 'weekly' | 'monthly'
 
 export type Task = {
   id: string
@@ -13,6 +14,7 @@ export type Task = {
   completed_at: string | null
   source: string
   sort_order: number
+  recurrence: TaskRecurrence
   created_at: string
   updated_at: string
 }
