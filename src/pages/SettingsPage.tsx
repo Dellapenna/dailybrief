@@ -193,6 +193,188 @@ function CalorieSettings() {
   )
 }
 
+type StockPref = { id: string; symbol: string; label: string | null }
+
+function StockSettings() {
+  const [stocks, setStocks] = useState<StockPref[]>([])
+  const [newSymbol, setNewSymbol] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  function load() {
+    api
+      .get<{ stocks: StockPref[] }>('/stock-preferences')
+      .then((res) => setStocks(res.stocks))
+      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load stocks'))
+  }
+
+  useEffect(load, [])
+
+  async function addStock(e: FormEvent) {
+    e.preventDefault()
+    const symbol = newSymbol.trim()
+    if (!symbol) return
+    setSaving(true)
+    setError(null)
+    try {
+      await api.post('/stock-preferences', { symbol })
+      setNewSymbol('')
+      load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add symbol')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function removeStock(id: string) {
+    setStocks((prev) => prev.filter((s) => s.id !== id))
+    try {
+      await api.delete(`/stock-preferences/${id}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to remove symbol')
+      load()
+    }
+  }
+
+  return (
+    <Disclosure title="Stock Watchlist" subtitle="Drives Stock Market on Daily Dashboard">
+      {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
+
+      <form onSubmit={addStock} className="flex gap-2">
+        <input
+          type="text"
+          value={newSymbol}
+          onChange={(e) => setNewSymbol(e.target.value)}
+          placeholder="e.g. AAPL"
+          className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+        />
+        <button
+          type="submit"
+          disabled={saving}
+          className="rounded-lg bg-rdp-signal px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
+        >
+          Add
+        </button>
+      </form>
+      <p className="mt-1.5 text-xs text-rdp-text-faint">Use the ticker symbol (e.g. "AAPL", not "Apple").</p>
+
+      <div className="mt-3 space-y-2">
+        {stocks.map((s) => (
+          <div key={s.id} className="flex items-center justify-between text-sm">
+            <span className="text-rdp-text">{s.label || s.symbol}</span>
+            <button onClick={() => removeStock(s.id)} className="text-xs text-rdp-text-faint hover:text-rdp-risk">
+              Remove
+            </button>
+          </div>
+        ))}
+        {stocks.length === 0 && <p className="text-sm text-rdp-text-faint">No symbols in your watchlist.</p>}
+      </div>
+    </Disclosure>
+  )
+}
+
+type CryptoPref = { id: string; coin_id: string; label: string }
+type CryptoSearchResult = { id: string; name: string; symbol: string }
+
+function CryptoSettings() {
+  const [coins, setCoins] = useState<CryptoPref[]>([])
+  const [query, setQuery] = useState('')
+  const [results, setResults] = useState<CryptoSearchResult[]>([])
+  const [searching, setSearching] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  function load() {
+    api
+      .get<{ coins: CryptoPref[] }>('/crypto-preferences')
+      .then((res) => setCoins(res.coins))
+      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load coins'))
+  }
+
+  useEffect(load, [])
+
+  useEffect(() => {
+    if (!query.trim()) {
+      setResults([])
+      return
+    }
+    const id = setTimeout(() => {
+      setSearching(true)
+      api
+        .get<{ results: CryptoSearchResult[] }>(`/crypto-search?q=${encodeURIComponent(query)}`)
+        .then((res) => setResults(res.results))
+        .catch((err) => setError(err instanceof Error ? err.message : 'Search failed'))
+        .finally(() => setSearching(false))
+    }, 400)
+    return () => clearTimeout(id)
+  }, [query])
+
+  async function addCoin(result: CryptoSearchResult) {
+    setError(null)
+    try {
+      await api.post('/crypto-preferences', { coinId: result.id, label: result.name })
+      setQuery('')
+      setResults([])
+      load()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add coin')
+    }
+  }
+
+  async function removeCoin(id: string) {
+    setCoins((prev) => prev.filter((c) => c.id !== id))
+    try {
+      await api.delete(`/crypto-preferences/${id}`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to remove coin')
+      load()
+    }
+  }
+
+  return (
+    <Disclosure title="Crypto Watchlist" subtitle="Drives Crypto Market on Daily Dashboard">
+      {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
+
+      <input
+        type="text"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search a coin (e.g. dogecoin)"
+        className="w-full rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+      />
+      {searching && <p className="mt-1 text-xs text-rdp-text-faint">Searching…</p>}
+      {results.length > 0 && (
+        <div className="mt-2 space-y-1">
+          {results.map((r) => (
+            <button
+              key={r.id}
+              onClick={() => addCoin(r)}
+              className="flex w-full items-center justify-between rounded-lg px-2 py-1.5 text-left text-sm text-rdp-text hover:bg-rdp-void"
+            >
+              <span>
+                {r.name} <span className="text-rdp-text-faint">({r.symbol})</span>
+              </span>
+              <span className="text-xs text-rdp-signal">Add</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-3 space-y-2">
+        {coins.map((c) => (
+          <div key={c.id} className="flex items-center justify-between text-sm">
+            <span className="text-rdp-text">{c.label}</span>
+            <button onClick={() => removeCoin(c.id)} className="text-xs text-rdp-text-faint hover:text-rdp-risk">
+              Remove
+            </button>
+          </div>
+        ))}
+        {coins.length === 0 && <p className="text-sm text-rdp-text-faint">No coins in your watchlist.</p>}
+      </div>
+    </Disclosure>
+  )
+}
+
 function SportsSettings() {
   const [teams, setTeams] = useState<SportsTeam[]>([])
   const [newTeam, setNewTeam] = useState('')
@@ -381,6 +563,8 @@ export default function SettingsPage() {
         <LocationSettings />
         <CalorieSettings />
         <HoroscopeSettings />
+        <StockSettings />
+        <CryptoSettings />
         <SportsSettings />
         <CalendarSettings />
       </div>

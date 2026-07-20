@@ -1,4 +1,6 @@
 import type { Config, Context } from '@netlify/functions'
+import { getSupabaseAdmin } from './shared/supabaseAdmin'
+import { getPrimaryUserId } from './shared/primaryUser'
 import { requireEnv } from './shared/env'
 import { json, errorResponse } from './shared/http'
 
@@ -9,19 +11,17 @@ import { json, errorResponse } from './shared/http'
  * needed for the free key). Financial data is never fabricated, per the
  * brief — this only ever returns what the provider reports.
  *
- * v1 assumption: hardcoded watchlist rather than user-configurable
- * symbols (same pattern as sports.ts's hardcoded favorite teams).
- * Indexes are tracked via their most common ETF proxies since free-tier
- * market data providers generally don't expose raw index values —
- * DIA/SPY/QQQ/IWM track the Dow/S&P 500/Nasdaq 100/Russell 2000 closely
- * enough for a personal dashboard, though they are technically ETF
- * prices, not the index values themselves.
+ * Watchlist now comes from stock_preferences (editable in Settings)
+ * instead of being hardcoded — falls back to the original DIA/SPY/QQQ/
+ * IWM if the table is somehow empty. Indexes are tracked via their most
+ * common ETF proxies since free-tier market data providers generally
+ * don't expose raw index values.
  *
  * Informational only — never individualized investment advice, per the
  * brief's explicit instruction on market content.
  */
 
-const WATCHLIST: { symbol: string; label: string }[] = [
+const FALLBACK_WATCHLIST: { symbol: string; label: string }[] = [
   { symbol: 'DIA', label: 'Dow Jones (DIA)' },
   { symbol: 'SPY', label: 'S&P 500 (SPY)' },
   { symbol: 'QQQ', label: 'Nasdaq 100 (QQQ)' },
@@ -59,8 +59,21 @@ export default async (_req: Request, _context: Context) => {
 
     const apiKey = requireEnv('MARKET_DATA_API_KEY')
 
+    const supabase = getSupabaseAdmin()
+    const userId = getPrimaryUserId()
+    const { data: prefs, error: prefsError } = await supabase
+      .from('stock_preferences')
+      .select('symbol, label')
+      .eq('user_id', userId)
+    if (prefsError) return errorResponse(prefsError, 500)
+
+    const watchlist =
+      prefs && prefs.length > 0
+        ? prefs.map((p) => ({ symbol: p.symbol, label: p.label || p.symbol }))
+        : FALLBACK_WATCHLIST
+
     const results = await Promise.allSettled(
-      WATCHLIST.map(async ({ symbol, label }) => {
+      watchlist.map(async ({ symbol, label }) => {
         let res: Response
         try {
           res = await fetchWithTimeout(
