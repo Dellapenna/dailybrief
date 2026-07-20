@@ -2,13 +2,22 @@ import { useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 
 type Headline = { title: string; url: string; source: string; publishedAt: string | null }
-type NewsResponse = { tech: Headline[]; general: Headline[]; errors?: string[] }
+type NewsResponse = { tech: Headline[]; general: Headline[]; beverage: Headline[]; weird: Headline[]; errors?: string[] }
+
+const CATEGORIES: { key: keyof Omit<NewsResponse, 'errors'>; label: string }[] = [
+  { key: 'tech', label: 'AI & Technology' },
+  { key: 'general', label: 'General' },
+  { key: 'beverage', label: 'Beverage' },
+  { key: 'weird', label: 'Weird News' },
+]
 
 /**
- * Real headlines from free sources (Hacker News + NPR) — see
- * netlify/functions/news.ts. Never AI-generated or invented, unlike
- * HoroscopeCard — news is one of the categories the brief explicitly
- * requires to be evidence-based.
+ * Real headlines from free sources — Hacker News + NPR for the original
+ * two categories, Google News RSS search for Beverage and Weird News
+ * (any keyword works with that source, no key needed). See
+ * netlify/functions/news.ts. Never AI-generated or invented — news is
+ * one of the categories the brief explicitly requires to be
+ * evidence-based.
  */
 export default function NewsCard() {
   const [news, setNews] = useState<NewsResponse | null>(null)
@@ -34,42 +43,26 @@ export default function NewsCard() {
 
       {news && (
         <div className="mt-3 grid gap-5 sm:grid-cols-2">
-          <div>
-            <p className="text-xs font-medium text-rdp-amber">AI & Technology</p>
-            <ul className="mt-2 space-y-2">
-              {news.tech.length === 0 && <li className="text-sm text-rdp-text-faint">Unavailable right now.</li>}
-              {news.tech.map((h) => (
-                <li key={h.url}>
-                  <a
-                    href={h.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm text-rdp-text hover:text-rdp-signal"
-                  >
-                    {h.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="text-xs font-medium text-rdp-amber">General</p>
-            <ul className="mt-2 space-y-2">
-              {news.general.length === 0 && <li className="text-sm text-rdp-text-faint">Unavailable right now.</li>}
-              {news.general.map((h) => (
-                <li key={h.url}>
-                  <a
-                    href={h.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-sm text-rdp-text hover:text-rdp-signal"
-                  >
-                    {h.title}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {CATEGORIES.map(({ key, label }) => (
+            <div key={key}>
+              <p className="text-xs font-medium text-rdp-amber">{label}</p>
+              <ul className="mt-2 space-y-2">
+                {news[key].length === 0 && <li className="text-sm text-rdp-text-faint">Unavailable right now.</li>}
+                {news[key].map((h) => (
+                  <li key={h.url}>
+                    <a
+                      href={h.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm text-rdp-text hover:text-rdp-signal"
+                    >
+                      {h.title}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       )}
     </div>

@@ -20,7 +20,7 @@ import { json, errorResponse } from './shared/http'
 
 type Headline = { title: string; url: string; source: string; publishedAt: string | null }
 
-let cache: { at: number; tech: Headline[]; general: Headline[] } | null = null
+let cache: { at: number; tech: Headline[]; general: Headline[]; beverage: Headline[]; weird: Headline[] } | null = null
 const CACHE_MS = 15 * 60 * 1000
 
 async function fetchTech(): Promise<Headline[]> {
@@ -53,26 +53,68 @@ async function fetchGeneral(): Promise<Headline[]> {
   }))
 }
 
+/**
+ * Google News' free RSS search — no key, works for any keyword query.
+ * Titles arrive as "Headline - Source Name"; split that out so `source`
+ * reflects the actual publisher rather than always saying "Google News".
+ */
+async function fetchGoogleNewsQuery(query: string): Promise<Headline[]> {
+  const res = await fetch(
+    `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-US&gl=US&ceid=US:en`,
+  )
+  if (!res.ok) throw new Error(`Google News fetch failed for "${query}" (${res.status})`)
+  const xml = await res.text()
+  const parser = new XMLParser()
+  const parsed = parser.parse(xml)
+  const items = parsed?.rss?.channel?.item ?? []
+  const list = Array.isArray(items) ? items : [items]
+  return list.slice(0, 6).map((item: { title: string; link: string; pubDate?: string; source?: { '#text'?: string } }) => {
+    const dashIndex = item.title?.lastIndexOf(' - ') ?? -1
+    const title = dashIndex > -1 ? item.title.slice(0, dashIndex) : item.title
+    const source = item.source?.['#text'] || (dashIndex > -1 ? item.title.slice(dashIndex + 3) : 'Google News')
+    return { title, url: item.link, source, publishedAt: item.pubDate ?? null }
+  })
+}
+
+function fetchBeverage(): Promise<Headline[]> {
+  return fetchGoogleNewsQuery('beverage industry OR craft beer OR soft drinks')
+}
+
+function fetchWeird(): Promise<Headline[]> {
+  return fetchGoogleNewsQuery('weird news OR odd news')
+}
+
 export default async (_req: Request, _context: Context) => {
   try {
     if (cache && Date.now() - cache.at < CACHE_MS) {
-      return json({ tech: cache.tech, general: cache.general, cached: true })
+      return json({ tech: cache.tech, general: cache.general, beverage: cache.beverage, weird: cache.weird, cached: true })
     }
 
-    const [techResult, generalResult] = await Promise.allSettled([fetchTech(), fetchGeneral()])
+    const [techResult, generalResult, beverageResult, weirdResult] = await Promise.allSettled([
+      fetchTech(),
+      fetchGeneral(),
+      fetchBeverage(),
+      fetchWeird(),
+    ])
 
     const tech = techResult.status === 'fulfilled' ? techResult.value : []
     const general = generalResult.status === 'fulfilled' ? generalResult.value : []
+    const beverage = beverageResult.status === 'fulfilled' ? beverageResult.value : []
+    const weird = weirdResult.status === 'fulfilled' ? weirdResult.value : []
 
-    cache = { at: Date.now(), tech, general }
+    cache = { at: Date.now(), tech, general, beverage, weird }
 
     return json({
       tech,
       general,
+      beverage,
+      weird,
       cached: false,
       errors: [
         techResult.status === 'rejected' ? `Tech: ${techResult.reason}` : null,
         generalResult.status === 'rejected' ? `General: ${generalResult.reason}` : null,
+        beverageResult.status === 'rejected' ? `Beverage: ${beverageResult.reason}` : null,
+        weirdResult.status === 'rejected' ? `Weird: ${weirdResult.reason}` : null,
       ].filter(Boolean),
     })
   } catch (err) {
