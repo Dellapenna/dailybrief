@@ -1,8 +1,9 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
-import { Dumbbell, Utensils, Activity, ListTodo, Target } from 'lucide-react'
+import { Dumbbell, Utensils, TrendingUp, Activity, ListTodo, Target } from 'lucide-react'
 import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
 import CalorieCounterCard from '@/features/calories/CalorieCounterCard'
+import WeeklyNutritionCard from '@/features/calories/WeeklyNutritionCard'
 import HealthTrends from '@/features/exercise/HealthTrends'
 import TaskList from '@/features/tasks/TaskList'
 import PillarGoals from '@/features/goals/PillarGoals'
@@ -26,6 +27,10 @@ export default function BodyPage() {
 
         <Disclosure title="Calorie Counter" subtitle="Fuel — search or log manually" icon={Utensils} defaultOpen>
           <CalorieCounterCard />
+        </Disclosure>
+
+        <Disclosure title="Weekly Nutrition Summary" subtitle="Real stats + an honest AI take" icon={TrendingUp} defaultOpen>
+          <WeeklyNutritionCard />
         </Disclosure>
 
         <Disclosure title="Health Trends" subtitle="Sleep, energy, weight over time" icon={Activity}>
