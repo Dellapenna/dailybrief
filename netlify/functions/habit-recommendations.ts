@@ -79,11 +79,24 @@ export default async (_req: Request, _context: Context) => {
     const aiData = await aiRes.json()
     const text = aiData?.content?.find((block: { type: string }) => block.type === 'text')?.text ?? '[]'
 
+    // Bug fix: Claude sometimes wraps JSON in ```json fences or adds a
+    // stray sentence before/after despite being told not to — a common
+    // LLM quirk, not something to just trust blindly. Strip fences and
+    // extract the [...] span before parsing, rather than requiring the
+    // model to produce byte-perfect JSON every time.
+    let cleaned = text.trim()
+    cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '')
+    const start = cleaned.indexOf('[')
+    const end = cleaned.lastIndexOf(']')
+    if (start !== -1 && end !== -1 && end > start) {
+      cleaned = cleaned.slice(start, end + 1)
+    }
+
     let recommendations: Recommendation[]
     try {
-      recommendations = JSON.parse(text)
+      recommendations = JSON.parse(cleaned)
     } catch {
-      return json({ error: 'Could not parse AI response' }, 502)
+      return json({ error: 'Could not parse AI response — try again in a moment.' }, 502)
     }
 
     cache = { at: Date.now(), recommendations }

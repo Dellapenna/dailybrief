@@ -18,7 +18,9 @@ export default function HabitRecommendationsCard() {
   const [loading, setLoading] = useState(true)
   const [added, setAdded] = useState<Set<number>>(new Set())
 
-  useEffect(() => {
+  function load() {
+    setLoading(true)
+    setError(null)
     api
       .get<{ recommendations: Recommendation[]; note?: string }>('/habit-recommendations')
       .then((res) => {
@@ -27,7 +29,9 @@ export default function HabitRecommendationsCard() {
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load'))
       .finally(() => setLoading(false))
-  }, [])
+  }
+
+  useEffect(load, [])
 
   async function addRecommendation(rec: Recommendation, index: number) {
     try {
@@ -41,7 +45,14 @@ export default function HabitRecommendationsCard() {
   return (
     <div>
       {loading && <Skeleton lines={3} />}
-      {error && <p className="text-sm text-rdp-risk">{error}</p>}
+      {error && (
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-sm text-rdp-risk">{error}</p>
+          <button onClick={load} className="shrink-0 rounded-lg border border-rdp-line px-3 py-1 text-xs text-rdp-text hover:bg-rdp-panel">
+            Try again
+          </button>
+        </div>
+      )}
       {note && <p className="text-sm text-rdp-text-dim">{note}</p>}
 
       {recs && recs.length > 0 && (
