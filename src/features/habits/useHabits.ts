@@ -59,6 +59,20 @@ export function useHabits(pillar?: PillarId) {
     }
   }
 
+  async function updateHabit(id: string, updates: Partial<Pick<Habit, 'name' | 'pillar_id'>>) {
+    setHabits((prev) => prev.map((h) => (h.id === id ? { ...h, ...updates } : h)))
+    try {
+      await api.patch(`/habits/${id}`, {
+        ...(updates.name !== undefined ? { name: updates.name } : {}),
+        ...(updates.pillar_id !== undefined ? { pillarId: updates.pillar_id } : {}),
+      })
+      reload()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update habit')
+      reload()
+    }
+  }
+
   async function deleteHabit(id: string) {
     setHabits((prev) => prev.filter((h) => h.id !== id))
     try {
@@ -69,5 +83,5 @@ export function useHabits(pillar?: PillarId) {
     }
   }
 
-  return { habits, loading, error, createHabit, toggleToday, deleteHabit }
+  return { habits, loading, error, createHabit, toggleToday, updateHabit, deleteHabit }
 }

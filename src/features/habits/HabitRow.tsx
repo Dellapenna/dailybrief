@@ -1,19 +1,28 @@
 import type { Habit } from '@/types/habit'
+import { PILLAR_LABELS, type PillarId } from '@/types/pillar'
 
 /**
  * Streak shown, not emphasized — a single small number next to the name,
  * not a giant counter. Per the brief: missing one day shouldn't feel like
  * losing everything, so this deliberately doesn't do "streak broken!"
  * messaging or fire emoji or anything gamified.
+ *
+ * Pillar selector shown when `showPillarSelector` — used on Mission
+ * Control's consolidated all-habits view so a habit's pillar tag can be
+ * set/changed without visiting that pillar's own page.
  */
 export default function HabitRow({
   habit,
   onToggle,
   onDelete,
+  onPillarChange,
+  showPillarSelector = false,
 }: {
   habit: Habit
   onToggle: (habit: Habit) => void
   onDelete: (habit: Habit) => void
+  onPillarChange?: (habit: Habit, pillarId: PillarId | null) => void
+  showPillarSelector?: boolean
 }) {
   return (
     <div className="group flex items-center gap-3 border-b border-rdp-line px-1 py-3 last:border-b-0">
@@ -30,6 +39,21 @@ export default function HabitRow({
           streak {habit.currentStreak}d · best {habit.longestStreak}d · {habit.successRate30d}% / 30d
         </p>
       </div>
+      {showPillarSelector && onPillarChange && (
+        <select
+          value={habit.pillar_id ?? ''}
+          onChange={(e) => onPillarChange(habit, (e.target.value || null) as PillarId | null)}
+          aria-label="Pillar"
+          className="shrink-0 rounded border-none bg-transparent text-xs text-rdp-text-dim"
+        >
+          <option value="">No pillar</option>
+          {(Object.keys(PILLAR_LABELS) as PillarId[]).map((p) => (
+            <option key={p} value={p}>
+              {PILLAR_LABELS[p]}
+            </option>
+          ))}
+        </select>
+      )}
       <button
         onClick={() => {
           if (window.confirm(`Delete "${habit.name}"? This deletes its whole history and can't be undone.`))

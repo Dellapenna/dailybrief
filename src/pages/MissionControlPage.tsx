@@ -1,7 +1,7 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import Skeleton from '@/components/Skeleton'
-import { Sunrise, ListTodo, Target, FileBarChart, TrendingUp } from 'lucide-react'
+import { Sunrise, ListTodo, Target, Repeat, Lightbulb, FileBarChart, TrendingUp } from 'lucide-react'
 import ExecutiveSummaryCard from '@/features/executiveSummary/ExecutiveSummaryCard'
 import MissionProgress from '@/features/dashboard/MissionProgress'
 import PillarTaskSummary from '@/features/pillarSummary/PillarTaskSummary'
@@ -10,6 +10,10 @@ import TaskList from '@/features/tasks/TaskList'
 import QuickAddBar from '@/features/tasks/QuickAddBar'
 import GoalRow from '@/features/goals/GoalRow'
 import { useGoals } from '@/features/goals/useGoals'
+import HabitRow from '@/features/habits/HabitRow'
+import { useHabits } from '@/features/habits/useHabits'
+import HabitRecommendationsCard from '@/features/habits/HabitRecommendationsCard'
+import type { PillarId } from '@/types/pillar'
 
 function AllGoals() {
   const { goals, loading, error, createGoal, updateGoal, deleteGoal } = useGoals()
@@ -38,11 +42,49 @@ function AllGoals() {
 }
 
 /**
+ * Consolidated all-pillars habit list — habits used to live scattered
+ * under each pillar page's own "Habits" Disclosure. Consolidated here on
+ * request, with a pillar selector per row so each habit can still be
+ * tagged/organized by pillar without needing a separate page per pillar.
+ * (Soul/Mind's special habits — Prayer, Gratitude, Service, Breathing
+ * Meditation — still also get their own dedicated card UI on those
+ * pages for the guided prompt/timer; they'll also appear here as
+ * ordinary rows, which is expected, not a bug.)
+ */
+function AllHabits() {
+  const { habits, loading, error, createHabit, toggleToday, updateHabit, deleteHabit } = useHabits()
+  return (
+    <div>
+      <QuickAddBar onAdd={createHabit} placeholder="Add a habit…" />
+      {error && <p className="mt-3 text-sm text-rdp-risk">{error}</p>}
+      <div className="mt-3 rounded-xl border border-rdp-line bg-rdp-panel px-3">
+        {loading ? (
+          <Skeleton lines={3} />
+        ) : habits.length === 0 ? (
+          <p className="py-4 text-center text-sm text-rdp-text-faint">No habits yet — add one above.</p>
+        ) : (
+          habits.map((habit) => (
+            <HabitRow
+              key={habit.id}
+              habit={habit}
+              onToggle={toggleToday}
+              onDelete={(h) => deleteHabit(h.id)}
+              onPillarChange={(h, pillarId) => updateHabit(h.id, { pillar_id: pillarId as PillarId | null })}
+              showPillarSelector
+            />
+          ))
+        )}
+      </div>
+    </div>
+  )
+}
+
+/**
  * Mission Control — "Plan. Execute. Win. You are the captain." Leans
  * toward inputs (things you create/enter) per the organization pass:
- * Check-in, Plan (tasks), Goals, plus Executive Summary/Analyze which
- * review those inputs. Daily Dashboard is the reading/informational
- * counterpart — see that page.
+ * Check-in, Plan (tasks), Goals, Habits, plus Executive Summary/Analyze
+ * which review those inputs. Daily Dashboard is the reading/
+ * informational counterpart — see that page.
  */
 export default function MissionControlPage() {
   return (
@@ -62,6 +104,14 @@ export default function MissionControlPage() {
 
         <Disclosure title="Goals" subtitle="All pillars" icon={Target} defaultOpen>
           <AllGoals />
+        </Disclosure>
+
+        <Disclosure title="Habits" subtitle="All pillars — tag each one below" icon={Repeat} defaultOpen>
+          <AllHabits />
+        </Disclosure>
+
+        <Disclosure title="Habit Ideas" subtitle="AI suggestions grounded in your active goals" icon={Lightbulb}>
+          <HabitRecommendationsCard />
         </Disclosure>
 
         <Disclosure title="Executive Summary" icon={FileBarChart}>

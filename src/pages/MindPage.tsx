@@ -1,13 +1,12 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import TabbedCard from '@/components/TabbedCard'
-import { Languages, Wind, MessageCircle, Lightbulb, Repeat, ListTodo, Target } from 'lucide-react'
+import { Languages, Wind, MessageCircle, Lightbulb, ListTodo, Target } from 'lucide-react'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
 import CommunicationTipCard from '@/features/communication/CommunicationTipCard'
 import BreathingTimer from '@/features/mind/BreathingTimer'
 import CommunicationJournalCard from '@/features/communication/CommunicationJournalCard'
 import IdeaVaultSection from '@/features/ideas/IdeaVaultSection'
-import PillarHabits from '@/features/habits/PillarHabits'
 import TaskList from '@/features/tasks/TaskList'
 import PillarGoals from '@/features/goals/PillarGoals'
 
@@ -17,6 +16,8 @@ import PillarGoals from '@/features/goals/PillarGoals'
  * Mind, joining Fun Fact/Dad Joke which were already there. Spanish and
  * the Communication Tip stayed here since they're more skill-building
  * than pure "read for fun," and the map doesn't suggest moving them.
+ * Habits (including Spanish practice) moved to Mission Control's
+ * consolidated all-pillars view with a pillar selector per row.
  */
 export default function MindPage() {
   return (
@@ -50,10 +51,6 @@ export default function MindPage() {
 
         <Disclosure title="Idea Vault" icon={Lightbulb}>
           <IdeaVaultSection />
-        </Disclosure>
-
-        <Disclosure title="Habits" subtitle="Includes Spanish practice" icon={Repeat}>
-          <PillarHabits pillar="mind" />
         </Disclosure>
 
         <Disclosure title="Tasks" subtitle="Mind-tagged to-dos" icon={ListTodo}>

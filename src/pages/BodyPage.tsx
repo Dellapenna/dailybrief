@@ -1,13 +1,17 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
-import { Dumbbell, Utensils, Activity, Repeat, ListTodo, Target } from 'lucide-react'
+import { Dumbbell, Utensils, Activity, ListTodo, Target } from 'lucide-react'
 import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
 import CalorieCounterCard from '@/features/calories/CalorieCounterCard'
 import HealthTrends from '@/features/exercise/HealthTrends'
-import PillarHabits from '@/features/habits/PillarHabits'
 import TaskList from '@/features/tasks/TaskList'
 import PillarGoals from '@/features/goals/PillarGoals'
 
+/**
+ * Habits moved to Mission Control's consolidated all-pillars view (with
+ * a pillar selector per row) rather than living here separately — see
+ * MissionControlPage.tsx.
+ */
 export default function BodyPage() {
   return (
     <div>
@@ -26,10 +30,6 @@ export default function BodyPage() {
 
         <Disclosure title="Health Trends" subtitle="Sleep, energy, weight over time" icon={Activity}>
           <HealthTrends />
-        </Disclosure>
-
-        <Disclosure title="Habits" subtitle="Body-tagged habits" icon={Repeat}>
-          <PillarHabits pillar="body" />
         </Disclosure>
 
         <Disclosure title="Tasks" subtitle="Body-tagged to-dos" icon={ListTodo}>
