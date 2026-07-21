@@ -5,6 +5,7 @@ const RECURRENCE_LABELS: Record<TaskRecurrence, string> = {
   none: 'One-time',
   daily: 'Daily',
   weekly: 'Weekly',
+  biweekly: 'Every 2 weeks',
   monthly: 'Monthly',
 }
 
@@ -141,6 +142,7 @@ export default function TaskRow({
                 <option value="none">One-time</option>
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
+                <option value="biweekly">Every 2 weeks</option>
                 <option value="monthly">Monthly</option>
               </select>
             </div>

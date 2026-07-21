@@ -32,6 +32,7 @@ export default function TasksPage() {
           quickAddPlaceholder={
             active === 'today' ? 'Add a task for today…' : `Add a task to ${tabs.find((t) => t.value === active)?.label}…`
           }
+          groupByProject
         />
       </div>
     </div>

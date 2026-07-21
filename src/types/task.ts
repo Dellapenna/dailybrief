@@ -1,5 +1,5 @@
 export type TaskStatus = 'inbox' | 'today' | 'this_week' | 'someday' | 'waiting' | 'completed'
-export type TaskRecurrence = 'none' | 'daily' | 'weekly' | 'monthly'
+export type TaskRecurrence = 'none' | 'daily' | 'weekly' | 'biweekly' | 'monthly'
 
 export type Task = {
   id: string

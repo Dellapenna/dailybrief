@@ -30,6 +30,7 @@ function nextOccurrence(baseDateStr: string, recurrence: string): string {
   const d = new Date(baseDateStr + 'T00:00:00Z')
   if (recurrence === 'daily') d.setUTCDate(d.getUTCDate() + 1)
   else if (recurrence === 'weekly') d.setUTCDate(d.getUTCDate() + 7)
+  else if (recurrence === 'biweekly') d.setUTCDate(d.getUTCDate() + 14)
   else if (recurrence === 'monthly') d.setUTCMonth(d.getUTCMonth() + 1)
   return d.toISOString().slice(0, 10)
 }
@@ -150,9 +151,17 @@ export default async (req: Request, _context: Context) => {
           // Recurring: don't mark permanently done — advance to the next
           // occurrence and keep it active. completed_at above still
           // records this completion as "last done."
+          //
+          // Bug fix: previously kept status as-is (often 'today'), which
+          // meant the Smart Today query's `status.eq.today` clause kept
+          // matching it regardless of the new future due_date — it never
+          // actually left Today until the *next* completion. Now resets
+          // status to 'this_week' and clears the flag, so it only
+          // reappears once due_date is actually today or earlier.
           const baseDate = current.due_date ?? new Date().toISOString().slice(0, 10)
           updates.due_date = nextOccurrence(baseDate, current.recurrence)
-          updates.status = current.status === 'completed' ? 'today' : current.status
+          updates.status = 'this_week'
+          updates.flagged = false
         }
       }
 
