@@ -13,16 +13,6 @@ import IdeasPage from '@/pages/IdeasPage'
 import ReviewsPage from '@/pages/ReviewsPage'
 import SettingsPage from '@/pages/SettingsPage'
 import MorePage from '@/pages/MorePage'
-import CalendarPage from '@/pages/CalendarPage'
-import HoroscopePage from '@/pages/HoroscopePage'
-import NewsPage from '@/pages/NewsPage'
-import ProgressPage from '@/pages/ProgressPage'
-import SportsPage from '@/pages/SportsPage'
-import StocksPage from '@/pages/StocksPage'
-import MotivationPage from '@/pages/MotivationPage'
-import WordOfDayPage from '@/pages/WordOfDayPage'
-import FunFactPage from '@/pages/FunFactPage'
-import DadJokePage from '@/pages/DadJokePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
 /**
@@ -31,14 +21,13 @@ import NotFoundPage from '@/pages/NotFoundPage'
  * code — see docs/INTEGRATIONS.md). Every route below is reachable once
  * past that gate; there's no second in-app login layer.
  *
- * v5: consolidated from 7 pillars down to 4 zones (Body/Mind/Soul/
- * Mission Control) plus Daily Dashboard as a separate 5th destination —
- * per the "let's brainstorm" conversation. Mission Control is now
- * goals/planning/execution/Executive Summary; Daily Dashboard is today's
- * info + check-in (what Mission Control used to be). Old /spirit, /life,
- * /work, /intelligence routes are gone — content was redistributed, not
- * hidden behind a redirect, since there's no clean 1:1 replacement page
- * for any of them individually.
+ * v6 (organization/complexity pass): removed the 10 standalone single-
+ * topic pages (Calendar, Horoscope, News, Progress, Sports, Stocks,
+ * Motivation, Word of the Day, Fun Fact, Dad Joke) that hadn't been
+ * linked from anywhere since the pillar consolidation — their content
+ * still lives on Daily Dashboard / Mind via the same underlying
+ * *Card components, just not as separate routes. Every remaining route
+ * here is reachable from the nav map, sidebar, mobile nav, or More.
  */
 function App() {
   return (
@@ -58,16 +47,6 @@ function App() {
         <Route path="/reviews" element={<ReviewsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/more" element={<MorePage />} />
-        <Route path="/calendar" element={<CalendarPage />} />
-        <Route path="/horoscope" element={<HoroscopePage />} />
-        <Route path="/news" element={<NewsPage />} />
-        <Route path="/progress" element={<ProgressPage />} />
-        <Route path="/sports" element={<SportsPage />} />
-        <Route path="/stocks" element={<StocksPage />} />
-        <Route path="/motivation" element={<MotivationPage />} />
-        <Route path="/word-of-the-day" element={<WordOfDayPage />} />
-        <Route path="/fun-fact" element={<FunFactPage />} />
-        <Route path="/dad-joke" element={<DadJokePage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

@@ -1,8 +1,9 @@
-import FrameShell from '@/components/FrameShell'
+import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import ExecutiveSummaryCard from '@/features/executiveSummary/ExecutiveSummaryCard'
 import MissionProgress from '@/features/dashboard/MissionProgress'
 import PillarTaskSummary from '@/features/pillarSummary/PillarTaskSummary'
+import CheckInForm from '@/features/checkin/CheckInForm'
 import TaskList from '@/features/tasks/TaskList'
 import QuickAddBar from '@/features/tasks/QuickAddBar'
 import GoalRow from '@/features/goals/GoalRow'
@@ -35,42 +36,43 @@ function AllGoals() {
 }
 
 /**
- * Mission Control — "Plan. Execute. Win. You are the captain." per the
- * reference image. Now using the full FrameShell treatment (parchment
- * scroll frame, content scrolls in a window over the blank area) rather
- * than a small hero banner — this frame has a much more generous,
- * cleanly centered blank area than the earlier Life frame attempt, so
- * worth trying again here specifically. Window coordinates estimated by
- * eye, not pixel-verified — expect to adjust once seen live.
+ * Mission Control — "Plan. Execute. Win. You are the captain." Leans
+ * toward inputs (things you create/enter) per the organization pass:
+ * Check-in, Plan (tasks), Goals, plus Executive Summary/Analyze which
+ * review those inputs. Daily Dashboard is the reading/informational
+ * counterpart — see that page.
  */
 export default function MissionControlPage() {
   return (
-    <FrameShell
-      frameSrc="/images/frames/mission-control.jpg"
-      frameAlt="Mission Control — Plan. Execute. Win. You are the captain."
-      window={{ top: 19, left: 8, width: 84, height: 64 }}
-    >
-      <h1 className="sr-only">Mission Control</h1>
-      <div className="space-y-3">
-        <Disclosure title="Executive Summary" defaultOpen>
-          <ExecutiveSummaryCard />
-        </Disclosure>
+    <div>
+      <PillarHero slug="mission-control" alt="Mission Control" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Mission Control</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Plan. Execute. Win. You are the captain.</p>
 
-        <Disclosure title="Analyze" subtitle="Progress across pillars" defaultOpen>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <MissionProgress />
-            <PillarTaskSummary />
-          </div>
+      <div className="mt-5 space-y-3">
+        <Disclosure title="Morning Check-in" defaultOpen>
+          <CheckInForm />
         </Disclosure>
 
         <Disclosure title="Plan" subtitle="Today's tasks, all pillars" defaultOpen>
           <TaskList view="today" quickAddPlaceholder="Add a task…" />
         </Disclosure>
 
-        <Disclosure title="Goals" subtitle="All pillars">
+        <Disclosure title="Goals" subtitle="All pillars" defaultOpen>
           <AllGoals />
         </Disclosure>
+
+        <Disclosure title="Executive Summary">
+          <ExecutiveSummaryCard />
+        </Disclosure>
+
+        <Disclosure title="Analyze" subtitle="Progress across pillars">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <MissionProgress />
+            <PillarTaskSummary />
+          </div>
+        </Disclosure>
       </div>
-    </FrameShell>
+    </div>
   )
 }

@@ -1,5 +1,6 @@
-import FrameShell from '@/components/FrameShell'
+import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
+import TabbedCard from '@/components/TabbedCard'
 import WeatherCard from '@/features/weather/WeatherCard'
 import CalendarSection from '@/features/calendar/CalendarSection'
 import NewsCard from '@/features/news/NewsCard'
@@ -10,23 +11,21 @@ import HoroscopeCard from '@/features/horoscope/HoroscopeCard'
 import FunFactCard from '@/features/funFact/FunFactCard'
 import DadJokeCard from '@/features/dadJoke/DadJokeCard'
 import WorldClockCard from '@/features/worldclock/WorldClockCard'
-import CheckInForm from '@/features/checkin/CheckInForm'
 
 /**
- * Daily Dashboard — "Your day. Your intelligence. Your edge." per the
- * reference image: everything informational (today's data) plus the
- * morning check-in ritual. Goals/tasks/planning live on Mission Control
- * instead — a real split introduced by the 5-zone consolidation.
+ * Daily Dashboard — "Your day. Your intelligence. Your edge." Leans
+ * toward reading/informational content per the organization pass —
+ * Morning Check-in moved to Mission Control since it's an input, not
+ * something you read.
  */
 export default function DailyDashboardPage() {
   return (
-    <FrameShell
-      frameSrc="/images/frames/daily-dashboard.jpg"
-      frameAlt="Daily Dashboard — Your day. Your intelligence. Your edge."
-      window={{ top: 19, left: 8, width: 84, height: 64 }}
-    >
-      <h1 className="sr-only">Daily Dashboard</h1>
-      <div className="space-y-3">
+    <div>
+      <PillarHero slug="daily-dashboard" alt="Daily Dashboard" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Daily Dashboard</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Your day. Your intelligence. Your edge.</p>
+
+      <div className="mt-5 space-y-3">
         <Disclosure title="Weather" defaultOpen>
           <WeatherCard />
         </Disclosure>
@@ -35,11 +34,7 @@ export default function DailyDashboardPage() {
           <CalendarSection />
         </Disclosure>
 
-        <Disclosure title="Morning Check-in" defaultOpen>
-          <CheckInForm />
-        </Disclosure>
-
-        <Disclosure title="News">
+        <Disclosure title="News" defaultOpen>
           <NewsCard />
         </Disclosure>
 
@@ -55,22 +50,20 @@ export default function DailyDashboardPage() {
           <SportsCard />
         </Disclosure>
 
-        <Disclosure title="Horoscope">
-          <HoroscopeCard />
-        </Disclosure>
-
-        <Disclosure title="Fun Fact of the Day">
-          <FunFactCard />
-        </Disclosure>
-
-        <Disclosure title="Daily Dad Joke">
-          <DadJokeCard />
+        <Disclosure title="More" subtitle="Horoscope, Fun Fact, Dad Joke">
+          <TabbedCard
+            tabs={[
+              { label: 'Horoscope', content: <HoroscopeCard /> },
+              { label: 'Fun Fact', content: <FunFactCard /> },
+              { label: 'Dad Joke', content: <DadJokeCard /> },
+            ]}
+          />
         </Disclosure>
 
         <Disclosure title="World Clock" subtitle="Spain, Guatemala, Austin">
           <WorldClockCard />
         </Disclosure>
       </div>
-    </FrameShell>
+    </div>
   )
 }

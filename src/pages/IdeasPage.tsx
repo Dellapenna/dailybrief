@@ -1,15 +1,15 @@
-import FrameShell from '@/components/FrameShell'
+import PillarHero from '@/components/PillarHero'
 import IdeaVaultSection from '@/features/ideas/IdeaVaultSection'
 
 export default function IdeasPage() {
   return (
-    <FrameShell
-      frameSrc="/images/frames/idea-vault.jpg"
-      frameAlt="Idea Vault — Capture. Explore. Innovate."
-      window={{ top: 19, left: 8, width: 84, height: 64 }}
-    >
-      <h1 className="sr-only">Idea Vault</h1>
-      <IdeaVaultSection />
-    </FrameShell>
+    <div>
+      <PillarHero slug="idea-vault" alt="Idea Vault" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Idea Vault</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Capture. Explore. Innovate.</p>
+      <div className="mt-4">
+        <IdeaVaultSection />
+      </div>
+    </div>
   )
 }

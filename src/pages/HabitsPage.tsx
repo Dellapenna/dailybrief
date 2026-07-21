@@ -1,4 +1,4 @@
-import FrameShell from '@/components/FrameShell'
+import PillarHero from '@/components/PillarHero'
 import QuickAddBar from '@/features/tasks/QuickAddBar'
 import HabitRow from '@/features/habits/HabitRow'
 import { useHabits } from '@/features/habits/useHabits'
@@ -7,14 +7,14 @@ export default function HabitsPage() {
   const { habits, loading, error, createHabit, toggleToday, deleteHabit } = useHabits()
 
   return (
-    <FrameShell
-      frameSrc="/images/frames/habits.jpg"
-      frameAlt="Habits — Small actions. Big transformation."
-      window={{ top: 19, left: 8, width: 84, height: 64 }}
-    >
-      <h1 className="sr-only">Habits</h1>
+    <div>
+      <PillarHero slug="habits" alt="Habits" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Habits</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Small actions. Big transformation.</p>
 
-      <QuickAddBar onAdd={createHabit} placeholder="Add a daily habit…" />
+      <div className="mt-4">
+        <QuickAddBar onAdd={createHabit} placeholder="Add a daily habit…" />
+      </div>
 
       {error && <p className="mt-3 text-sm text-rdp-risk">{error}</p>}
 
@@ -29,6 +29,6 @@ export default function HabitsPage() {
           ))
         )}
       </div>
-    </FrameShell>
+    </div>
   )
 }

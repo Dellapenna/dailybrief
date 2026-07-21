@@ -1,4 +1,4 @@
-import FrameShell from '@/components/FrameShell'
+import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
 import CalorieCounterCard from '@/features/calories/CalorieCounterCard'
@@ -9,13 +9,12 @@ import PillarGoals from '@/features/goals/PillarGoals'
 
 export default function BodyPage() {
   return (
-    <FrameShell
-      frameSrc="/images/frames/body.jpg"
-      frameAlt="Body — Train. Fuel. Recover. Optimize your physical potential."
-      window={{ top: 19, left: 8, width: 84, height: 64 }}
-    >
-      <h1 className="sr-only">Body</h1>
-      <div className="space-y-3">
+    <div>
+      <PillarHero slug="body" alt="Body" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Body</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Train. Fuel. Recover. Optimize your physical potential.</p>
+
+      <div className="mt-5 space-y-3">
         <Disclosure title="Exercise Log" subtitle="Strength, aerobic, stretching" defaultOpen>
           <ExerciseLogCard />
         </Disclosure>
@@ -40,7 +39,6 @@ export default function BodyPage() {
           <PillarGoals pillar="body" />
         </Disclosure>
       </div>
-    </FrameShell>
+    </div>
   )
 }
-

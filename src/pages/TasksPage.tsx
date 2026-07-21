@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import FrameShell from '@/components/FrameShell'
+import PillarHero from '@/components/PillarHero'
 import TaskList from '@/features/tasks/TaskList'
 import Tabs from '@/components/Tabs'
 import type { TaskView } from '@/features/tasks/useTasks'
@@ -17,14 +17,14 @@ export default function TasksPage() {
   const [active, setActive] = useState<TaskView>('today')
 
   return (
-    <FrameShell
-      frameSrc="/images/frames/tasks.jpg"
-      frameAlt="Tasks — Plan it. Prioritize it. Crush it."
-      window={{ top: 19, left: 8, width: 84, height: 64 }}
-    >
-      <h1 className="sr-only">Tasks</h1>
+    <div>
+      <PillarHero slug="tasks" alt="Tasks" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Tasks</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Plan it. Prioritize it. Crush it.</p>
 
-      <Tabs items={tabs} active={active} onChange={setActive} />
+      <div className="mt-4">
+        <Tabs items={tabs} active={active} onChange={setActive} />
+      </div>
 
       <div className="mt-4">
         <TaskList
@@ -34,6 +34,6 @@ export default function TasksPage() {
           }
         />
       </div>
-    </FrameShell>
+    </div>
   )
 }

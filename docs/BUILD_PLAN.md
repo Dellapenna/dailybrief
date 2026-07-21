@@ -504,3 +504,42 @@ was added for their old routes (they 404 via `NotFoundPage` now).
 `/briefing` now redirects to `/daily-dashboard` instead of
 `/mission-control`, since Daily Dashboard is the closer semantic match to
 what that page used to be.
+
+## Organization/complexity pass (on request)
+
+After several rounds of adding features to existing pages without
+periodically reorganizing, pages had grown to 10-11 stacked Disclosure
+sections each — a lot of scrolling to find one thing. Addressed
+directly, on request, rather than continuing to just add more:
+
+- **Dropped the FrameShell (parchment scroll) treatment entirely**,
+  reverted to the small `PillarHero` banner + normal full-page
+  scrolling, across all 9 pages that had it. The fixed-size scrolling
+  window was actively working against pages that had grown this much
+  content — tried twice (once per-page as a prototype, once site-wide),
+  reverted both times. `FrameShell.tsx` and the large frame images were
+  deleted this time rather than kept "just in case," given two
+  reversions is a clear enough signal. New hero banners were cropped
+  fresh from the top of each frame image for visual consistency (9
+  images, `public/images/pillars/*.jpg`) rather than reusing the older,
+  mismatched crops from before the pillar consolidation.
+- **Consolidated same-shape "read one short thing" cards** into a new
+  `TabbedCard` component: Mind's Motivation/Word of the Day/Spanish/
+  Communication Tip became one "Daily Reads" section (4 sections → 1);
+  Daily Dashboard's Horoscope/Fun Fact/Dad Joke became one "More"
+  section (3 → 1). Each tab only mounts (and fetches) once selected.
+- **Rebalanced Mission Control vs. Daily Dashboard** around inputs vs.
+  reading, per explicit direction: Morning Check-in moved from Daily
+  Dashboard to Mission Control (it's a form you fill out, not something
+  you read) — Mission Control is now Check-in/Plan/Goals first,
+  Executive Summary/Analyze after; Daily Dashboard is purely
+  informational (Weather/Calendar/News/Markets/Sports/More/World Clock).
+- **Removed 10 dead standalone pages** (Calendar, Horoscope, News,
+  Progress, Sports, Stocks, Motivation, Word of the Day, Fun Fact, Dad
+  Joke) that hadn't been linked from anywhere since the pillar
+  consolidation — their underlying `*Card` components are still used
+  (inside Daily Dashboard / Mind), only the redundant standalone routes
+  and page-wrapper files were removed.
+
+Net effect: Mind went from 10 sections to 7, Daily Dashboard from 11 to
+8, and ~15 unreachable routes/files are gone.

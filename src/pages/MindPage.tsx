@@ -1,10 +1,11 @@
-import FrameShell from '@/components/FrameShell'
+import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
+import TabbedCard from '@/components/TabbedCard'
 import MotivationCard from '@/features/motivation/MotivationCard'
 import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
-import BreathingTimer from '@/features/mind/BreathingTimer'
 import CommunicationTipCard from '@/features/communication/CommunicationTipCard'
+import BreathingTimer from '@/features/mind/BreathingTimer'
 import CommunicationJournalCard from '@/features/communication/CommunicationJournalCard'
 import IdeaVaultSection from '@/features/ideas/IdeaVaultSection'
 import PillarHabits from '@/features/habits/PillarHabits'
@@ -13,31 +14,25 @@ import PillarGoals from '@/features/goals/PillarGoals'
 
 export default function MindPage() {
   return (
-    <FrameShell
-      frameSrc="/images/frames/mind.jpg"
-      frameAlt="Mind — Focus. Learn. Grow. Sharpen your mind every day."
-      window={{ top: 19, left: 8, width: 84, height: 64 }}
-    >
-      <h1 className="sr-only">Mind</h1>
-      <div className="space-y-3">
-        <Disclosure title="Motivation Quote" defaultOpen>
-          <MotivationCard />
-        </Disclosure>
+    <div>
+      <PillarHero slug="mind" alt="Mind" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Mind</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Focus. Learn. Grow. Sharpen your mind every day.</p>
 
-        <Disclosure title="Word of the Day">
-          <WordOfDayCard />
-        </Disclosure>
-
-        <Disclosure title="Spanish Word of the Day">
-          <SpanishWordCard />
+      <div className="mt-5 space-y-3">
+        <Disclosure title="Daily Reads" subtitle="Motivation, Word of the Day, Spanish, Communication Tip" defaultOpen>
+          <TabbedCard
+            tabs={[
+              { label: 'Motivation', content: <MotivationCard /> },
+              { label: 'Word of the Day', content: <WordOfDayCard /> },
+              { label: 'Spanish', content: <SpanishWordCard /> },
+              { label: 'Comm. Tip', content: <CommunicationTipCard /> },
+            ]}
+          />
         </Disclosure>
 
         <Disclosure title="Meditate" subtitle="Breathing Meditation" defaultOpen>
           <BreathingTimer />
-        </Disclosure>
-
-        <Disclosure title="Communication Tip" defaultOpen>
-          <CommunicationTipCard />
         </Disclosure>
 
         <Disclosure title="Communication Practice Journal" subtitle="Log real interactions, reflect" defaultOpen>
@@ -60,6 +55,6 @@ export default function MindPage() {
           <PillarGoals pillar="mind" />
         </Disclosure>
       </div>
-    </FrameShell>
+    </div>
   )
 }
