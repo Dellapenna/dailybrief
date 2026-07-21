@@ -11,13 +11,17 @@ import SportsCard from '@/features/sports/SportsCard'
 import HoroscopeCard from '@/features/horoscope/HoroscopeCard'
 import FunFactCard from '@/features/funFact/FunFactCard'
 import DadJokeCard from '@/features/dadJoke/DadJokeCard'
+import MotivationCard from '@/features/motivation/MotivationCard'
+import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
 import WorldClockCard from '@/features/worldclock/WorldClockCard'
 
 /**
  * Daily Dashboard — "Your day. Your intelligence. Your edge." Leans
  * toward reading/informational content per the organization pass —
  * Morning Check-in moved to Mission Control since it's an input, not
- * something you read.
+ * something you read. Motivation Quote and Word of the Day moved here
+ * from Mind per the new reference map, which lists both under Daily
+ * Dashboard alongside Fun Fact/Dad Joke.
  */
 export default function DailyDashboardPage() {
   return (
@@ -51,9 +55,15 @@ export default function DailyDashboardPage() {
           <SportsCard />
         </Disclosure>
 
-        <Disclosure title="More" subtitle="Horoscope, Fun Fact, Dad Joke" icon={Sparkles}>
+        <Disclosure
+          title="More"
+          subtitle="Motivation, Word of the Day, Horoscope, Fun Fact, Dad Joke"
+          icon={Sparkles}
+        >
           <TabbedCard
             tabs={[
+              { label: 'Motivation', content: <MotivationCard /> },
+              { label: 'Word of the Day', content: <WordOfDayCard /> },
               { label: 'Horoscope', content: <HoroscopeCard /> },
               { label: 'Fun Fact', content: <FunFactCard /> },
               { label: 'Dad Joke', content: <DadJokeCard /> },

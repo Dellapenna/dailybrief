@@ -1,15 +1,11 @@
 import { Link } from 'react-router-dom'
 
 /**
- * Home / navigation hub — v5, consolidated to 4 quadrant zones (Body,
- * Mind, Soul, Mission Control) plus Daily Dashboard called out
- * separately at the bottom, per a new reference image. Quadrant layout
- * should be far more forgiving to align than the earlier stacked-row
- * images — each zone occupies a clearly separated quarter of the image
- * rather than a thin horizontal band.
- *
- * Coordinates still estimated by eye, not pixel-verified — tell me
- * which zone (if any) needs adjusting once it's live.
+ * Home / navigation hub — v6, new map artwork (same 2x2 quadrant + Daily
+ * Dashboard callout layout as before, just a fresh coffee/energy-can
+ * themed pass). Kept the same tap zone coordinates since the layout
+ * structure is unchanged — flag if any zone feels off with this image
+ * specifically.
  */
 const ZONES: { to: string; label: string; top: number; height: number; left: number; width: number }[] = [
   { to: '/body', label: 'Body', top: 20, height: 20, left: 3, width: 45 },

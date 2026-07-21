@@ -1,9 +1,7 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import TabbedCard from '@/components/TabbedCard'
-import { BookOpen, Wind, MessageCircle, Lightbulb, Repeat, ListTodo, Target } from 'lucide-react'
-import MotivationCard from '@/features/motivation/MotivationCard'
-import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
+import { Languages, Wind, MessageCircle, Lightbulb, Repeat, ListTodo, Target } from 'lucide-react'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
 import CommunicationTipCard from '@/features/communication/CommunicationTipCard'
 import BreathingTimer from '@/features/mind/BreathingTimer'
@@ -13,6 +11,13 @@ import PillarHabits from '@/features/habits/PillarHabits'
 import TaskList from '@/features/tasks/TaskList'
 import PillarGoals from '@/features/goals/PillarGoals'
 
+/**
+ * Motivation Quote and Word of the Day moved to Daily Dashboard — the
+ * new reference map explicitly lists both under Daily Dashboard, not
+ * Mind, joining Fun Fact/Dad Joke which were already there. Spanish and
+ * the Communication Tip stayed here since they're more skill-building
+ * than pure "read for fun," and the map doesn't suggest moving them.
+ */
 export default function MindPage() {
   return (
     <div>
@@ -21,16 +26,9 @@ export default function MindPage() {
       <p className="mt-1 text-sm text-rdp-text-dim">Focus. Learn. Grow. Sharpen your mind every day.</p>
 
       <div className="mt-5 space-y-3">
-        <Disclosure
-          title="Daily Reads"
-          subtitle="Motivation, Word of the Day, Spanish, Communication Tip"
-          icon={BookOpen}
-          defaultOpen
-        >
+        <Disclosure title="Daily Reads" subtitle="Spanish, Communication Tip" icon={Languages} defaultOpen>
           <TabbedCard
             tabs={[
-              { label: 'Motivation', content: <MotivationCard /> },
-              { label: 'Word of the Day', content: <WordOfDayCard /> },
               { label: 'Spanish', content: <SpanishWordCard /> },
               { label: 'Comm. Tip', content: <CommunicationTipCard /> },
             ]}

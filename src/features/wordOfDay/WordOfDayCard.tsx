@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import Skeleton from '@/components/Skeleton'
+import { Volume2 } from 'lucide-react'
 import { api } from '@/lib/api'
+import { speak, speechSupported } from '@/lib/speech'
 
 type Definition = { partOfSpeech: string; definition: string; example?: string }
 type WordData = { word: string; phonetic: string | null; definitions: Definition[] }
@@ -24,7 +26,18 @@ export default function WordOfDayCard() {
       {error && <p className="text-sm text-rdp-risk">{error}</p>}
       {data && (
         <div>
-          <p className="font-display text-xl font-semibold text-rdp-amber">{data.word}</p>
+          <div className="flex items-center gap-2">
+            <p className="font-display text-xl font-semibold text-rdp-amber">{data.word}</p>
+            {speechSupported() && (
+              <button
+                onClick={() => speak(data.word, 'en-US')}
+                aria-label="Hear pronunciation"
+                className="rounded-full border border-rdp-line p-1.5 text-rdp-signal hover:bg-rdp-void"
+              >
+                <Volume2 className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
           {data.phonetic && <p className="mt-0.5 font-mono text-sm text-rdp-text-faint">{data.phonetic}</p>}
           <ul className="mt-3 space-y-2">
             {data.definitions.map((d, i) => (
