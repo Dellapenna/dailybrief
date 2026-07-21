@@ -8,7 +8,6 @@ import StatusStrip from '@/components/StatusStrip'
  * the primary nav (now embedded per-pillar) — reachable via More.
  */
 const desktopNav = [
-  { to: '/', label: 'Home' },
   { to: '/mission-control', label: 'Mission Control' },
   { to: '/daily-dashboard', label: 'Daily Dashboard' },
   { to: '/body', label: 'Body' },
@@ -19,9 +18,10 @@ const desktopNav = [
   { to: '/settings', label: 'Settings' },
 ]
 
-/** Mobile bottom nav — fixed 5-slot set. */
+/** Mobile bottom nav — no longer needs a separate "Home" tab now that
+ *  the nav map is gone; / redirects straight to Mission Control, which
+ *  already has its own tab. */
 const mobileNav = [
-  { to: '/', label: 'Home', short: 'Home' },
   { to: '/mission-control', label: 'Mission Control', short: 'Mission' },
   { to: '/daily-dashboard', label: 'Daily Dashboard', short: 'Daily' },
   { to: '/tasks', label: 'Plan', short: 'Plan' },
@@ -42,7 +42,6 @@ export default function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === '/'}
               className={({ isActive }) =>
                 `block rounded-lg px-3 py-2 text-sm transition-colors ${
                   isActive
@@ -82,7 +81,6 @@ export default function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === '/'}
               className={({ isActive }) =>
                 `flex-1 py-3 text-center text-[11px] font-medium ${
                   isActive ? 'text-rdp-signal' : 'text-rdp-text-dim'

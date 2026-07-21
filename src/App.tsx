@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import AppLayout from '@/layouts/AppLayout'
-import NavMapPage from '@/pages/NavMapPage'
 import MissionControlPage from '@/pages/MissionControlPage'
 import DailyDashboardPage from '@/pages/DailyDashboardPage'
 import BodyPage from '@/pages/BodyPage'
@@ -22,19 +21,26 @@ import NotFoundPage from '@/pages/NotFoundPage'
  * code — see docs/INTEGRATIONS.md). Every route below is reachable once
  * past that gate; there's no second in-app login layer.
  *
+ * v7: removed the tappable nav map (NavMapPage) entirely, per direct
+ * feedback that it didn't add real value once Mission Control/Daily
+ * Dashboard were the primary destinations — "/" now redirects straight
+ * to Mission Control instead of an extra tap-through step. NavMapPage.tsx
+ * and the map image are kept but unused, in case worth revisiting.
+ * Body/Mind/Soul are reachable via More's pillar links, or the desktop
+ * sidebar.
+ *
  * v6 (organization/complexity pass): removed the 10 standalone single-
  * topic pages (Calendar, Horoscope, News, Progress, Sports, Stocks,
  * Motivation, Word of the Day, Fun Fact, Dad Joke) that hadn't been
  * linked from anywhere since the pillar consolidation — their content
  * still lives on Daily Dashboard / Mind via the same underlying
- * *Card components, just not as separate routes. Every remaining route
- * here is reachable from the nav map, sidebar, mobile nav, or More.
+ * *Card components, just not as separate routes.
  */
 function App() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route path="/" element={<NavMapPage />} />
+        <Route path="/" element={<Navigate to="/mission-control" replace />} />
         <Route path="/mission-control" element={<MissionControlPage />} />
         <Route path="/daily-dashboard" element={<DailyDashboardPage />} />
         <Route path="/briefing" element={<Navigate to="/daily-dashboard" replace />} />
