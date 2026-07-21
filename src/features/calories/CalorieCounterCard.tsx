@@ -1,7 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
+import { Camera } from 'lucide-react'
 import { api } from '@/lib/api'
 import { useFoodLog } from './useFoodLog'
 import type { FoodSearchResult, Meal } from '@/types/foodLog'
+
+// Lazy-loaded: ZXing (the barcode-decoding library) is large, and most
+// visits to this card never open the scanner — loading it eagerly would
+// add real weight to every page that renders CalorieCounterCard.
+const BarcodeScanner = lazy(() => import('./BarcodeScanner'))
 
 const MEALS: { value: Meal; label: string }[] = [
   { value: 'breakfast', label: 'Breakfast' },
@@ -20,6 +26,7 @@ export default function CalorieCounterCard() {
   const [selected, setSelected] = useState<FoodSearchResult | null>(null)
   const [quantity, setQuantity] = useState('1')
   const [meal, setMeal] = useState<Meal>('snack')
+  const [scanning, setScanning] = useState(false)
 
   const [manualName, setManualName] = useState('')
   const [manualCalories, setManualCalories] = useState('')
@@ -40,6 +47,22 @@ export default function CalorieCounterCard() {
     }, 400)
     return () => clearTimeout(id)
   }, [query])
+
+  async function handleBarcodeDetected(code: string) {
+    setScanning(false)
+    setSearchError(null)
+    setSearching(true)
+    try {
+      const res = await api.get<{ result: FoodSearchResult }>(`/food-barcode?code=${encodeURIComponent(code)}`)
+      setSelected(res.result)
+      setQuery('')
+      setResults([])
+    } catch (err) {
+      setSearchError(err instanceof Error ? err.message : 'Barcode lookup failed')
+    } finally {
+      setSearching(false)
+    }
+  }
 
   async function logSelected() {
     if (!selected) return
@@ -72,6 +95,18 @@ export default function CalorieCounterCard() {
 
   return (
     <div>
+      {scanning && (
+        <Suspense
+          fallback={
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
+              <p className="text-sm text-white">Loading scanner…</p>
+            </div>
+          }
+        >
+          <BarcodeScanner onDetected={handleBarcodeDetected} onClose={() => setScanning(false)} />
+        </Suspense>
+      )}
+
       <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
         <div className="flex items-baseline justify-between">
           <p className="font-mono text-2xl font-semibold tabular-nums text-rdp-text">{Math.round(totalCalories)}</p>
@@ -93,9 +128,18 @@ export default function CalorieCounterCard() {
       </div>
 
       <div className="mt-3 rounded-xl border border-rdp-line bg-rdp-panel p-4">
-        <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-text-faint">
-          Search Food Database
-        </p>
+        <div className="flex items-center justify-between">
+          <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-text-faint">
+            Search Food Database
+          </p>
+          <button
+            onClick={() => setScanning(true)}
+            className="flex items-center gap-1 rounded-lg border border-rdp-line px-2 py-1 text-xs text-rdp-signal hover:bg-rdp-void"
+          >
+            <Camera className="h-3.5 w-3.5" />
+            Scan barcode
+          </button>
+        </div>
         <input
           type="text"
           value={query}
