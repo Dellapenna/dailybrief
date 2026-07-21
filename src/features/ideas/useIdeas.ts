@@ -2,6 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import type { Idea, IdeaStatus } from '@/types/idea'
 
+function toCamelCase(key: string): string {
+  return key.replace(/_([a-z])/g, (_, letter: string) => letter.toUpperCase())
+}
+
 export function useIdeas(status: IdeaStatus | 'all') {
   const [ideas, setIdeas] = useState<Idea[]>([])
   const [loading, setLoading] = useState(true)
@@ -36,8 +40,12 @@ export function useIdeas(status: IdeaStatus | 'all') {
 
   async function updateIdea(id: string, updates: Partial<Idea>) {
     setIdeas((prev) => prev.map((i) => (i.id === id ? { ...i, ...updates } : i)))
+    const apiBody: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(updates)) {
+      apiBody[toCamelCase(key)] = value
+    }
     try {
-      await api.patch(`/ideas/${id}`, updates)
+      await api.patch(`/ideas/${id}`, apiBody)
       if (updates.status && status !== 'all' && updates.status !== status) {
         setIdeas((prev) => prev.filter((i) => i.id !== id))
       }

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Disclosure from '@/components/Disclosure'
 import type { Goal, GoalStatus } from '@/types/goal'
+import { PILLAR_LABELS, type PillarId } from '@/types/pillar'
 
 const statusOptions: { value: GoalStatus; label: string }[] = [
   { value: 'active', label: 'Active' },
@@ -83,14 +84,30 @@ export default function GoalRow({
             </select>
           </div>
           <div className="flex-1">
-            <label className="text-xs text-rdp-text-faint">Target date</label>
-            <input
-              type="date"
-              value={goal.target_date ?? ''}
-              onChange={(e) => onUpdate({ target_date: e.target.value || null })}
+            <label className="text-xs text-rdp-text-faint">Pillar</label>
+            <select
+              value={goal.pillar_id ?? ''}
+              onChange={(e) => onUpdate({ pillar_id: (e.target.value || null) as PillarId | null })}
               className="mt-1 w-full rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text focus:border-rdp-signal focus:outline-none"
-            />
+            >
+              <option value="">No pillar</option>
+              {(Object.keys(PILLAR_LABELS) as PillarId[]).map((p) => (
+                <option key={p} value={p}>
+                  {PILLAR_LABELS[p]}
+                </option>
+              ))}
+            </select>
           </div>
+        </div>
+
+        <div>
+          <label className="text-xs text-rdp-text-faint">Target date</label>
+          <input
+            type="date"
+            value={goal.target_date ?? ''}
+            onChange={(e) => onUpdate({ target_date: e.target.value || null })}
+            className="mt-1 w-full rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text focus:border-rdp-signal focus:outline-none"
+          />
         </div>
 
         <button

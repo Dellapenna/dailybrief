@@ -1,5 +1,5 @@
-import { useEffect, useState, lazy, Suspense } from 'react'
-import { Camera } from 'lucide-react'
+import { useEffect, useState, useRef, lazy, Suspense, type ChangeEvent } from 'react'
+import { Camera, ImagePlus } from 'lucide-react'
 import { api } from '@/lib/api'
 import { useFoodLog } from './useFoodLog'
 import type { FoodSearchResult, Meal } from '@/types/foodLog'
@@ -16,6 +16,15 @@ const MEALS: { value: Meal; label: string }[] = [
   { value: 'snack', label: 'Snack' },
 ]
 
+type PhotoEstimate = {
+  description: string
+  calories: number
+  proteinG: number | null
+  carbsG: number | null
+  fatG: number | null
+  confidenceNote: string
+}
+
 export default function CalorieCounterCard() {
   const { logs, totalCalories, dailyCalorieGoal, loading, error, addEntry, deleteEntry } = useFoodLog()
 
@@ -30,6 +39,12 @@ export default function CalorieCounterCard() {
 
   const [manualName, setManualName] = useState('')
   const [manualCalories, setManualCalories] = useState('')
+
+  const photoInputRef = useRef<HTMLInputElement>(null)
+  const [estimating, setEstimating] = useState(false)
+  const [estimateError, setEstimateError] = useState<string | null>(null)
+  const [photoEstimate, setPhotoEstimate] = useState<PhotoEstimate | null>(null)
+  const [photoMeal, setPhotoMeal] = useState<Meal>('snack')
 
   useEffect(() => {
     if (!query.trim()) {
@@ -62,6 +77,51 @@ export default function CalorieCounterCard() {
     } finally {
       setSearching(false)
     }
+  }
+
+  function handlePhotoSelected(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = '' // allow selecting the same file again later
+    if (!file) return
+
+    setEstimating(true)
+    setEstimateError(null)
+    setPhotoEstimate(null)
+
+    const reader = new FileReader()
+    reader.onload = async () => {
+      const dataUrl = reader.result as string
+      const base64 = dataUrl.split(',')[1]
+      try {
+        const res = await api.post<{ estimate: PhotoEstimate }>('/food-photo-estimate', {
+          imageBase64: base64,
+          mediaType: file.type || 'image/jpeg',
+        })
+        setPhotoEstimate(res.estimate)
+      } catch (err) {
+        setEstimateError(err instanceof Error ? err.message : 'Photo estimate failed')
+      } finally {
+        setEstimating(false)
+      }
+    }
+    reader.onerror = () => {
+      setEstimateError('Could not read the photo')
+      setEstimating(false)
+    }
+    reader.readAsDataURL(file)
+  }
+
+  async function logPhotoEstimate() {
+    if (!photoEstimate) return
+    await addEntry({
+      foodName: `${photoEstimate.description} (photo estimate)`,
+      calories: photoEstimate.calories,
+      meal: photoMeal,
+      proteinG: photoEstimate.proteinG,
+      carbsG: photoEstimate.carbsG,
+      fatG: photoEstimate.fatG,
+    })
+    setPhotoEstimate(null)
   }
 
   async function logSelected() {
@@ -128,17 +188,34 @@ export default function CalorieCounterCard() {
       </div>
 
       <div className="mt-3 rounded-xl border border-rdp-line bg-rdp-panel p-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-text-faint">
             Search Food Database
           </p>
-          <button
-            onClick={() => setScanning(true)}
-            className="flex items-center gap-1 rounded-lg border border-rdp-line px-2 py-1 text-xs text-rdp-signal hover:bg-rdp-void"
-          >
-            <Camera className="h-3.5 w-3.5" />
-            Scan barcode
-          </button>
+          <div className="flex shrink-0 gap-1">
+            <button
+              onClick={() => setScanning(true)}
+              className="flex items-center gap-1 rounded-lg border border-rdp-line px-2 py-1 text-xs text-rdp-signal hover:bg-rdp-void"
+            >
+              <Camera className="h-3.5 w-3.5" />
+              Scan barcode
+            </button>
+            <button
+              onClick={() => photoInputRef.current?.click()}
+              className="flex items-center gap-1 rounded-lg border border-rdp-line px-2 py-1 text-xs text-rdp-signal hover:bg-rdp-void"
+            >
+              <ImagePlus className="h-3.5 w-3.5" />
+              Estimate photo
+            </button>
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/*"
+              capture="environment"
+              onChange={handlePhotoSelected}
+              className="hidden"
+            />
+          </div>
         </div>
         <input
           type="text"
@@ -202,6 +279,62 @@ export default function CalorieCounterCard() {
           </div>
         )}
       </div>
+
+      {(estimating || estimateError || photoEstimate) && (
+        <div className="mt-3 rounded-xl border border-rdp-amber/40 bg-rdp-panel p-4">
+          <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-amber">
+            AI Photo Estimate — Not Verified Data
+          </p>
+
+          {estimating && <p className="mt-2 text-sm text-rdp-text-faint">Analyzing photo…</p>}
+          {estimateError && <p className="mt-2 text-sm text-rdp-risk">{estimateError}</p>}
+
+          {photoEstimate && (
+            <div className="mt-2 space-y-2">
+              <p className="text-sm text-rdp-text">{photoEstimate.description}</p>
+              <p className="text-xs italic text-rdp-text-faint">{photoEstimate.confidenceNote}</p>
+
+              <div className="flex items-center gap-2">
+                <label className="text-xs text-rdp-text-dim">Calories (adjust if it looks off):</label>
+                <input
+                  type="number"
+                  value={photoEstimate.calories}
+                  onChange={(e) =>
+                    setPhotoEstimate((prev) => (prev ? { ...prev, calories: Number(e.target.value) } : prev))
+                  }
+                  className="w-24 rounded-lg border border-rdp-line bg-rdp-void px-2 py-1 text-sm text-rdp-text focus:border-rdp-signal focus:outline-none"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <select
+                  value={photoMeal}
+                  onChange={(e) => setPhotoMeal(e.target.value as Meal)}
+                  className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-2 py-1.5 text-sm text-rdp-text focus:border-rdp-signal focus:outline-none"
+                >
+                  {MEALS.map((m) => (
+                    <option key={m.value} value={m.value}>
+                      {m.label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => setPhotoEstimate(null)}
+                  className="rounded-lg border border-rdp-line px-3 py-1.5 text-sm text-rdp-text-dim hover:bg-rdp-void"
+                >
+                  Discard
+                </button>
+                <button
+                  onClick={logPhotoEstimate}
+                  className="rounded-lg bg-rdp-amber px-3 py-1.5 text-sm font-medium text-rdp-void"
+                >
+                  Log estimate
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="mt-3 rounded-xl border border-rdp-line bg-rdp-panel p-4">
         <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-text-faint">
