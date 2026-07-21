@@ -7,7 +7,7 @@ import { json, errorResponse } from './shared/http'
 /**
  * /api/food-log       GET (today's entries + total, or ?date=YYYY-MM-DD
  *                      for another day), POST (create)
- * /api/food-log/:id    DELETE
+ * /api/food-log/:id    PATCH (update), DELETE
  *
  * "Today" uses the user's stored timezone, same fix as habits/checkin/
  * evening-review/horoscope — see shared/userTimezone.ts.
@@ -86,6 +86,33 @@ export default async (req: Request, _context: Context) => {
 
       if (error) return errorResponse(error, 500)
       return json({ log: data }, 201)
+    }
+
+    if (req.method === 'PATCH' && id) {
+      const body = await req.json()
+      const updates: Record<string, unknown> = {}
+      for (const key of ['foodName', 'meal', 'calories', 'proteinG', 'carbsG', 'fatG', 'quantity'] as const) {
+        if (key in body) {
+          const column =
+            key === 'foodName' ? 'food_name'
+            : key === 'proteinG' ? 'protein_g'
+            : key === 'carbsG' ? 'carbs_g'
+            : key === 'fatG' ? 'fat_g'
+            : key
+          updates[column] = body[key]
+        }
+      }
+
+      const { data, error } = await supabase
+        .from('food_logs')
+        .update(updates)
+        .eq('id', id)
+        .eq('user_id', userId)
+        .select()
+        .single()
+
+      if (error) return errorResponse(error, 500)
+      return json({ log: data })
     }
 
     if (req.method === 'DELETE' && id) {

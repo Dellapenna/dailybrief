@@ -48,6 +48,17 @@ export function useFoodLog() {
     }
   }
 
+  async function updateEntry(id: string, updates: { meal?: Meal; quantity?: number }) {
+    setLogs((prev) => prev.map((l) => (l.id === id ? { ...l, ...updates } : l)))
+    try {
+      await api.patch(`/food-log/${id}`, updates)
+      reload()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update entry')
+      reload()
+    }
+  }
+
   async function deleteEntry(id: string) {
     setLogs((prev) => prev.filter((l) => l.id !== id))
     try {
@@ -59,5 +70,5 @@ export function useFoodLog() {
     }
   }
 
-  return { logs, totalCalories, dailyCalorieGoal, loading, error, addEntry, deleteEntry }
+  return { logs, totalCalories, dailyCalorieGoal, loading, error, addEntry, updateEntry, deleteEntry }
 }

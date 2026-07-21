@@ -26,7 +26,7 @@ type PhotoEstimate = {
 }
 
 export default function CalorieCounterCard() {
-  const { logs, totalCalories, dailyCalorieGoal, loading, error, addEntry, deleteEntry } = useFoodLog()
+  const { logs, totalCalories, dailyCalorieGoal, loading, error, addEntry, updateEntry, deleteEntry } = useFoodLog()
 
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<FoodSearchResult[]>([])
@@ -389,15 +389,27 @@ export default function CalorieCounterCard() {
               <div key={m.value} className="border-b border-rdp-line py-2 last:border-b-0">
                 <p className="text-xs font-medium uppercase tracking-wide text-rdp-amber">{m.label}</p>
                 {mealLogs.map((log) => (
-                  <div key={log.id} className="group mt-1 flex items-center justify-between">
-                    <span className="text-sm text-rdp-text">
+                  <div key={log.id} className="group mt-1 flex items-center justify-between gap-2">
+                    <span className="min-w-0 flex-1 truncate text-sm text-rdp-text">
                       {log.food_name}
                       {log.quantity !== 1 && <span className="text-rdp-text-faint"> ×{log.quantity}</span>}
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex shrink-0 items-center gap-2">
                       <span className="font-mono text-xs tabular-nums text-rdp-text-faint">
                         {Math.round(log.calories * log.quantity)} cal
                       </span>
+                      <select
+                        value={log.meal}
+                        onChange={(e) => updateEntry(log.id, { meal: e.target.value as Meal })}
+                        aria-label="Meal"
+                        className="rounded border-none bg-transparent text-xs text-rdp-signal"
+                      >
+                        {MEALS.map((mOpt) => (
+                          <option key={mOpt.value} value={mOpt.value}>
+                            {mOpt.label}
+                          </option>
+                        ))}
+                      </select>
                       <button
                         onClick={() => {
                           if (window.confirm(`Remove "${log.food_name}"?`)) deleteEntry(log.id)
