@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Skeleton from '@/components/Skeleton'
 import { Link } from 'react-router-dom'
 import { api, ApiError } from '@/lib/api'
 
@@ -34,7 +35,7 @@ export default function HoroscopeCard() {
     <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
       <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-text-faint">Horoscope · for fun</p>
 
-      {loading && <p className="mt-2 text-sm text-rdp-text-faint">Loading…</p>}
+      {loading && <Skeleton lines={2} className="mt-2" />}
       {error && <p className="mt-2 text-sm text-rdp-risk">{error}</p>}
 
       {needsSign && (

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Skeleton from '@/components/Skeleton'
 import { api, ApiError } from '@/lib/api'
 
 type Quote = { symbol: string; label: string; price: number; change: number; percentChange: number; previousClose: number }
@@ -22,7 +23,7 @@ export default function StocksCard() {
 
   return (
     <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
-      {loading && <p className="text-sm text-rdp-text-faint">Loading…</p>}
+      {loading && <Skeleton lines={2} />}
       {error && <p className="text-sm text-rdp-risk">{error}</p>}
       {quotes && (
         <div className="space-y-2">

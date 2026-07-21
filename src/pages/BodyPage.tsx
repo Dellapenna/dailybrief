@@ -1,5 +1,6 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
+import { Dumbbell, Utensils, Activity, Repeat, ListTodo, Target } from 'lucide-react'
 import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
 import CalorieCounterCard from '@/features/calories/CalorieCounterCard'
 import HealthTrends from '@/features/exercise/HealthTrends'
@@ -15,27 +16,27 @@ export default function BodyPage() {
       <p className="mt-1 text-sm text-rdp-text-dim">Train. Fuel. Recover. Optimize your physical potential.</p>
 
       <div className="mt-5 space-y-3">
-        <Disclosure title="Exercise Log" subtitle="Strength, aerobic, stretching" defaultOpen>
+        <Disclosure title="Exercise Log" subtitle="Strength, aerobic, stretching" icon={Dumbbell} defaultOpen>
           <ExerciseLogCard />
         </Disclosure>
 
-        <Disclosure title="Calorie Counter" subtitle="Fuel — search or log manually" defaultOpen>
+        <Disclosure title="Calorie Counter" subtitle="Fuel — search or log manually" icon={Utensils} defaultOpen>
           <CalorieCounterCard />
         </Disclosure>
 
-        <Disclosure title="Health Trends" subtitle="Sleep, energy, weight over time">
+        <Disclosure title="Health Trends" subtitle="Sleep, energy, weight over time" icon={Activity}>
           <HealthTrends />
         </Disclosure>
 
-        <Disclosure title="Habits" subtitle="Body-tagged habits">
+        <Disclosure title="Habits" subtitle="Body-tagged habits" icon={Repeat}>
           <PillarHabits pillar="body" />
         </Disclosure>
 
-        <Disclosure title="Tasks" subtitle="Body-tagged to-dos">
+        <Disclosure title="Tasks" subtitle="Body-tagged to-dos" icon={ListTodo}>
           <TaskList view="today" pillar="body" quickAddPlaceholder="Add a Body task…" />
         </Disclosure>
 
-        <Disclosure title="Goals" subtitle="Body-tagged goals">
+        <Disclosure title="Goals" subtitle="Body-tagged goals" icon={Target}>
           <PillarGoals pillar="body" />
         </Disclosure>
       </div>

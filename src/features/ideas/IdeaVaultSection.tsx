@@ -30,7 +30,7 @@ export default function IdeaVaultSection() {
         {loading ? (
           <p className="py-4 text-center text-sm text-rdp-text-faint">Loading…</p>
         ) : ideas.length === 0 ? (
-          <p className="py-4 text-center text-sm text-rdp-text-faint">Nothing here yet.</p>
+          <p className="py-4 text-center text-sm text-rdp-text-faint">Nothing captured yet — add an idea above.</p>
         ) : (
           ideas.map((idea) => (
             <IdeaRow

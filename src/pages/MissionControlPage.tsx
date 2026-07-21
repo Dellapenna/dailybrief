@@ -1,5 +1,7 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
+import Skeleton from '@/components/Skeleton'
+import { Sunrise, ListTodo, Target, FileBarChart, TrendingUp } from 'lucide-react'
 import ExecutiveSummaryCard from '@/features/executiveSummary/ExecutiveSummaryCard'
 import MissionProgress from '@/features/dashboard/MissionProgress'
 import PillarTaskSummary from '@/features/pillarSummary/PillarTaskSummary'
@@ -17,9 +19,9 @@ function AllGoals() {
       {error && <p className="mt-3 text-sm text-rdp-risk">{error}</p>}
       <div className="mt-3 space-y-2">
         {loading ? (
-          <p className="py-4 text-center text-sm text-rdp-text-faint">Loading…</p>
+          <Skeleton lines={3} />
         ) : goals.length === 0 ? (
-          <p className="py-4 text-center text-sm text-rdp-text-faint">No goals yet.</p>
+          <p className="py-4 text-center text-sm text-rdp-text-faint">No goals yet — add one above.</p>
         ) : (
           goals.map((goal) => (
             <GoalRow
@@ -50,23 +52,23 @@ export default function MissionControlPage() {
       <p className="mt-1 text-sm text-rdp-text-dim">Plan. Execute. Win. You are the captain.</p>
 
       <div className="mt-5 space-y-3">
-        <Disclosure title="Morning Check-in" defaultOpen>
+        <Disclosure title="Morning Check-in" icon={Sunrise} defaultOpen>
           <CheckInForm />
         </Disclosure>
 
-        <Disclosure title="Plan" subtitle="Today's tasks, all pillars" defaultOpen>
+        <Disclosure title="Plan" subtitle="Today's tasks, all pillars" icon={ListTodo} defaultOpen>
           <TaskList view="today" quickAddPlaceholder="Add a task…" />
         </Disclosure>
 
-        <Disclosure title="Goals" subtitle="All pillars" defaultOpen>
+        <Disclosure title="Goals" subtitle="All pillars" icon={Target} defaultOpen>
           <AllGoals />
         </Disclosure>
 
-        <Disclosure title="Executive Summary">
+        <Disclosure title="Executive Summary" icon={FileBarChart}>
           <ExecutiveSummaryCard />
         </Disclosure>
 
-        <Disclosure title="Analyze" subtitle="Progress across pillars">
+        <Disclosure title="Analyze" subtitle="Progress across pillars" icon={TrendingUp}>
           <div className="grid gap-4 sm:grid-cols-2">
             <MissionProgress />
             <PillarTaskSummary />

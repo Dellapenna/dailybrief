@@ -82,7 +82,7 @@ export default function ExerciseLogCard() {
         {loading ? (
           <p className="py-4 text-center text-sm text-rdp-text-faint">Loading…</p>
         ) : logs.length === 0 ? (
-          <p className="py-4 text-center text-sm text-rdp-text-faint">No workouts logged yet.</p>
+          <p className="py-4 text-center text-sm text-rdp-text-faint">No workouts logged yet — add one above.</p>
         ) : (
           logs.map((log) => (
             <div key={log.id} className="group flex items-center justify-between border-b border-rdp-line py-2.5 last:border-b-0">

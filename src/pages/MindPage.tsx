@@ -1,6 +1,7 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import TabbedCard from '@/components/TabbedCard'
+import { BookOpen, Wind, MessageCircle, Lightbulb, Repeat, ListTodo, Target } from 'lucide-react'
 import MotivationCard from '@/features/motivation/MotivationCard'
 import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
@@ -20,7 +21,12 @@ export default function MindPage() {
       <p className="mt-1 text-sm text-rdp-text-dim">Focus. Learn. Grow. Sharpen your mind every day.</p>
 
       <div className="mt-5 space-y-3">
-        <Disclosure title="Daily Reads" subtitle="Motivation, Word of the Day, Spanish, Communication Tip" defaultOpen>
+        <Disclosure
+          title="Daily Reads"
+          subtitle="Motivation, Word of the Day, Spanish, Communication Tip"
+          icon={BookOpen}
+          defaultOpen
+        >
           <TabbedCard
             tabs={[
               { label: 'Motivation', content: <MotivationCard /> },
@@ -31,27 +37,32 @@ export default function MindPage() {
           />
         </Disclosure>
 
-        <Disclosure title="Meditate" subtitle="Breathing Meditation" defaultOpen>
+        <Disclosure title="Meditate" subtitle="Breathing Meditation" icon={Wind} defaultOpen>
           <BreathingTimer />
         </Disclosure>
 
-        <Disclosure title="Communication Practice Journal" subtitle="Log real interactions, reflect" defaultOpen>
+        <Disclosure
+          title="Communication Practice Journal"
+          subtitle="Log real interactions, reflect"
+          icon={MessageCircle}
+          defaultOpen
+        >
           <CommunicationJournalCard />
         </Disclosure>
 
-        <Disclosure title="Idea Vault">
+        <Disclosure title="Idea Vault" icon={Lightbulb}>
           <IdeaVaultSection />
         </Disclosure>
 
-        <Disclosure title="Habits" subtitle="Includes Spanish practice">
+        <Disclosure title="Habits" subtitle="Includes Spanish practice" icon={Repeat}>
           <PillarHabits pillar="mind" />
         </Disclosure>
 
-        <Disclosure title="Tasks" subtitle="Mind-tagged to-dos">
+        <Disclosure title="Tasks" subtitle="Mind-tagged to-dos" icon={ListTodo}>
           <TaskList view="today" pillar="mind" quickAddPlaceholder="Add a Mind task…" />
         </Disclosure>
 
-        <Disclosure title="Goals" subtitle="Mind-tagged goals">
+        <Disclosure title="Goals" subtitle="Mind-tagged goals" icon={Target}>
           <PillarGoals pillar="mind" />
         </Disclosure>
       </div>

@@ -96,7 +96,7 @@ export default function CommunicationJournalCard() {
         {loading ? (
           <p className="py-4 text-center text-sm text-rdp-text-faint">Loading…</p>
         ) : logs.length === 0 ? (
-          <p className="py-4 text-center text-sm text-rdp-text-faint">Nothing logged yet.</p>
+          <p className="py-4 text-center text-sm text-rdp-text-faint">Nothing logged yet — add an entry above.</p>
         ) : (
           logs.map((log) => (
             <div key={log.id} className="border-b border-rdp-line py-2.5 last:border-b-0">

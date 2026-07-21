@@ -22,7 +22,7 @@ export default function HabitsPage() {
         {loading ? (
           <p className="py-6 text-center text-sm text-rdp-text-faint">Loading…</p>
         ) : habits.length === 0 ? (
-          <p className="py-6 text-center text-sm text-rdp-text-faint">No habits yet. Add one above.</p>
+          <p className="py-6 text-center text-sm text-rdp-text-faint">No habits yet — add one above.</p>
         ) : (
           habits.map((habit) => (
             <HabitRow key={habit.id} habit={habit} onToggle={toggleToday} onDelete={(h) => deleteHabit(h.id)} />

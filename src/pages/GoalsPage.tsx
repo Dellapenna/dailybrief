@@ -20,7 +20,7 @@ export default function GoalsPage() {
         {loading ? (
           <p className="py-6 text-center text-sm text-rdp-text-faint">Loading…</p>
         ) : goals.length === 0 ? (
-          <p className="py-6 text-center text-sm text-rdp-text-faint">No goals yet. Add one above.</p>
+          <p className="py-6 text-center text-sm text-rdp-text-faint">No goals yet — add one above.</p>
         ) : (
           goals.map((goal) => (
             <GoalRow

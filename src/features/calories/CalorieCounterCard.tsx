@@ -203,7 +203,7 @@ export default function CalorieCounterCard() {
         {loading ? (
           <p className="py-4 text-center text-sm text-rdp-text-faint">Loading…</p>
         ) : logs.length === 0 ? (
-          <p className="py-4 text-center text-sm text-rdp-text-faint">Nothing logged today.</p>
+          <p className="py-4 text-center text-sm text-rdp-text-faint">Nothing logged today yet.</p>
         ) : (
           MEALS.map((m) => {
             const mealLogs = logs.filter((l) => l.meal === m.value)
@@ -225,7 +225,7 @@ export default function CalorieCounterCard() {
                         onClick={() => {
                           if (window.confirm(`Remove "${log.food_name}"?`)) deleteEntry(log.id)
                         }}
-                        className="pointer-events-none text-xs text-rdp-text-faint opacity-0 hover:text-rdp-risk group-hover:pointer-events-auto group-hover:opacity-100"
+                        className="text-xs text-rdp-text-faint hover:text-rdp-risk"
                       >
                         Delete
                       </button>

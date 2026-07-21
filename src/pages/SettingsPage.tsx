@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from 'react'
 import { api } from '@/lib/api'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import Disclosure from '@/components/Disclosure'
+import { MapPin, Sparkles, Utensils, LineChart, Coins, Trophy, Calendar as CalendarIcon } from 'lucide-react'
 import type { CalendarConnection, CalendarProvider } from '@/types/calendar'
 
 type Preferences = {
@@ -66,7 +67,7 @@ function LocationSettings() {
   }
 
   return (
-    <Disclosure title="Home Location" subtitle="Used for weather when browser location isn't available" defaultOpen>
+    <Disclosure title="Home Location" subtitle="Used for weather when browser location isn't available" icon={MapPin} defaultOpen>
       {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
 
       <div className="flex gap-2">
@@ -124,7 +125,7 @@ function HoroscopeSettings() {
   }
 
   return (
-    <Disclosure title="Horoscope" subtitle="For fun — set your sign to see it on Mission Control">
+    <Disclosure title="Horoscope" subtitle="For fun — set your sign to see it on Mission Control" icon={Sparkles}>
       {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
 
       <select
@@ -171,7 +172,7 @@ function CalorieSettings() {
   }
 
   return (
-    <Disclosure title="Daily Calorie Goal" subtitle="Used by the Calorie Counter on Body">
+    <Disclosure title="Daily Calorie Goal" subtitle="Used by the Calorie Counter on Body" icon={Utensils}>
       {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
       <div className="flex gap-2">
         <input
@@ -238,7 +239,7 @@ function StockSettings() {
   }
 
   return (
-    <Disclosure title="Stock Watchlist" subtitle="Drives Stock Market on Daily Dashboard">
+    <Disclosure title="Stock Watchlist" subtitle="Drives Stock Market on Daily Dashboard" icon={LineChart}>
       {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
 
       <form onSubmit={addStock} className="flex gap-2">
@@ -268,7 +269,7 @@ function StockSettings() {
             </button>
           </div>
         ))}
-        {stocks.length === 0 && <p className="text-sm text-rdp-text-faint">No symbols in your watchlist.</p>}
+        {stocks.length === 0 && <p className="text-sm text-rdp-text-faint">Nothing added yet.</p>}
       </div>
     </Disclosure>
   )
@@ -332,7 +333,7 @@ function CryptoSettings() {
   }
 
   return (
-    <Disclosure title="Crypto Watchlist" subtitle="Drives Crypto Market on Daily Dashboard">
+    <Disclosure title="Crypto Watchlist" subtitle="Drives Crypto Market on Daily Dashboard" icon={Coins}>
       {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
 
       <input
@@ -369,7 +370,7 @@ function CryptoSettings() {
             </button>
           </div>
         ))}
-        {coins.length === 0 && <p className="text-sm text-rdp-text-faint">No coins in your watchlist.</p>}
+        {coins.length === 0 && <p className="text-sm text-rdp-text-faint">Nothing added yet.</p>}
       </div>
     </Disclosure>
   )
@@ -418,7 +419,7 @@ function SportsSettings() {
   }
 
   return (
-    <Disclosure title="Favorite Teams" subtitle="Drives Sports schedule + scores on Daily Dashboard">
+    <Disclosure title="Favorite Teams" subtitle="Drives Sports schedule + scores on Daily Dashboard" icon={Trophy}>
       {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
 
       <form onSubmit={addTeam} className="flex gap-2">
@@ -451,7 +452,7 @@ function SportsSettings() {
             </button>
           </div>
         ))}
-        {teams.length === 0 && <p className="text-sm text-rdp-text-faint">No favorite teams set.</p>}
+        {teams.length === 0 && <p className="text-sm text-rdp-text-faint">Nothing added yet.</p>}
       </div>
     </Disclosure>
   )
@@ -502,7 +503,7 @@ function CalendarSettings() {
   const statusFor = (provider: CalendarProvider) => connections.find((c) => c.provider === provider)
 
   return (
-    <Disclosure title="Calendars" subtitle="iCloud and Google live now, Outlook not yet connected" defaultOpen>
+    <Disclosure title="Calendars" subtitle="iCloud and Google live now, Outlook not yet connected" icon={CalendarIcon} defaultOpen>
       {redirectMessage && (
         <p className={`mb-2 text-sm ${redirectMessage.success ? 'text-rdp-good' : 'text-rdp-risk'}`}>
           {redirectMessage.text}
@@ -559,13 +560,23 @@ export default function SettingsPage() {
   return (
     <div>
       <h1 className="font-display text-2xl font-semibold tracking-tight text-rdp-text">Settings</h1>
-      <div className="mt-5 space-y-3">
+
+      <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">Preferences</p>
+      <div className="mt-2 space-y-3">
         <LocationSettings />
         <CalorieSettings />
         <HoroscopeSettings />
+      </div>
+
+      <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">Watchlists</p>
+      <div className="mt-2 space-y-3">
         <StockSettings />
         <CryptoSettings />
         <SportsSettings />
+      </div>
+
+      <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">Connections</p>
+      <div className="mt-2 space-y-3">
         <CalendarSettings />
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Skeleton from '@/components/Skeleton'
 import { api } from '@/lib/api'
 
 type Coin = { id: string; label: string; priceUsd: number; change24h: number | null }
@@ -21,7 +22,7 @@ export default function CryptoCard() {
       <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-text-faint">
         Crypto Market
       </p>
-      {loading && <p className="mt-2 text-sm text-rdp-text-faint">Loading…</p>}
+      {loading && <Skeleton lines={2} className="mt-2" />}
       {error && <p className="mt-2 text-sm text-rdp-risk">{error}</p>}
       {coins && (
         <div className="mt-2 space-y-2">

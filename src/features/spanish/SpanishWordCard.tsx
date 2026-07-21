@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Skeleton from '@/components/Skeleton'
 import { api } from '@/lib/api'
 
 type SpanishWord = { es: string; en: string; example?: string; exampleEn?: string }
@@ -21,7 +22,7 @@ export default function SpanishWordCard() {
       <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-text-faint">
         Spanish Word of the Day
       </p>
-      {loading && <p className="mt-2 text-sm text-rdp-text-faint">Loading…</p>}
+      {loading && <Skeleton lines={2} className="mt-2" />}
       {error && <p className="mt-2 text-sm text-rdp-risk">{error}</p>}
       {word && (
         <div className="mt-2">

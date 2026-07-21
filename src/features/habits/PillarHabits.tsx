@@ -14,7 +14,7 @@ export default function PillarHabits({ pillar }: { pillar: PillarId }) {
         {loading ? (
           <p className="py-4 text-center text-sm text-rdp-text-faint">Loading…</p>
         ) : habits.length === 0 ? (
-          <p className="py-4 text-center text-sm text-rdp-text-faint">No habits yet.</p>
+          <p className="py-4 text-center text-sm text-rdp-text-faint">No habits yet — add one above.</p>
         ) : (
           habits.map((habit) => (
             <HabitRow key={habit.id} habit={habit} onToggle={toggleToday} onDelete={(h) => deleteHabit(h.id)} />

@@ -1,6 +1,7 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import TabbedCard from '@/components/TabbedCard'
+import { CloudSun, Calendar, Newspaper, LineChart, Coins, Trophy, Sparkles, Clock } from 'lucide-react'
 import WeatherCard from '@/features/weather/WeatherCard'
 import CalendarSection from '@/features/calendar/CalendarSection'
 import NewsCard from '@/features/news/NewsCard'
@@ -26,31 +27,31 @@ export default function DailyDashboardPage() {
       <p className="mt-1 text-sm text-rdp-text-dim">Your day. Your intelligence. Your edge.</p>
 
       <div className="mt-5 space-y-3">
-        <Disclosure title="Weather" defaultOpen>
+        <Disclosure title="Weather" icon={CloudSun} defaultOpen>
           <WeatherCard />
         </Disclosure>
 
-        <Disclosure title="Calendar" subtitle="Agenda and month view" defaultOpen>
+        <Disclosure title="Calendar" subtitle="Agenda and month view" icon={Calendar} defaultOpen>
           <CalendarSection />
         </Disclosure>
 
-        <Disclosure title="News" defaultOpen>
+        <Disclosure title="News" icon={Newspaper} defaultOpen>
           <NewsCard />
         </Disclosure>
 
-        <Disclosure title="Stock Market">
+        <Disclosure title="Stock Market" icon={LineChart}>
           <StocksCard />
         </Disclosure>
 
-        <Disclosure title="Crypto Market">
+        <Disclosure title="Crypto Market" icon={Coins}>
           <CryptoCard />
         </Disclosure>
 
-        <Disclosure title="Sports">
+        <Disclosure title="Sports" icon={Trophy}>
           <SportsCard />
         </Disclosure>
 
-        <Disclosure title="More" subtitle="Horoscope, Fun Fact, Dad Joke">
+        <Disclosure title="More" subtitle="Horoscope, Fun Fact, Dad Joke" icon={Sparkles}>
           <TabbedCard
             tabs={[
               { label: 'Horoscope', content: <HoroscopeCard /> },
@@ -60,7 +61,7 @@ export default function DailyDashboardPage() {
           />
         </Disclosure>
 
-        <Disclosure title="World Clock" subtitle="Spain, Guatemala, Austin">
+        <Disclosure title="World Clock" subtitle="Spain, Guatemala, Austin" icon={Clock}>
           <WorldClockCard />
         </Disclosure>
       </div>

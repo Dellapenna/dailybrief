@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Skeleton from '@/components/Skeleton'
 import { api } from '@/lib/api'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import type { WeatherResponse } from '@/types/weather'
@@ -33,7 +34,7 @@ export default function WeatherCard({ fallbackLocation }: { fallbackLocation?: {
           No location available — allow location access or set a home location in Settings.
         </p>
       )}
-      {loading && <p className="mt-2 text-sm text-rdp-text-faint">Loading…</p>}
+      {loading && <Skeleton lines={2} className="mt-2" />}
       {error && <p className="mt-2 text-sm text-rdp-risk">{error}</p>}
 
       {weather?.today && (

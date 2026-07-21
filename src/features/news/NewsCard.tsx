@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Skeleton from '@/components/Skeleton'
 import { api } from '@/lib/api'
 
 type Headline = { title: string; url: string; source: string; publishedAt: string | null }
@@ -38,7 +39,7 @@ export default function NewsCard() {
         Today's Headlines
       </p>
 
-      {loading && <p className="mt-2 text-sm text-rdp-text-faint">Loading…</p>}
+      {loading && <Skeleton lines={2} className="mt-2" />}
       {error && <p className="mt-2 text-sm text-rdp-risk">{error}</p>}
 
       {news && (

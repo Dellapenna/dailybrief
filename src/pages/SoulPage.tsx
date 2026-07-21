@@ -1,5 +1,6 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
+import { Sparkles, Heart, Moon, HeartHandshake, ListTodo, Target } from 'lucide-react'
 import PrayerCard from '@/features/soul/PrayerCard'
 import GratitudeCard from '@/features/soul/GratitudeCard'
 import ServiceCard from '@/features/soul/ServiceCard'
@@ -15,27 +16,27 @@ export default function SoulPage() {
       <p className="mt-1 text-sm text-rdp-text-dim">Faith. Purpose. Peace. Strengthen your soul within.</p>
 
       <div className="mt-5 space-y-3">
-        <Disclosure title="Faith" subtitle="Prayer" defaultOpen>
+        <Disclosure title="Faith" subtitle="Prayer" icon={Sparkles} defaultOpen>
           <PrayerCard />
         </Disclosure>
 
-        <Disclosure title="Gratitude" defaultOpen>
+        <Disclosure title="Gratitude" icon={Heart} defaultOpen>
           <GratitudeCard />
         </Disclosure>
 
-        <Disclosure title="Reflection" subtitle="Evening Review" defaultOpen>
+        <Disclosure title="Reflection" subtitle="Evening Review" icon={Moon} defaultOpen>
           <EveningReviewForm />
         </Disclosure>
 
-        <Disclosure title="Service">
+        <Disclosure title="Service" icon={HeartHandshake}>
           <ServiceCard />
         </Disclosure>
 
-        <Disclosure title="Tasks" subtitle="Soul-tagged to-dos">
+        <Disclosure title="Tasks" subtitle="Soul-tagged to-dos" icon={ListTodo}>
           <TaskList view="today" pillar="soul" quickAddPlaceholder="Add a Soul task…" />
         </Disclosure>
 
-        <Disclosure title="Goals" subtitle="Soul-tagged goals">
+        <Disclosure title="Goals" subtitle="Soul-tagged goals" icon={Target}>
           <PillarGoals pillar="soul" />
         </Disclosure>
       </div>

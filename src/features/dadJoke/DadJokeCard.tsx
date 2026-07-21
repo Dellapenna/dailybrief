@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Skeleton from '@/components/Skeleton'
 import { api } from '@/lib/api'
 
 export default function DadJokeCard() {
@@ -16,7 +17,7 @@ export default function DadJokeCard() {
 
   return (
     <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
-      {loading && <p className="text-sm text-rdp-text-faint">Loading…</p>}
+      {loading && <Skeleton lines={2} />}
       {error && <p className="text-sm text-rdp-risk">{error}</p>}
       {joke && <p className="text-sm text-rdp-text">{joke}</p>}
     </div>

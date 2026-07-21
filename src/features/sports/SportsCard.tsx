@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import Skeleton from '@/components/Skeleton'
 import { api } from '@/lib/api'
 
 type Game = { id: string; team: string; matchup: string; date: string; time: string | null; league: string }
@@ -33,8 +34,13 @@ export default function SportsCard() {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
-        <p className="text-center text-sm text-rdp-text-faint">Loading…</p>
+      <div className="space-y-3">
+        <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
+          <Skeleton lines={3} />
+        </div>
+        <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
+          <Skeleton lines={3} />
+        </div>
       </div>
     )
   }
