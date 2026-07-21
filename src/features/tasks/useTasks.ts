@@ -60,8 +60,22 @@ export function useTasks(view: TaskView, pillar?: PillarId) {
 
   async function updateTask(id: string, updates: Partial<Task>) {
     setTasks((prev) => prev.map((t) => (t.id === id ? { ...t, ...updates } : t)))
+
+    // Bug fix: this used to pass `updates` straight through to the API,
+    // but the API expects camelCase field names (dueDate, pillarId,
+    // sortOrder) while Task's own fields are snake_case (due_date,
+    // pillar_id, sort_order) to match the database columns. Sending
+    // `due_date` where the backend looks for `dueDate` meant the request
+    // succeeded but silently changed nothing — a manual due-date edit
+    // would appear to work, then revert on the next reload.
+    const apiBody: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(updates)) {
+      const apiKey = key === 'due_date' ? 'dueDate' : key === 'pillar_id' ? 'pillarId' : key === 'sort_order' ? 'sortOrder' : key
+      apiBody[apiKey] = value
+    }
+
     try {
-      await api.patch(`/tasks/${id}`, updates)
+      await api.patch(`/tasks/${id}`, apiBody)
       // Completing/moving a task usually means it should leave this view.
       if (updates.status && updates.status !== view) {
         setTasks((prev) => prev.filter((t) => t.id !== id))
