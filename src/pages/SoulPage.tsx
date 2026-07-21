@@ -1,13 +1,12 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
-import { Sparkles, Heart, Moon, HeartHandshake, ListTodo, Target } from 'lucide-react'
+import { Sparkles, Heart, Moon, HeartHandshake } from 'lucide-react'
 import PrayerCard from '@/features/soul/PrayerCard'
 import GratitudeCard from '@/features/soul/GratitudeCard'
 import ServiceCard from '@/features/soul/ServiceCard'
 import EveningReviewForm from '@/features/eveningReview/EveningReviewForm'
-import TaskList from '@/features/tasks/TaskList'
-import PillarGoals from '@/features/goals/PillarGoals'
 
+/** Tasks/Goals moved to Mission Control's consolidated all-pillars view, per direct request. */
 export default function SoulPage() {
   return (
     <div>
@@ -28,16 +27,8 @@ export default function SoulPage() {
           <EveningReviewForm />
         </Disclosure>
 
-        <Disclosure title="Service" icon={HeartHandshake}>
+        <Disclosure title="Service" icon={HeartHandshake} defaultOpen>
           <ServiceCard />
-        </Disclosure>
-
-        <Disclosure title="Tasks" subtitle="Soul-tagged to-dos" icon={ListTodo}>
-          <TaskList view="today" pillar="soul" quickAddPlaceholder="Add a Soul task…" />
-        </Disclosure>
-
-        <Disclosure title="Goals" subtitle="Soul-tagged goals" icon={Target}>
-          <PillarGoals pillar="soul" />
         </Disclosure>
       </div>
     </div>

@@ -1,14 +1,12 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import TabbedCard from '@/components/TabbedCard'
-import { Languages, Wind, MessageCircle, Lightbulb, ListTodo, Target } from 'lucide-react'
+import { Languages, Wind, MessageCircle, Lightbulb } from 'lucide-react'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
 import CommunicationTipCard from '@/features/communication/CommunicationTipCard'
 import BreathingTimer from '@/features/mind/BreathingTimer'
 import CommunicationJournalCard from '@/features/communication/CommunicationJournalCard'
 import IdeaVaultSection from '@/features/ideas/IdeaVaultSection'
-import TaskList from '@/features/tasks/TaskList'
-import PillarGoals from '@/features/goals/PillarGoals'
 
 /**
  * Motivation Quote and Word of the Day moved to Daily Dashboard — the
@@ -16,8 +14,9 @@ import PillarGoals from '@/features/goals/PillarGoals'
  * Mind, joining Fun Fact/Dad Joke which were already there. Spanish and
  * the Communication Tip stayed here since they're more skill-building
  * than pure "read for fun," and the map doesn't suggest moving them.
- * Habits (including Spanish practice) moved to Mission Control's
- * consolidated all-pillars view with a pillar selector per row.
+ * Habits (including Spanish practice) and Tasks/Goals moved to Mission
+ * Control's consolidated all-pillars view with a pillar selector per
+ * row, per direct request.
  */
 export default function MindPage() {
   return (
@@ -49,16 +48,8 @@ export default function MindPage() {
           <CommunicationJournalCard />
         </Disclosure>
 
-        <Disclosure title="Idea Vault" icon={Lightbulb}>
+        <Disclosure title="Idea Vault" icon={Lightbulb} defaultOpen>
           <IdeaVaultSection />
-        </Disclosure>
-
-        <Disclosure title="Tasks" subtitle="Mind-tagged to-dos" icon={ListTodo}>
-          <TaskList view="today" pillar="mind" quickAddPlaceholder="Add a Mind task…" />
-        </Disclosure>
-
-        <Disclosure title="Goals" subtitle="Mind-tagged goals" icon={Target}>
-          <PillarGoals pillar="mind" />
         </Disclosure>
       </div>
     </div>

@@ -1,7 +1,8 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import Skeleton from '@/components/Skeleton'
-import { Sunrise, ListTodo, Target, Repeat, Lightbulb, FileBarChart, TrendingUp } from 'lucide-react'
+import TabbedCard from '@/components/TabbedCard'
+import { Sunrise, ListTodo, Target, Repeat, Sparkles } from 'lucide-react'
 import ExecutiveSummaryCard from '@/features/executiveSummary/ExecutiveSummaryCard'
 import MissionProgress from '@/features/dashboard/MissionProgress'
 import PillarTaskSummary from '@/features/pillarSummary/PillarTaskSummary'
@@ -110,19 +111,22 @@ export default function MissionControlPage() {
           <AllHabits />
         </Disclosure>
 
-        <Disclosure title="Habit Ideas" subtitle="AI suggestions grounded in your active goals" icon={Lightbulb}>
-          <HabitRecommendationsCard />
-        </Disclosure>
-
-        <Disclosure title="Executive Summary" icon={FileBarChart}>
-          <ExecutiveSummaryCard />
-        </Disclosure>
-
-        <Disclosure title="Analyze" subtitle="Progress across pillars" icon={TrendingUp}>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <MissionProgress />
-            <PillarTaskSummary />
-          </div>
+        <Disclosure title="Insights" subtitle="Executive Summary, Progress, Habit Ideas" icon={Sparkles}>
+          <TabbedCard
+            tabs={[
+              { label: 'Executive Summary', content: <ExecutiveSummaryCard /> },
+              {
+                label: 'Progress',
+                content: (
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <MissionProgress />
+                    <PillarTaskSummary />
+                  </div>
+                ),
+              },
+              { label: 'Habit Ideas', content: <HabitRecommendationsCard /> },
+            ]}
+          />
         </Disclosure>
       </div>
     </div>

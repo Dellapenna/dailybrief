@@ -25,6 +25,7 @@ const otherLinks = [
   { to: '/habits', label: 'All Habits' },
   { to: '/ideas', label: 'Idea Vault' },
   { to: '/reviews', label: 'Reviews' },
+  { to: '/calories', label: 'Calorie Counter' },
   { to: '/settings', label: 'Settings' },
 ]
 

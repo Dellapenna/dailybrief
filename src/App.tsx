@@ -11,6 +11,7 @@ import HabitsPage from '@/pages/HabitsPage'
 import TasksPage from '@/pages/TasksPage'
 import IdeasPage from '@/pages/IdeasPage'
 import ReviewsPage from '@/pages/ReviewsPage'
+import CaloriesPage from '@/pages/CaloriesPage'
 import SettingsPage from '@/pages/SettingsPage'
 import MorePage from '@/pages/MorePage'
 import NotFoundPage from '@/pages/NotFoundPage'
@@ -45,6 +46,7 @@ function App() {
         <Route path="/tasks" element={<TasksPage />} />
         <Route path="/ideas" element={<IdeasPage />} />
         <Route path="/reviews" element={<ReviewsPage />} />
+        <Route path="/calories" element={<CaloriesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/more" element={<MorePage />} />
         <Route path="*" element={<NotFoundPage />} />

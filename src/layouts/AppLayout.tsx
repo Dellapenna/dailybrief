@@ -15,6 +15,7 @@ const desktopNav = [
   { to: '/mind', label: 'Mind' },
   { to: '/soul', label: 'Soul' },
   { to: '/tasks', label: 'All Tasks' },
+  { to: '/calories', label: 'Calorie Counter' },
   { to: '/settings', label: 'Settings' },
 ]
 
