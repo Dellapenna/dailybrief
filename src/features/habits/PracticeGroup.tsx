@@ -2,12 +2,11 @@ import { useState, type ReactNode } from 'react'
 import type { PillarId } from '@/types/pillar'
 
 /**
- * One collapsible, pillar-colored group containing several related
- * Practices. Each Practice inside is its own distinctly-bordered,
- * individually collapsible card (PracticeSubItem) — per feedback that
- * items within a group weren't visually separated enough, sharing the
- * group's background made them blend together. Now each one stands
- * apart with its own border/background, closed by default.
+ * Pillar-colored section for related Practices. The group itself is a
+ * static header now, not another collapsible layer — per direct
+ * feedback that group-then-item was 2 taps to reach anything. Now it's
+ * 1: the pillar badge is just a visual divider, each Practice inside
+ * (PracticeSubItem) is the only thing that expands.
  */
 const PILLAR_STYLES: Record<PillarId, { border: string; badge: string }> = {
   body: { border: 'border-l-emerald-500', badge: 'bg-emerald-500/15 text-emerald-400' },
@@ -44,29 +43,15 @@ export function PracticeSubItem({
   )
 }
 
-export default function PracticeGroup({
-  pillar,
-  defaultOpen = false,
-  children,
-}: {
-  pillar: PillarId
-  defaultOpen?: boolean
-  children: ReactNode
-}) {
-  const [open, setOpen] = useState(defaultOpen)
+export default function PracticeGroup({ pillar, children }: { pillar: PillarId; children: ReactNode }) {
   const style = PILLAR_STYLES[pillar]
 
   return (
-    <div className={`overflow-hidden rounded-xl border border-l-4 border-rdp-line ${style.border} bg-rdp-panel`}>
-      <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between gap-2 p-4 text-left">
-        <span className={`rounded-full px-2.5 py-1 font-mono text-[11px] font-medium uppercase tracking-wide ${style.badge}`}>
-          {PILLAR_NAMES[pillar]}
-        </span>
-        <span className={`shrink-0 font-mono text-xs text-rdp-text-faint transition-transform ${open ? 'rotate-180' : ''}`}>
-          ▾
-        </span>
-      </button>
-      {open && <div className="space-y-2.5 border-t border-rdp-line p-4">{children}</div>}
+    <div className={`rounded-xl border border-l-4 border-rdp-line ${style.border} bg-rdp-panel p-4`}>
+      <span className={`inline-block rounded-full px-2.5 py-1 font-mono text-[11px] font-medium uppercase tracking-wide ${style.badge}`}>
+        {PILLAR_NAMES[pillar]}
+      </span>
+      <div className="mt-3 space-y-2.5">{children}</div>
     </div>
   )
 }

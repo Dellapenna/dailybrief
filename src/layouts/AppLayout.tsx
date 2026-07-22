@@ -13,15 +13,16 @@ const desktopNav = [
 ]
 
 /**
- * Mobile bottom nav — back to 4 direct tabs + More, per direct request,
- * rather than fitting every destination in directly. Tasks, Habits &
- * Logbook, Idea Vault, and Settings live behind More now — see
+ * Mobile bottom nav — 5 tabs per direct request: Daily Dashboard,
+ * Calorie Counter, Tasks, Habits & Logbook direct, Mission Control
+ * moved behind More (along with Idea Vault and Settings) — see
  * MorePage.tsx.
  */
 const mobileNav = [
-  { to: '/mission-control', label: 'Mission Control', short: 'Mission' },
   { to: '/daily-dashboard', label: 'Daily Dashboard', short: 'Daily' },
   { to: '/calories', label: 'Calorie Counter', short: 'Calories' },
+  { to: '/tasks', label: 'Plan', short: 'Plan' },
+  { to: '/habits', label: 'Habits & Logbook', short: 'Habits' },
   { to: '/more', label: 'More', short: 'More' },
 ]
 

@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom'
 
 /**
- * Back in the primary mobile flow — bottom nav is 4 direct tabs
- * (Mission Control/Daily Dashboard/Calorie Counter/More) plus this for
- * everything else, per direct request.
+ * Back in the primary mobile flow — bottom nav is 5 tabs (Daily
+ * Dashboard/Calorie Counter/Plan/Habits & Logbook/More) plus this for
+ * everything else, per direct request. Mission Control moved in here;
+ * Tasks and Habits & Logbook moved out to direct tabs.
  */
 const otherLinks = [
-  { to: '/tasks', label: 'All Tasks' },
-  { to: '/habits', label: 'Habits & Logbook' },
+  { to: '/mission-control', label: 'Mission Control' },
   { to: '/ideas', label: 'Idea Vault' },
   { to: '/settings', label: 'Settings' },
 ]
