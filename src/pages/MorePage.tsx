@@ -1,12 +1,14 @@
 import { NavLink } from 'react-router-dom'
 
 /**
- * No longer part of the primary nav flow — all 6 real destinations are
- * direct bottom-nav tabs now (see AppLayout), no overflow needed. Kept,
- * unused, in case useful again later.
+ * Back in the primary mobile flow — bottom nav is 4 direct tabs
+ * (Mission Control/Daily Dashboard/Calorie Counter/More) plus this for
+ * everything else, per direct request.
  */
 const otherLinks = [
-  { to: '/calories', label: 'Calorie Counter' },
+  { to: '/tasks', label: 'All Tasks' },
+  { to: '/habits', label: 'Habits & Logbook' },
+  { to: '/ideas', label: 'Idea Vault' },
   { to: '/settings', label: 'Settings' },
 ]
 

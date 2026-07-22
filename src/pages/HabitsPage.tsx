@@ -9,7 +9,6 @@ import PracticeGroup, { PracticeSubItem } from '@/features/habits/PracticeGroup'
 import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
 import BreathingTimer from '@/features/mind/BreathingTimer'
 import CommunicationJournalCard from '@/features/communication/CommunicationJournalCard'
-import IdeaVaultSection from '@/features/ideas/IdeaVaultSection'
 import PrayerCard from '@/features/soul/PrayerCard'
 import GratitudeCard from '@/features/soul/GratitudeCard'
 import ServiceCard from '@/features/soul/ServiceCard'
@@ -87,9 +86,6 @@ export default function HabitsPage() {
           </PracticeSubItem>
           <PracticeSubItem label="Communication Practice Journal">
             <CommunicationJournalCard />
-          </PracticeSubItem>
-          <PracticeSubItem label="Idea Vault">
-            <IdeaVaultSection />
           </PracticeSubItem>
         </PracticeGroup>
 

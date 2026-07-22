@@ -3,11 +3,11 @@ import type { PillarId } from '@/types/pillar'
 
 /**
  * One collapsible, pillar-colored group containing several related
- * Practices — replaces the earlier flat list of 8 individually
- * collapsible cards, which per feedback didn't read as "combined in a
- * way that makes sense." Now it's 3 groups (Body/Mind/Soul), each
- * holding its practices as labeled sub-sections inside, matching how
- * the rest of the app already organizes by pillar.
+ * Practices. Each Practice inside is its own distinctly-bordered,
+ * individually collapsible card (PracticeSubItem) — per feedback that
+ * items within a group weren't visually separated enough, sharing the
+ * group's background made them blend together. Now each one stands
+ * apart with its own border/background, closed by default.
  */
 const PILLAR_STYLES: Record<PillarId, { border: string; badge: string }> = {
   body: { border: 'border-l-emerald-500', badge: 'bg-emerald-500/15 text-emerald-400' },
@@ -21,11 +21,25 @@ const PILLAR_NAMES: Record<PillarId, string> = {
   soul: 'Soul',
 }
 
-export function PracticeSubItem({ label, children }: { label: string; children: ReactNode }) {
+export function PracticeSubItem({
+  label,
+  defaultOpen = false,
+  children,
+}: {
+  label: string
+  defaultOpen?: boolean
+  children: ReactNode
+}) {
+  const [open, setOpen] = useState(defaultOpen)
   return (
-    <div>
-      <p className="font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">{label}</p>
-      <div className="mt-2">{children}</div>
+    <div className="overflow-hidden rounded-lg border border-rdp-line bg-rdp-void">
+      <button onClick={() => setOpen((o) => !o)} className="flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left">
+        <p className="text-sm font-medium text-rdp-text">{label}</p>
+        <span className={`shrink-0 font-mono text-xs text-rdp-text-faint transition-transform ${open ? 'rotate-180' : ''}`}>
+          ▾
+        </span>
+      </button>
+      {open && <div className="border-t border-rdp-line p-3">{children}</div>}
     </div>
   )
 }
@@ -52,7 +66,7 @@ export default function PracticeGroup({
           ▾
         </span>
       </button>
-      {open && <div className="space-y-4 border-t border-rdp-line p-4">{children}</div>}
+      {open && <div className="space-y-2.5 border-t border-rdp-line p-4">{children}</div>}
     </div>
   )
 }

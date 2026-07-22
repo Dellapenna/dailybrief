@@ -7,22 +7,22 @@ const desktopNav = [
   { to: '/daily-dashboard', label: 'Daily Dashboard' },
   { to: '/tasks', label: 'All Tasks' },
   { to: '/habits', label: 'Habits & Logbook' },
+  { to: '/ideas', label: 'Idea Vault' },
   { to: '/calories', label: 'Calorie Counter' },
   { to: '/settings', label: 'Settings' },
 ]
 
 /**
- * Mobile bottom nav — all 6 real destinations directly, per direct
- * request, rather than tucking 2 behind a "More" tab. Short labels to
- * fit 6 across a phone-width bar.
+ * Mobile bottom nav — back to 4 direct tabs + More, per direct request,
+ * rather than fitting every destination in directly. Tasks, Habits &
+ * Logbook, Idea Vault, and Settings live behind More now — see
+ * MorePage.tsx.
  */
 const mobileNav = [
   { to: '/mission-control', label: 'Mission Control', short: 'Mission' },
   { to: '/daily-dashboard', label: 'Daily Dashboard', short: 'Daily' },
-  { to: '/tasks', label: 'Plan', short: 'Plan' },
-  { to: '/habits', label: 'Habits & Logbook', short: 'Habits' },
   { to: '/calories', label: 'Calorie Counter', short: 'Calories' },
-  { to: '/settings', label: 'Settings', short: 'Settings' },
+  { to: '/more', label: 'More', short: 'More' },
 ]
 
 export default function AppLayout() {

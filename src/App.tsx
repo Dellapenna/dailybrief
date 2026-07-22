@@ -4,6 +4,7 @@ import MissionControlPage from '@/pages/MissionControlPage'
 import DailyDashboardPage from '@/pages/DailyDashboardPage'
 import HabitsPage from '@/pages/HabitsPage'
 import TasksPage from '@/pages/TasksPage'
+import IdeasPage from '@/pages/IdeasPage'
 import CaloriesPage from '@/pages/CaloriesPage'
 import SettingsPage from '@/pages/SettingsPage'
 import MorePage from '@/pages/MorePage'
@@ -14,6 +15,11 @@ import NotFoundPage from '@/pages/NotFoundPage'
  * Netlify Password Protection at the site level (Netlify dashboard, not
  * code — see docs/INTEGRATIONS.md). Every route below is reachable once
  * past that gate; there's no second in-app login layer.
+ *
+ * v10: Idea Vault un-retired as its own page again — was folded into
+ * Habits & Logbook's Mind practices in v9, but per direct request (new
+ * header art incoming) it's back to being a real destination. /ideas no
+ * longer redirects.
  *
  * v9: full-structure pass after several incremental moves in a row
  * stopped adding up to something coherent (Idea Vault/Evening Review/
@@ -58,7 +64,7 @@ function App() {
         <Route path="/goals" element={<Navigate to="/mission-control" replace />} />
         <Route path="/habits" element={<HabitsPage />} />
         <Route path="/tasks" element={<TasksPage />} />
-        <Route path="/ideas" element={<Navigate to="/habits" replace />} />
+        <Route path="/ideas" element={<IdeasPage />} />
         <Route path="/reviews" element={<Navigate to="/habits" replace />} />
         <Route path="/calories" element={<CaloriesPage />} />
         <Route path="/settings" element={<SettingsPage />} />
