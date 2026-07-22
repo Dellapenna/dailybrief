@@ -9,6 +9,7 @@ import { NavLink } from 'react-router-dom'
 const otherLinks = [
   { to: '/mission-control', label: 'Mission Control' },
   { to: '/ideas', label: 'Idea Vault' },
+  { to: '/trends', label: 'Trends & Progress' },
   { to: '/settings', label: 'Settings' },
 ]
 

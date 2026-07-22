@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
 import AppLayout from '@/layouts/AppLayout'
 import MissionControlPage from '@/pages/MissionControlPage'
 import DailyDashboardPage from '@/pages/DailyDashboardPage'
@@ -10,11 +11,22 @@ import SettingsPage from '@/pages/SettingsPage'
 import MorePage from '@/pages/MorePage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
+// Lazy-loaded: recharts (charting library) is large, and only this one
+// page needs it — eager-loading it would add that weight to every page.
+const TrendsPage = lazy(() => import('@/pages/TrendsPage'))
+
 /**
  * No login/auth routes: access control for this single-user instance is
  * Netlify Password Protection at the site level (Netlify dashboard, not
  * code — see docs/INTEGRATIONS.md). Every route below is reachable once
  * past that gate; there's no second in-app login layer.
+ *
+ * v11: new /trends page — real charts (weight, calories, water, habit
+ * consistency, task completion) plus goal progress visuals and an
+ * honest AI executive summary/recommendations grounded in the actual
+ * data. Body removed from Daily Dashboard's Reflect & Learn (was just
+ * Health Trends, a text list) since Weight now has a proper chart here
+ * and the detailed log moved into this page too.
  *
  * v10: Idea Vault un-retired as its own page again — was folded into
  * Habits & Logbook's Mind practices in v9, but per direct request (new
@@ -65,6 +77,14 @@ function App() {
         <Route path="/habits" element={<HabitsPage />} />
         <Route path="/tasks" element={<TasksPage />} />
         <Route path="/ideas" element={<IdeasPage />} />
+        <Route
+          path="/trends"
+          element={
+            <Suspense fallback={<p className="text-sm text-rdp-text-faint">Loading…</p>}>
+              <TrendsPage />
+            </Suspense>
+          }
+        />
         <Route path="/reviews" element={<Navigate to="/habits" replace />} />
         <Route path="/calories" element={<CaloriesPage />} />
         <Route path="/settings" element={<SettingsPage />} />

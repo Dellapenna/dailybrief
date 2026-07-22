@@ -8,6 +8,7 @@ const desktopNav = [
   { to: '/tasks', label: 'All Tasks' },
   { to: '/habits', label: 'Habits & Logbook' },
   { to: '/ideas', label: 'Idea Vault' },
+  { to: '/trends', label: 'Trends & Progress' },
   { to: '/calories', label: 'Calorie Counter' },
   { to: '/settings', label: 'Settings' },
 ]

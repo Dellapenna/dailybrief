@@ -14,7 +14,6 @@ import DadJokeCard from '@/features/dadJoke/DadJokeCard'
 import MotivationCard from '@/features/motivation/MotivationCard'
 import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
 import WorldClockCard from '@/features/worldclock/WorldClockCard'
-import HealthTrends from '@/features/exercise/HealthTrends'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
 import CommunicationTipCard from '@/features/communication/CommunicationTipCard'
 import StoicQuoteCard from '@/features/stoic/StoicQuoteCard'
@@ -71,7 +70,6 @@ export default function DailyDashboardPage() {
         <Disclosure title="Reflect & Learn" subtitle="Things you read, by pillar" icon={BookOpen} defaultOpen>
           <TabbedCard
             tabs={[
-              { label: 'Body', content: <HealthTrends /> },
               {
                 label: 'Mind',
                 content: (
