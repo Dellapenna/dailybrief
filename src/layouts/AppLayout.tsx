@@ -6,7 +6,7 @@ const desktopNav = [
   { to: '/mission-control', label: 'Mission Control' },
   { to: '/daily-dashboard', label: 'Daily Dashboard' },
   { to: '/tasks', label: 'All Tasks' },
-  { to: '/habits', label: 'Habits & Practices' },
+  { to: '/habits', label: 'Habits & Logbook' },
   { to: '/calories', label: 'Calorie Counter' },
   { to: '/settings', label: 'Settings' },
 ]
@@ -20,7 +20,7 @@ const mobileNav = [
   { to: '/mission-control', label: 'Mission Control', short: 'Mission' },
   { to: '/daily-dashboard', label: 'Daily Dashboard', short: 'Daily' },
   { to: '/tasks', label: 'Plan', short: 'Plan' },
-  { to: '/habits', label: 'Habits & Practices', short: 'Habits' },
+  { to: '/habits', label: 'Habits & Logbook', short: 'Habits' },
   { to: '/calories', label: 'Calorie Counter', short: 'Calories' },
   { to: '/settings', label: 'Settings', short: 'Settings' },
 ]

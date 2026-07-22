@@ -42,7 +42,7 @@ function AllGoals() {
 /**
  * Mission Control — "Plan. Execute. Win. You are the captain." The only
  * home for Goals (no separate /goals page). Habit Ideas moved to
- * Habits & Practices so suggesting a habit and adding it happen in the
+ * Habits & Logbook so suggesting a habit and adding it happen in the
  * same place — see that page. Daily Dashboard is the reading/
  * informational counterpart.
  */
@@ -58,7 +58,7 @@ export default function MissionControlPage() {
         className="mt-3 flex items-center gap-2 rounded-xl border border-rdp-line bg-rdp-panel px-4 py-3 text-sm text-rdp-signal hover:bg-rdp-void"
       >
         <Repeat className="h-4 w-4" />
-        Habits & Practices live here — tap to open
+        Habits & Logbook live here — tap to open
       </Link>
 
       <div className="mt-3 space-y-3">

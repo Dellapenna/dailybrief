@@ -18,9 +18,9 @@ export default function TasksPage() {
 
   return (
     <div>
-      <PillarHero slug="tasks" alt="Tasks" />
-      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Tasks</h1>
-      <p className="mt-1 text-sm text-rdp-text-dim">Plan it. Prioritize it. Crush it.</p>
+      <PillarHero slug="tasks" alt="Tasks & Planning" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Tasks & Planning</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Plan your moves. Prioritize tasks. Execute with purpose.</p>
 
       <div className="mt-4">
         <Tabs items={tabs} active={active} onChange={setActive} />

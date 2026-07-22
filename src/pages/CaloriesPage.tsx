@@ -1,7 +1,9 @@
+import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
-import { Utensils, TrendingUp } from 'lucide-react'
+import { Utensils, TrendingUp, Droplet } from 'lucide-react'
 import CalorieCounterCard from '@/features/calories/CalorieCounterCard'
 import WeeklyNutritionCard from '@/features/calories/WeeklyNutritionCard'
+import WaterTrackerCard from '@/features/water/WaterTrackerCard'
 
 /**
  * Pulled out to its own page — this had grown into the most complex
@@ -13,12 +15,17 @@ import WeeklyNutritionCard from '@/features/calories/WeeklyNutritionCard'
 export default function CaloriesPage() {
   return (
     <div>
-      <h1 className="font-display text-2xl font-semibold tracking-tight text-rdp-text">Calorie Counter</h1>
+      <PillarHero slug="calories" alt="Calorie Counter" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Calorie Counter</h1>
       <p className="mt-1 text-sm text-rdp-text-dim">Fuel — search, scan, snap a photo, or log manually.</p>
 
       <div className="mt-5 space-y-3">
         <Disclosure title="Log Food" icon={Utensils} defaultOpen>
           <CalorieCounterCard />
+        </Disclosure>
+
+        <Disclosure title="Water" subtitle="Tap a glass to log 8oz" icon={Droplet} defaultOpen>
+          <WaterTrackerCard />
         </Disclosure>
 
         <Disclosure title="Weekly Nutrition Summary" subtitle="Real stats + an honest AI take" icon={TrendingUp} defaultOpen>

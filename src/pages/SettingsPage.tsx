@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { api } from '@/lib/api'
 import { useGeolocation } from '@/hooks/useGeolocation'
+import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import { MapPin, Sparkles, Utensils, LineChart, Coins, Trophy, Calendar as CalendarIcon } from 'lucide-react'
 import type { CalendarConnection, CalendarProvider } from '@/types/calendar'
@@ -559,7 +560,8 @@ function CalendarSettings() {
 export default function SettingsPage() {
   return (
     <div>
-      <h1 className="font-display text-2xl font-semibold tracking-tight text-rdp-text">Settings</h1>
+      <PillarHero slug="settings" alt="Settings" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Settings</h1>
 
       <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">Preferences</p>
       <div className="mt-2 space-y-3">

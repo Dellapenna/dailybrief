@@ -1,4 +1,6 @@
 import PillarHero from '@/components/PillarHero'
+import Disclosure from '@/components/Disclosure'
+import { Lightbulb } from 'lucide-react'
 import QuickAddBar from '@/features/tasks/QuickAddBar'
 import HabitRow from '@/features/habits/HabitRow'
 import { useHabits } from '@/features/habits/useHabits'
@@ -15,22 +17,20 @@ import EveningReviewForm from '@/features/eveningReview/EveningReviewForm'
 import type { PillarId } from '@/types/pillar'
 
 /**
- * Habits & Practices — moved here from Mission Control per direct
- * request. Renamed from just "Habits" since that undersold what's
- * actually here — 8 of the 9 sections below aren't habits at all.
- * The only home for Idea Vault and Evening Review (no more separate
- * /ideas or /reviews pages). Habit Ideas moved here from Mission
- * Control's Insights too, so suggesting a habit and adding it to the
- * list happen in the same place instead of split across pages.
+ * Habits & Logbook — renamed to match the new header art. Cleaned up
+ * per direct feedback: Habit Ideas and each of the 8 Practice cards are
+ * now collapsible (closed by default) instead of always fully expanded
+ * — the page reads as a compact, scannable list now rather than a wall
+ * of open content, expanding only what you actually tap into.
  */
 export default function HabitsPage() {
   const { habits, loading, error, createHabit, toggleToday, updateHabit, deleteHabit } = useHabits()
 
   return (
     <div>
-      <PillarHero slug="habits" alt="Habits & Practices" />
-      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Habits & Practices</h1>
-      <p className="mt-1 text-sm text-rdp-text-dim">Small actions. Big transformation.</p>
+      <PillarHero slug="habits" alt="Habits & Logbook" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Habits & Logbook</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Build consistency. Track progress. Become legendary.</p>
 
       <div className="mt-4">
         <QuickAddBar onAdd={createHabit} placeholder="Add a daily habit…" />
@@ -57,11 +57,10 @@ export default function HabitsPage() {
         )}
       </div>
 
-      <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">
-        Habit Ideas — grounded in your active goals
-      </p>
-      <div className="mt-2">
-        <HabitRecommendationsCard />
+      <div className="mt-4">
+        <Disclosure title="Habit Ideas" subtitle="AI suggestions grounded in your active goals" icon={Lightbulb}>
+          <HabitRecommendationsCard />
+        </Disclosure>
       </div>
 
       <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">Practices</p>

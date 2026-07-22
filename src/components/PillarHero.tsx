@@ -1,9 +1,9 @@
 /**
- * Small hero banner for each pillar page, cropped from the same
- * reference map image used on the home screen — reusing an asset
- * that already exists rather than generating anything new. Crop
- * boundaries are estimated, not pixel-verified (same caveat as the nav
- * map's tap zones) — flag any that look wrong once live.
+ * Hero banner for each page — new artwork carries the page title and
+ * tagline baked directly into the image, unlike the earlier crops which
+ * were purely decorative. Taller than before and without the extra
+ * brightness boost, since these are composed to be read, not just
+ * ambient background.
  */
 export default function PillarHero({ slug, alt }: { slug: string; alt: string }) {
   return (
@@ -11,7 +11,7 @@ export default function PillarHero({ slug, alt }: { slug: string; alt: string })
       <img
         src={`/images/pillars/${slug}.jpg`}
         alt={alt}
-        className="h-28 w-full object-cover brightness-[1.375] contrast-105 sm:h-36"
+        className="h-44 w-full object-cover sm:h-56"
       />
     </div>
   )
