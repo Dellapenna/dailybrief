@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import Skeleton from '@/components/Skeleton'
 import { TrendingUp, Sparkles, Target, Activity } from 'lucide-react'
@@ -66,8 +67,9 @@ export default function TrendsPage() {
 
   return (
     <div>
-      <h1 className="font-display text-2xl font-semibold tracking-tight text-rdp-text">Trends & Progress</h1>
-      <p className="mt-1 text-sm text-rdp-text-dim">Real data over time, and an honest read on where you stand.</p>
+      <PillarHero slug="trends" alt="Trends & Progress" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Trends & Progress</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Track the signal. Measure the movement. See the trends. Drive the progress.</p>
 
       {loading && <Skeleton lines={4} className="mt-5" />}
       {error && <p className="mt-5 text-sm text-rdp-risk">{error}</p>}

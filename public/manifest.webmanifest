@@ -2,7 +2,7 @@
   "name": "RDP 2.0 — Mission Control",
   "short_name": "RDP 2.0",
   "description": "Chart your course. Lead the life.",
-  "start_url": "/mission-control",
+  "start_url": "/daily-dashboard",
   "display": "standalone",
   "background_color": "#0a0e1a",
   "theme_color": "#0a0e1a",

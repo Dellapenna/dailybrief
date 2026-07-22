@@ -21,6 +21,9 @@ const TrendsPage = lazy(() => import('@/pages/TrendsPage'))
  * code — see docs/INTEGRATIONS.md). Every route below is reachable once
  * past that gate; there's no second in-app login layer.
  *
+ * v12: "/" (and the PWA start_url) now redirect to Daily Dashboard
+ * instead of Mission Control, per direct request.
+ *
  * v11: new /trends page — real charts (weight, calories, water, habit
  * consistency, task completion) plus goal progress visuals and an
  * honest AI executive summary/recommendations grounded in the actual
@@ -66,7 +69,7 @@ function App() {
   return (
     <Routes>
       <Route element={<AppLayout />}>
-        <Route path="/" element={<Navigate to="/mission-control" replace />} />
+        <Route path="/" element={<Navigate to="/daily-dashboard" replace />} />
         <Route path="/mission-control" element={<MissionControlPage />} />
         <Route path="/daily-dashboard" element={<DailyDashboardPage />} />
         <Route path="/briefing" element={<Navigate to="/daily-dashboard" replace />} />
