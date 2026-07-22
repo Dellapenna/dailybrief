@@ -18,6 +18,7 @@ import HealthTrends from '@/features/exercise/HealthTrends'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
 import CommunicationTipCard from '@/features/communication/CommunicationTipCard'
 import StoicQuoteCard from '@/features/stoic/StoicQuoteCard'
+import BibleQuoteCard from '@/features/bible/BibleQuoteCard'
 import EtymologyCard from '@/features/etymology/EtymologyCard'
 
 /**
@@ -81,7 +82,15 @@ export default function DailyDashboardPage() {
                   </div>
                 ),
               },
-              { label: 'Soul', content: <StoicQuoteCard /> },
+              {
+                label: 'Soul',
+                content: (
+                  <div className="space-y-3">
+                    <BibleQuoteCard />
+                    <StoicQuoteCard />
+                  </div>
+                ),
+              },
             ]}
           />
         </Disclosure>
