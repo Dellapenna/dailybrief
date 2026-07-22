@@ -18,6 +18,7 @@ import HealthTrends from '@/features/exercise/HealthTrends'
 import SpanishWordCard from '@/features/spanish/SpanishWordCard'
 import CommunicationTipCard from '@/features/communication/CommunicationTipCard'
 import StoicQuoteCard from '@/features/stoic/StoicQuoteCard'
+import EtymologyCard from '@/features/etymology/EtymologyCard'
 
 /**
  * Daily Dashboard — "Your day. Your intelligence. Your edge." Leans
@@ -76,6 +77,7 @@ export default function DailyDashboardPage() {
                   <div className="space-y-3">
                     <SpanishWordCard />
                     <CommunicationTipCard />
+                    <EtymologyCard />
                   </div>
                 ),
               },
