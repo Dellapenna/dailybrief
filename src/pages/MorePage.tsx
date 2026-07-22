@@ -1,13 +1,11 @@
 import { NavLink } from 'react-router-dom'
 
 /**
- * No longer part of the primary nav flow — the hamburger drawer covers
- * this ground directly now (see AppLayout). Kept, unused, in case still
- * useful as a fallback.
+ * No longer part of the primary nav flow — all 6 real destinations are
+ * direct bottom-nav tabs now (see AppLayout), no overflow needed. Kept,
+ * unused, in case useful again later.
  */
 const otherLinks = [
-  { to: '/tasks', label: 'All Tasks' },
-  { to: '/habits', label: 'Habits & Practices' },
   { to: '/calories', label: 'Calorie Counter' },
   { to: '/settings', label: 'Settings' },
 ]
