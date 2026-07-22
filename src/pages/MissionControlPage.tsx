@@ -3,7 +3,7 @@ import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import Skeleton from '@/components/Skeleton'
 import TabbedCard from '@/components/TabbedCard'
-import { Sunrise, ListTodo, Target, Repeat, Sparkles, Hammer } from 'lucide-react'
+import { Sunrise, ListTodo, Target, Repeat, Sparkles } from 'lucide-react'
 import ExecutiveSummaryCard from '@/features/executiveSummary/ExecutiveSummaryCard'
 import MissionProgress from '@/features/dashboard/MissionProgress'
 import PillarTaskSummary from '@/features/pillarSummary/PillarTaskSummary'
@@ -65,10 +65,13 @@ function AllGoals() {
  * under each pillar page's own "Habits" Disclosure. Consolidated here on
  * request, with a pillar selector per row so each habit can still be
  * tagged/organized by pillar without needing a separate page per pillar.
- * (Soul/Mind's special habits — Prayer, Gratitude, Service, Breathing
- * Meditation — still also get their own dedicated card UI in Practices
- * below for the guided prompt/timer; they'll also appear here as
- * ordinary rows, which is expected, not a bug.)
+ * Practices (pillar-tabbed "things you do": Exercise Log, Prayer,
+ * Communication Journal, etc.) folded in below the habit list itself,
+ * per direct request — was a separate Disclosure, now lives inside this
+ * one since it's closely related (several Practices items — Prayer,
+ * Gratitude, Service, Breathing Meditation — are themselves seeded
+ * habits with streak tracking, so they'll also appear as ordinary rows
+ * above, which is expected, not a bug).
  */
 function AllHabits() {
   const { habits, loading, error, createHabit, toggleToday, updateHabit, deleteHabit } = useHabits()
@@ -94,49 +97,12 @@ function AllHabits() {
           ))
         )}
       </div>
-    </div>
-  )
-}
 
-/**
- * Mission Control — "Plan. Execute. Win. You are the captain." Leans
- * toward inputs (things you create/enter) per the organization pass:
- * Check-in, Plan (tasks), Goals, Habits, plus Executive Summary/Analyze
- * which review those inputs. Daily Dashboard is the reading/
- * informational counterpart — see that page.
- *
- * Practices (new): Body/Mind/Soul retired as separate destinations —
- * their "things you do" content (Exercise Log, Prayer, Communication
- * Journal, etc.) consolidated here as pillar-tabbed sections instead,
- * per direct feedback that those 3 pages weren't earning visits on
- * their own. Reading-oriented content from the same pillars went to
- * Daily Dashboard's "Reflect & Learn" instead — see that page.
- */
-export default function MissionControlPage() {
-  return (
-    <div>
-      <PillarHero slug="mission-control" alt="Mission Control" />
-      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Mission Control</h1>
-      <p className="mt-1 text-sm text-rdp-text-dim">Plan. Execute. Win. You are the captain.</p>
-
-      <div className="mt-5 space-y-3">
-        <Disclosure title="Morning Check-in" icon={Sunrise} defaultOpen>
-          <CheckInForm />
-        </Disclosure>
-
-        <Disclosure title="Plan" subtitle="Today's tasks, all pillars" icon={ListTodo} defaultOpen>
-          <TaskList view="today" quickAddPlaceholder="Add a task…" />
-        </Disclosure>
-
-        <Disclosure title="Goals" subtitle="All pillars" icon={Target} defaultOpen>
-          <AllGoals />
-        </Disclosure>
-
-        <Disclosure title="Habits" subtitle="All pillars — tag each one below" icon={Repeat} defaultOpen>
-          <AllHabits />
-        </Disclosure>
-
-        <Disclosure title="Practices" subtitle="Things you do, by pillar" icon={Hammer} defaultOpen>
+      <div className="mt-5">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">
+          Practices — things you do, by pillar
+        </p>
+        <div className="mt-2">
           <TabbedCard
             tabs={[
               { label: 'Body', content: <ExerciseLogCard /> },
@@ -177,6 +143,48 @@ export default function MissionControlPage() {
               },
             ]}
           />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+/**
+ * Mission Control — "Plan. Execute. Win. You are the captain." Leans
+ * toward inputs (things you create/enter) per the organization pass:
+ * Check-in, Plan (tasks), Goals, Habits, plus Executive Summary/Analyze
+ * which review those inputs. Daily Dashboard is the reading/
+ * informational counterpart — see that page.
+ *
+ * Practices (pillar-tabbed "things you do": Exercise Log, Prayer,
+ * Communication Journal, etc.) live inside the Habits section now, not
+ * as their own Disclosure — moved there per direct request, since
+ * several Practices items are themselves seeded habits. Reading-
+ * oriented content from the same pillars went to Daily Dashboard's
+ * "Reflect & Learn" instead — see that page.
+ */
+export default function MissionControlPage() {
+  return (
+    <div>
+      <PillarHero slug="mission-control" alt="Mission Control" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Mission Control</h1>
+      <p className="mt-1 text-sm text-rdp-text-dim">Plan. Execute. Win. You are the captain.</p>
+
+      <div className="mt-5 space-y-3">
+        <Disclosure title="Morning Check-in" icon={Sunrise} defaultOpen>
+          <CheckInForm />
+        </Disclosure>
+
+        <Disclosure title="Plan" subtitle="Today's tasks, all pillars" icon={ListTodo} defaultOpen>
+          <TaskList view="today" quickAddPlaceholder="Add a task…" />
+        </Disclosure>
+
+        <Disclosure title="Goals" subtitle="All pillars" icon={Target} defaultOpen>
+          <AllGoals />
+        </Disclosure>
+
+        <Disclosure title="Habits" subtitle="All pillars, plus Practices — tag each one below" icon={Repeat} defaultOpen>
+          <AllHabits />
         </Disclosure>
 
         <Disclosure title="Insights" subtitle="Executive Summary, Progress, Habit Ideas" icon={Sparkles}>
