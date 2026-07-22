@@ -24,7 +24,13 @@ export function useExerciseLog() {
     reload()
   }, [reload])
 
-  async function addLog(entry: { category: ExerciseCategory; activity: string; durationMinutes?: number; notes?: string }) {
+  async function addLog(entry: {
+    category: ExerciseCategory
+    activity: string
+    durationMinutes?: number
+    caloriesBurned?: number
+    notes?: string
+  }) {
     try {
       await api.post('/exercise-log', entry)
       reload()

@@ -56,7 +56,28 @@ export default async (req: Request, _context: Context) => {
         .single()
       if (prefsError) return errorResponse(prefsError, 500)
 
-      return json({ logs, totalCalories, dailyCalorieGoal: prefs?.daily_calorie_goal ?? null, date: logDate })
+      // Exercise "earns back" calories — exercise_logs only has a
+      // timestamptz (not a plain date column like food_logs), so this
+      // uses the UTC day boundary of logDate as an approximation rather
+      // than an exact local-timezone match; close enough for a rough
+      // daily total, same tradeoff as anywhere a plain date comparison
+      // isn't available.
+      const { data: exerciseLogs, error: exerciseError } = await supabase
+        .from('exercise_logs')
+        .select('calories_burned')
+        .eq('user_id', userId)
+        .gte('logged_at', `${logDate}T00:00:00Z`)
+        .lt('logged_at', `${logDate}T23:59:59.999Z`)
+      if (exerciseError) return errorResponse(exerciseError, 500)
+      const caloriesBurnedToday = (exerciseLogs ?? []).reduce((sum, l) => sum + (l.calories_burned ?? 0), 0)
+
+      return json({
+        logs,
+        totalCalories,
+        dailyCalorieGoal: prefs?.daily_calorie_goal ?? null,
+        caloriesBurnedToday,
+        date: logDate,
+      })
     }
 
     if (req.method === 'POST' && !id) {

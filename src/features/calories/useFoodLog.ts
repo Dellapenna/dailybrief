@@ -6,6 +6,7 @@ export function useFoodLog() {
   const [logs, setLogs] = useState<FoodLogEntry[]>([])
   const [totalCalories, setTotalCalories] = useState(0)
   const [dailyCalorieGoal, setDailyCalorieGoal] = useState<number | null>(null)
+  const [caloriesBurnedToday, setCaloriesBurnedToday] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -13,12 +14,16 @@ export function useFoodLog() {
     setLoading(true)
     setError(null)
     try {
-      const res = await api.get<{ logs: FoodLogEntry[]; totalCalories: number; dailyCalorieGoal: number | null }>(
-        '/food-log',
-      )
+      const res = await api.get<{
+        logs: FoodLogEntry[]
+        totalCalories: number
+        dailyCalorieGoal: number | null
+        caloriesBurnedToday: number
+      }>('/food-log')
       setLogs(res.logs)
       setTotalCalories(res.totalCalories)
       setDailyCalorieGoal(res.dailyCalorieGoal)
+      setCaloriesBurnedToday(res.caloriesBurnedToday)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load food log')
     } finally {
@@ -70,5 +75,5 @@ export function useFoodLog() {
     }
   }
 
-  return { logs, totalCalories, dailyCalorieGoal, loading, error, addEntry, updateEntry, deleteEntry }
+  return { logs, totalCalories, dailyCalorieGoal, caloriesBurnedToday, loading, error, addEntry, updateEntry, deleteEntry }
 }

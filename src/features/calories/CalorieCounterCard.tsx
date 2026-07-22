@@ -26,7 +26,7 @@ type PhotoEstimate = {
 }
 
 export default function CalorieCounterCard() {
-  const { logs, totalCalories, dailyCalorieGoal, loading, error, addEntry, updateEntry, deleteEntry } = useFoodLog()
+  const { logs, totalCalories, dailyCalorieGoal, caloriesBurnedToday, loading, error, addEntry, updateEntry, deleteEntry } = useFoodLog()
 
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<FoodSearchResult[]>([])
@@ -151,7 +151,8 @@ export default function CalorieCounterCard() {
     setManualCalories('')
   }
 
-  const pct = dailyCalorieGoal ? Math.min(100, Math.round((totalCalories / dailyCalorieGoal) * 100)) : null
+  const effectiveGoal = dailyCalorieGoal ? dailyCalorieGoal + caloriesBurnedToday : null
+  const pct = effectiveGoal ? Math.min(100, Math.round((totalCalories / effectiveGoal) * 100)) : null
 
   return (
     <div>
@@ -170,8 +171,8 @@ export default function CalorieCounterCard() {
       <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
         <div className="flex items-baseline justify-between">
           <p className="font-mono text-2xl font-semibold tabular-nums text-rdp-text">{Math.round(totalCalories)}</p>
-          {dailyCalorieGoal && (
-            <p className="font-mono text-sm tabular-nums text-rdp-text-faint">/ {dailyCalorieGoal} cal</p>
+          {effectiveGoal && (
+            <p className="font-mono text-sm tabular-nums text-rdp-text-faint">/ {effectiveGoal} cal</p>
           )}
         </div>
         {pct !== null && (
@@ -181,6 +182,11 @@ export default function CalorieCounterCard() {
               style={{ width: `${pct}%` }}
             />
           </div>
+        )}
+        {dailyCalorieGoal && caloriesBurnedToday > 0 && (
+          <p className="mt-1.5 text-xs text-rdp-good">
+            Base goal {dailyCalorieGoal} + {caloriesBurnedToday} earned from exercise today
+          </p>
         )}
         {!dailyCalorieGoal && (
           <p className="mt-1 text-xs text-rdp-text-faint">Set a daily calorie goal in Settings to track against.</p>

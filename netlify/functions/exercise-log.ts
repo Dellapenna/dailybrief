@@ -8,8 +8,12 @@ import { json, errorResponse } from './shared/http'
  * /api/exercise-log/:id   DELETE
  *
  * Quick log, not detailed tracking: category + activity name + duration
- * + notes. No sets/reps/weight/pace fields — deliberately simple per the
- * chosen scope; can add structured fields later if wanted.
+ * + notes + optional calories_burned. No sets/reps/weight/pace fields —
+ * deliberately simple per the chosen scope; can add structured fields
+ * later if wanted. calories_burned is either entered manually or a
+ * MET-formula estimate computed client-side (see ExerciseLogCard.tsx) —
+ * always editable before it's logged, never silently treated as more
+ * precise than a category-level estimate actually is.
  */
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -52,6 +56,7 @@ export default async (req: Request, _context: Context) => {
           category: body.category,
           activity: body.activity,
           duration_minutes: body.durationMinutes ?? null,
+          calories_burned: body.caloriesBurned ?? null,
           notes: body.notes ?? null,
           logged_at: body.loggedAt ?? new Date().toISOString(),
         })

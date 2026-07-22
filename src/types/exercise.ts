@@ -6,6 +6,7 @@ export type ExerciseLog = {
   category: ExerciseCategory
   activity: string
   duration_minutes: number | null
+  calories_burned: number | null
   notes: string | null
   logged_at: string
   created_at: string

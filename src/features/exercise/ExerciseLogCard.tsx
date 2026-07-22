@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
+import { api } from '@/lib/api'
 import { useExerciseLog } from './useExerciseLog'
 import type { ExerciseCategory } from '@/types/exercise'
 
@@ -8,12 +9,65 @@ const categories: { value: ExerciseCategory; label: string }[] = [
   { value: 'stretching', label: 'Stretching' },
 ]
 
+/**
+ * Rough category-level MET values (Compendium of Physical Activities),
+ * not matched to the free-text activity name — free text ("Running" vs
+ * "5k run" vs "run") can't be reliably mapped to a specific published
+ * MET value, so this uses a representative average per category
+ * instead. calories = MET x weight(kg) x hours. Always shown as an
+ * editable, adjustable starting point, never presented as precise.
+ */
+const CATEGORY_MET: Record<ExerciseCategory, number> = {
+  strength: 5.0,
+  aerobic: 7.5,
+  stretching: 2.5,
+}
+
+const DEFAULT_WEIGHT_LBS = 154 // ~70kg, used only if no weight has ever been logged
+
+function estimateCalories(category: ExerciseCategory, durationMinutes: number, weightLbs: number): number {
+  const weightKg = weightLbs * 0.453592
+  const hours = durationMinutes / 60
+  return Math.round(CATEGORY_MET[category] * weightKg * hours)
+}
+
 export default function ExerciseLogCard() {
   const { logs, loading, error, addLog, deleteLog } = useExerciseLog()
   const [category, setCategory] = useState<ExerciseCategory>('strength')
   const [activity, setActivity] = useState('')
   const [duration, setDuration] = useState('')
+  const [caloriesBurned, setCaloriesBurned] = useState('')
+  const [caloriesTouched, setCaloriesTouched] = useState(false)
   const [notes, setNotes] = useState('')
+  const [weightLbs, setWeightLbs] = useState<number | null>(null)
+  const [weightIsDefault, setWeightIsDefault] = useState(false)
+
+  useEffect(() => {
+    api
+      .get<{ weightLbs: number | null }>('/latest-weight')
+      .then((res) => {
+        if (res.weightLbs) {
+          setWeightLbs(res.weightLbs)
+        } else {
+          setWeightLbs(DEFAULT_WEIGHT_LBS)
+          setWeightIsDefault(true)
+        }
+      })
+      .catch(() => {
+        setWeightLbs(DEFAULT_WEIGHT_LBS)
+        setWeightIsDefault(true)
+      })
+  }, [])
+
+  // Re-estimate whenever category/duration change, unless the person
+  // has already typed their own number into the calories field.
+  useEffect(() => {
+    if (caloriesTouched || !weightLbs || !duration) return
+    const mins = Number(duration)
+    if (!Number.isFinite(mins) || mins <= 0) return
+    setCaloriesBurned(String(estimateCalories(category, mins, weightLbs)))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [category, duration, weightLbs])
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
@@ -22,10 +76,13 @@ export default function ExerciseLogCard() {
       category,
       activity: activity.trim(),
       durationMinutes: duration ? Number(duration) : undefined,
+      caloriesBurned: caloriesBurned ? Number(caloriesBurned) : undefined,
       notes: notes.trim() || undefined,
     })
     setActivity('')
     setDuration('')
+    setCaloriesBurned('')
+    setCaloriesTouched(false)
     setNotes('')
   }
 
@@ -64,6 +121,29 @@ export default function ExerciseLogCard() {
             className="w-16 rounded-lg border border-rdp-line bg-rdp-void px-2 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
           />
         </div>
+
+        <div>
+          <label className="text-xs text-rdp-text-faint">
+            Calories burned {duration && !caloriesTouched ? '(estimate — adjust if you know better)' : ''}
+          </label>
+          <input
+            type="number"
+            value={caloriesBurned}
+            onChange={(e) => {
+              setCaloriesBurned(e.target.value)
+              setCaloriesTouched(true)
+            }}
+            placeholder="Optional"
+            className="mt-1 w-full rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+          />
+          {weightIsDefault && duration && (
+            <p className="mt-1 text-xs text-rdp-text-faint">
+              Estimate uses a default {DEFAULT_WEIGHT_LBS}lb weight — log weight in Morning Check-in for a more
+              accurate one.
+            </p>
+          )}
+        </div>
+
         <input
           type="text"
           value={notes}
@@ -90,7 +170,8 @@ export default function ExerciseLogCard() {
                 <p className="text-sm text-rdp-text">{log.activity}</p>
                 <p className="font-mono text-xs text-rdp-text-faint">
                   {categories.find((c) => c.value === log.category)?.label}
-                  {log.duration_minutes ? ` · ${log.duration_minutes}min` : ''} ·{' '}
+                  {log.duration_minutes ? ` · ${log.duration_minutes}min` : ''}
+                  {log.calories_burned ? ` · ${log.calories_burned} cal burned` : ''} ·{' '}
                   {new Date(log.logged_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                 </p>
               </div>
