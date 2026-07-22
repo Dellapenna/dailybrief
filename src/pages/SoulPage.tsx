@@ -1,10 +1,11 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
-import { Sparkles, Heart, Moon, HeartHandshake } from 'lucide-react'
+import { Sparkles, Heart, Moon, HeartHandshake, Scroll } from 'lucide-react'
 import PrayerCard from '@/features/soul/PrayerCard'
 import GratitudeCard from '@/features/soul/GratitudeCard'
 import ServiceCard from '@/features/soul/ServiceCard'
 import EveningReviewForm from '@/features/eveningReview/EveningReviewForm'
+import StoicQuoteCard from '@/features/stoic/StoicQuoteCard'
 
 /** Tasks/Goals moved to Mission Control's consolidated all-pillars view, per direct request. */
 export default function SoulPage() {
@@ -29,6 +30,10 @@ export default function SoulPage() {
 
         <Disclosure title="Service" icon={HeartHandshake} defaultOpen>
           <ServiceCard />
+        </Disclosure>
+
+        <Disclosure title="Stoic Wisdom" subtitle="Marcus Aurelius, Seneca, Epictetus" icon={Scroll} defaultOpen>
+          <StoicQuoteCard />
         </Disclosure>
       </div>
     </div>
