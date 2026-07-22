@@ -23,10 +23,7 @@ const navSections: { label: string; items: { to: string; label: string }[] }[] =
     label: 'More',
     items: [
       { to: '/tasks', label: 'All Tasks' },
-      { to: '/goals', label: 'All Goals' },
-      { to: '/habits', label: 'All Habits' },
-      { to: '/ideas', label: 'Idea Vault' },
-      { to: '/reviews', label: 'Reviews' },
+      { to: '/habits', label: 'Habits & Practices' },
       { to: '/calories', label: 'Calorie Counter' },
       { to: '/settings', label: 'Settings' },
     ],

@@ -2,6 +2,7 @@ import PillarHero from '@/components/PillarHero'
 import QuickAddBar from '@/features/tasks/QuickAddBar'
 import HabitRow from '@/features/habits/HabitRow'
 import { useHabits } from '@/features/habits/useHabits'
+import HabitRecommendationsCard from '@/features/habits/HabitRecommendationsCard'
 import PracticeCard from '@/features/habits/PracticeCard'
 import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
 import BreathingTimer from '@/features/mind/BreathingTimer'
@@ -14,20 +15,21 @@ import EveningReviewForm from '@/features/eveningReview/EveningReviewForm'
 import type { PillarId } from '@/types/pillar'
 
 /**
- * Habits + Practices — moved here from Mission Control per direct
- * request, so Mission Control stays focused on Check-in/Plan/Goals/
- * Insights. Practices (things you do, previously grouped into pillar
- * tabs) are now individually color-coded cards instead — easier to
- * visually tell apart at a glance than several items stacked together
- * inside a shared tab.
+ * Habits & Practices — moved here from Mission Control per direct
+ * request. Renamed from just "Habits" since that undersold what's
+ * actually here — 8 of the 9 sections below aren't habits at all.
+ * The only home for Idea Vault and Evening Review (no more separate
+ * /ideas or /reviews pages). Habit Ideas moved here from Mission
+ * Control's Insights too, so suggesting a habit and adding it to the
+ * list happen in the same place instead of split across pages.
  */
 export default function HabitsPage() {
   const { habits, loading, error, createHabit, toggleToday, updateHabit, deleteHabit } = useHabits()
 
   return (
     <div>
-      <PillarHero slug="habits" alt="Habits" />
-      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Habits</h1>
+      <PillarHero slug="habits" alt="Habits & Practices" />
+      <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Habits & Practices</h1>
       <p className="mt-1 text-sm text-rdp-text-dim">Small actions. Big transformation.</p>
 
       <div className="mt-4">
@@ -53,6 +55,13 @@ export default function HabitsPage() {
             />
           ))
         )}
+      </div>
+
+      <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">
+        Habit Ideas — grounded in your active goals
+      </p>
+      <div className="mt-2">
+        <HabitRecommendationsCard />
       </div>
 
       <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">Practices</p>

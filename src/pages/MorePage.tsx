@@ -6,10 +6,8 @@ import { NavLink } from 'react-router-dom'
  * useful as a fallback.
  */
 const otherLinks = [
-  { to: '/goals', label: 'All Goals' },
-  { to: '/habits', label: 'All Habits' },
-  { to: '/ideas', label: 'Idea Vault' },
-  { to: '/reviews', label: 'Reviews' },
+  { to: '/tasks', label: 'All Tasks' },
+  { to: '/habits', label: 'Habits & Practices' },
   { to: '/calories', label: 'Calorie Counter' },
   { to: '/settings', label: 'Settings' },
 ]

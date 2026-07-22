@@ -12,7 +12,6 @@ import TaskList from '@/features/tasks/TaskList'
 import QuickAddBar from '@/features/tasks/QuickAddBar'
 import GoalRow from '@/features/goals/GoalRow'
 import { useGoals } from '@/features/goals/useGoals'
-import HabitRecommendationsCard from '@/features/habits/HabitRecommendationsCard'
 
 function AllGoals() {
   const { goals, loading, error, createGoal, updateGoal, deleteGoal } = useGoals()
@@ -41,12 +40,11 @@ function AllGoals() {
 }
 
 /**
- * Mission Control — "Plan. Execute. Win. You are the captain." Leans
- * toward inputs (things you create/enter): Check-in, Plan (tasks),
- * Goals, plus Executive Summary/Analyze which review those inputs.
- * Daily Dashboard is the reading/informational counterpart — see that
- * page. Habits + Practices moved to their own dedicated page (/habits)
- * per direct request, to keep this page focused.
+ * Mission Control — "Plan. Execute. Win. You are the captain." The only
+ * home for Goals (no separate /goals page). Habit Ideas moved to
+ * Habits & Practices so suggesting a habit and adding it happen in the
+ * same place — see that page. Daily Dashboard is the reading/
+ * informational counterpart.
  */
 export default function MissionControlPage() {
   return (
@@ -60,7 +58,7 @@ export default function MissionControlPage() {
         className="mt-3 flex items-center gap-2 rounded-xl border border-rdp-line bg-rdp-panel px-4 py-3 text-sm text-rdp-signal hover:bg-rdp-void"
       >
         <Repeat className="h-4 w-4" />
-        Habits & Practices moved here — tap to open
+        Habits & Practices live here — tap to open
       </Link>
 
       <div className="mt-3 space-y-3">
@@ -76,7 +74,7 @@ export default function MissionControlPage() {
           <AllGoals />
         </Disclosure>
 
-        <Disclosure title="Insights" subtitle="Executive Summary, Progress, Habit Ideas" icon={Sparkles}>
+        <Disclosure title="Insights" subtitle="Executive Summary, Progress" icon={Sparkles}>
           <TabbedCard
             tabs={[
               { label: 'Executive Summary', content: <ExecutiveSummaryCard /> },
@@ -89,7 +87,6 @@ export default function MissionControlPage() {
                   </div>
                 ),
               },
-              { label: 'Habit Ideas', content: <HabitRecommendationsCard /> },
             ]}
           />
         </Disclosure>
