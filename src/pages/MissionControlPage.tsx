@@ -1,9 +1,9 @@
-import type { ReactNode } from 'react'
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import Skeleton from '@/components/Skeleton'
 import TabbedCard from '@/components/TabbedCard'
-import { Sunrise, ListTodo, Target, Repeat, Sparkles } from 'lucide-react'
+import { Sunrise, ListTodo, Target, Sparkles, Repeat } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import ExecutiveSummaryCard from '@/features/executiveSummary/ExecutiveSummaryCard'
 import MissionProgress from '@/features/dashboard/MissionProgress'
 import PillarTaskSummary from '@/features/pillarSummary/PillarTaskSummary'
@@ -12,27 +12,7 @@ import TaskList from '@/features/tasks/TaskList'
 import QuickAddBar from '@/features/tasks/QuickAddBar'
 import GoalRow from '@/features/goals/GoalRow'
 import { useGoals } from '@/features/goals/useGoals'
-import HabitRow from '@/features/habits/HabitRow'
-import { useHabits } from '@/features/habits/useHabits'
 import HabitRecommendationsCard from '@/features/habits/HabitRecommendationsCard'
-import type { PillarId } from '@/types/pillar'
-import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
-import BreathingTimer from '@/features/mind/BreathingTimer'
-import CommunicationJournalCard from '@/features/communication/CommunicationJournalCard'
-import IdeaVaultSection from '@/features/ideas/IdeaVaultSection'
-import PrayerCard from '@/features/soul/PrayerCard'
-import GratitudeCard from '@/features/soul/GratitudeCard'
-import ServiceCard from '@/features/soul/ServiceCard'
-import EveningReviewForm from '@/features/eveningReview/EveningReviewForm'
-
-function SubSection({ label, children }: { label: string; children: ReactNode }) {
-  return (
-    <div>
-      <p className="font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">{label}</p>
-      <div className="mt-2">{children}</div>
-    </div>
-  )
-}
 
 function AllGoals() {
   const { goals, loading, error, createGoal, updateGoal, deleteGoal } = useGoals()
@@ -61,107 +41,12 @@ function AllGoals() {
 }
 
 /**
- * Consolidated all-pillars habit list — habits used to live scattered
- * under each pillar page's own "Habits" Disclosure. Consolidated here on
- * request, with a pillar selector per row so each habit can still be
- * tagged/organized by pillar without needing a separate page per pillar.
- * Practices (pillar-tabbed "things you do": Exercise Log, Prayer,
- * Communication Journal, etc.) folded in below the habit list itself,
- * per direct request — was a separate Disclosure, now lives inside this
- * one since it's closely related (several Practices items — Prayer,
- * Gratitude, Service, Breathing Meditation — are themselves seeded
- * habits with streak tracking, so they'll also appear as ordinary rows
- * above, which is expected, not a bug).
- */
-function AllHabits() {
-  const { habits, loading, error, createHabit, toggleToday, updateHabit, deleteHabit } = useHabits()
-  return (
-    <div>
-      <QuickAddBar onAdd={createHabit} placeholder="Add a habit…" />
-      {error && <p className="mt-3 text-sm text-rdp-risk">{error}</p>}
-      <div className="mt-3 rounded-xl border border-rdp-line bg-rdp-panel px-3">
-        {loading ? (
-          <Skeleton lines={3} />
-        ) : habits.length === 0 ? (
-          <p className="py-4 text-center text-sm text-rdp-text-faint">No habits yet — add one above.</p>
-        ) : (
-          habits.map((habit) => (
-            <HabitRow
-              key={habit.id}
-              habit={habit}
-              onToggle={toggleToday}
-              onDelete={(h) => deleteHabit(h.id)}
-              onPillarChange={(h, pillarId) => updateHabit(h.id, { pillar_id: pillarId as PillarId | null })}
-              showPillarSelector
-            />
-          ))
-        )}
-      </div>
-
-      <div className="mt-5">
-        <p className="font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">
-          Practices — things you do, by pillar
-        </p>
-        <div className="mt-2">
-          <TabbedCard
-            tabs={[
-              { label: 'Body', content: <ExerciseLogCard /> },
-              {
-                label: 'Mind',
-                content: (
-                  <div className="space-y-4">
-                    <SubSection label="Meditate">
-                      <BreathingTimer />
-                    </SubSection>
-                    <SubSection label="Communication Practice Journal">
-                      <CommunicationJournalCard />
-                    </SubSection>
-                    <SubSection label="Idea Vault">
-                      <IdeaVaultSection />
-                    </SubSection>
-                  </div>
-                ),
-              },
-              {
-                label: 'Soul',
-                content: (
-                  <div className="space-y-4">
-                    <SubSection label="Faith — Prayer">
-                      <PrayerCard />
-                    </SubSection>
-                    <SubSection label="Gratitude">
-                      <GratitudeCard />
-                    </SubSection>
-                    <SubSection label="Reflection — Evening Review">
-                      <EveningReviewForm />
-                    </SubSection>
-                    <SubSection label="Service">
-                      <ServiceCard />
-                    </SubSection>
-                  </div>
-                ),
-              },
-            ]}
-          />
-        </div>
-      </div>
-    </div>
-  )
-}
-
-/**
  * Mission Control — "Plan. Execute. Win. You are the captain." Leans
- * toward inputs (things you create/enter) per the organization pass:
- * Check-in, Plan (tasks), Goals, Habits, plus Executive Summary/Analyze
- * which review those inputs. Daily Dashboard is the reading/
- * informational counterpart — see that page.
- *
- * Practices (pillar-tabbed "things you do": Exercise Log, Prayer,
- * Communication Journal, etc.) live inside the Habits section now, not
- * as their own Disclosure — moved there per direct request, since
- * several Practices items are themselves seeded habits. Reading-
- * oriented content from the same pillars went to Daily Dashboard's
- * "Reflect & Learn" instead — see that page.
+ * toward inputs (things you create/enter): Check-in, Plan (tasks),
+ * Goals, plus Executive Summary/Analyze which review those inputs.
+ * Daily Dashboard is the reading/informational counterpart — see that
+ * page. Habits + Practices moved to their own dedicated page (/habits)
+ * per direct request, to keep this page focused.
  */
 export default function MissionControlPage() {
   return (
@@ -170,7 +55,15 @@ export default function MissionControlPage() {
       <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-rdp-text">Mission Control</h1>
       <p className="mt-1 text-sm text-rdp-text-dim">Plan. Execute. Win. You are the captain.</p>
 
-      <div className="mt-5 space-y-3">
+      <Link
+        to="/habits"
+        className="mt-3 flex items-center gap-2 rounded-xl border border-rdp-line bg-rdp-panel px-4 py-3 text-sm text-rdp-signal hover:bg-rdp-void"
+      >
+        <Repeat className="h-4 w-4" />
+        Habits & Practices moved here — tap to open
+      </Link>
+
+      <div className="mt-3 space-y-3">
         <Disclosure title="Morning Check-in" icon={Sunrise} defaultOpen>
           <CheckInForm />
         </Disclosure>
@@ -181,10 +74,6 @@ export default function MissionControlPage() {
 
         <Disclosure title="Goals" subtitle="All pillars" icon={Target} defaultOpen>
           <AllGoals />
-        </Disclosure>
-
-        <Disclosure title="Habits" subtitle="All pillars, plus Practices — tag each one below" icon={Repeat} defaultOpen>
-          <AllHabits />
         </Disclosure>
 
         <Disclosure title="Insights" subtitle="Executive Summary, Progress, Habit Ideas" icon={Sparkles}>
