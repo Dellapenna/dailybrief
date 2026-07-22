@@ -6,7 +6,6 @@ import HabitRow from '@/features/habits/HabitRow'
 import { useHabits } from '@/features/habits/useHabits'
 import HabitRecommendationsCard from '@/features/habits/HabitRecommendationsCard'
 import PracticeGroup, { PracticeSubItem } from '@/features/habits/PracticeGroup'
-import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
 import BreathingTimer from '@/features/mind/BreathingTimer'
 import CommunicationJournalCard from '@/features/communication/CommunicationJournalCard'
 import PrayerCard from '@/features/soul/PrayerCard'
@@ -54,6 +53,11 @@ function AllHabits() {
  * instead of 8 flat individually-collapsible cards — reads as "combined
  * in a way that makes sense" per feedback, matching how pillar grouping
  * already works everywhere else in the app.
+ *
+ * Exercise Log moved to Calorie Counter (its only Body practice) since
+ * calories burned now directly feeds that page's daily budget — makes
+ * more sense living together than split across two pages. No Body
+ * group here anymore since it had nothing else in it.
  */
 export default function HabitsPage() {
   return (
@@ -74,12 +78,6 @@ export default function HabitsPage() {
 
       <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">Practices</p>
       <div className="mt-2 space-y-3">
-        <PracticeGroup pillar="body">
-          <PracticeSubItem label="Exercise Log">
-            <ExerciseLogCard />
-          </PracticeSubItem>
-        </PracticeGroup>
-
         <PracticeGroup pillar="mind">
           <PracticeSubItem label="Meditate">
             <BreathingTimer />

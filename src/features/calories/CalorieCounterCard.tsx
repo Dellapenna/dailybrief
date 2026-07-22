@@ -183,9 +183,28 @@ export default function CalorieCounterCard() {
             />
           </div>
         )}
+
+        {dailyCalorieGoal && (
+          <div className="mt-3 grid grid-cols-3 gap-2 border-t border-rdp-line pt-3">
+            <div>
+              <p className="font-mono text-lg tabular-nums text-rdp-text">{Math.round(totalCalories)}</p>
+              <p className="text-xs text-rdp-text-faint">Consumed</p>
+            </div>
+            <div>
+              <p className="font-mono text-lg tabular-nums text-rdp-good">+{caloriesBurnedToday}</p>
+              <p className="text-xs text-rdp-text-faint">Burned</p>
+            </div>
+            <div>
+              <p className="font-mono text-lg tabular-nums text-rdp-text">
+                {Math.max(0, Math.round((effectiveGoal ?? 0) - totalCalories))}
+              </p>
+              <p className="text-xs text-rdp-text-faint">Remaining</p>
+            </div>
+          </div>
+        )}
         {dailyCalorieGoal && caloriesBurnedToday > 0 && (
-          <p className="mt-1.5 text-xs text-rdp-good">
-            Base goal {dailyCalorieGoal} + {caloriesBurnedToday} earned from exercise today
+          <p className="mt-2 text-xs text-rdp-text-faint">
+            {effectiveGoal} cal goal = {dailyCalorieGoal} base + {caloriesBurnedToday} earned from exercise
           </p>
         )}
         {!dailyCalorieGoal && (
