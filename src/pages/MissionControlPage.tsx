@@ -1,8 +1,9 @@
+import type { ReactNode } from 'react'
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import Skeleton from '@/components/Skeleton'
 import TabbedCard from '@/components/TabbedCard'
-import { Sunrise, ListTodo, Target, Repeat, Sparkles } from 'lucide-react'
+import { Sunrise, ListTodo, Target, Repeat, Sparkles, Hammer } from 'lucide-react'
 import ExecutiveSummaryCard from '@/features/executiveSummary/ExecutiveSummaryCard'
 import MissionProgress from '@/features/dashboard/MissionProgress'
 import PillarTaskSummary from '@/features/pillarSummary/PillarTaskSummary'
@@ -15,6 +16,23 @@ import HabitRow from '@/features/habits/HabitRow'
 import { useHabits } from '@/features/habits/useHabits'
 import HabitRecommendationsCard from '@/features/habits/HabitRecommendationsCard'
 import type { PillarId } from '@/types/pillar'
+import ExerciseLogCard from '@/features/exercise/ExerciseLogCard'
+import BreathingTimer from '@/features/mind/BreathingTimer'
+import CommunicationJournalCard from '@/features/communication/CommunicationJournalCard'
+import IdeaVaultSection from '@/features/ideas/IdeaVaultSection'
+import PrayerCard from '@/features/soul/PrayerCard'
+import GratitudeCard from '@/features/soul/GratitudeCard'
+import ServiceCard from '@/features/soul/ServiceCard'
+import EveningReviewForm from '@/features/eveningReview/EveningReviewForm'
+
+function SubSection({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div>
+      <p className="font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">{label}</p>
+      <div className="mt-2">{children}</div>
+    </div>
+  )
+}
 
 function AllGoals() {
   const { goals, loading, error, createGoal, updateGoal, deleteGoal } = useGoals()
@@ -48,8 +66,8 @@ function AllGoals() {
  * request, with a pillar selector per row so each habit can still be
  * tagged/organized by pillar without needing a separate page per pillar.
  * (Soul/Mind's special habits — Prayer, Gratitude, Service, Breathing
- * Meditation — still also get their own dedicated card UI on those
- * pages for the guided prompt/timer; they'll also appear here as
+ * Meditation — still also get their own dedicated card UI in Practices
+ * below for the guided prompt/timer; they'll also appear here as
  * ordinary rows, which is expected, not a bug.)
  */
 function AllHabits() {
@@ -86,6 +104,13 @@ function AllHabits() {
  * Check-in, Plan (tasks), Goals, Habits, plus Executive Summary/Analyze
  * which review those inputs. Daily Dashboard is the reading/
  * informational counterpart — see that page.
+ *
+ * Practices (new): Body/Mind/Soul retired as separate destinations —
+ * their "things you do" content (Exercise Log, Prayer, Communication
+ * Journal, etc.) consolidated here as pillar-tabbed sections instead,
+ * per direct feedback that those 3 pages weren't earning visits on
+ * their own. Reading-oriented content from the same pillars went to
+ * Daily Dashboard's "Reflect & Learn" instead — see that page.
  */
 export default function MissionControlPage() {
   return (
@@ -109,6 +134,49 @@ export default function MissionControlPage() {
 
         <Disclosure title="Habits" subtitle="All pillars — tag each one below" icon={Repeat} defaultOpen>
           <AllHabits />
+        </Disclosure>
+
+        <Disclosure title="Practices" subtitle="Things you do, by pillar" icon={Hammer} defaultOpen>
+          <TabbedCard
+            tabs={[
+              { label: 'Body', content: <ExerciseLogCard /> },
+              {
+                label: 'Mind',
+                content: (
+                  <div className="space-y-4">
+                    <SubSection label="Meditate">
+                      <BreathingTimer />
+                    </SubSection>
+                    <SubSection label="Communication Practice Journal">
+                      <CommunicationJournalCard />
+                    </SubSection>
+                    <SubSection label="Idea Vault">
+                      <IdeaVaultSection />
+                    </SubSection>
+                  </div>
+                ),
+              },
+              {
+                label: 'Soul',
+                content: (
+                  <div className="space-y-4">
+                    <SubSection label="Faith — Prayer">
+                      <PrayerCard />
+                    </SubSection>
+                    <SubSection label="Gratitude">
+                      <GratitudeCard />
+                    </SubSection>
+                    <SubSection label="Reflection — Evening Review">
+                      <EveningReviewForm />
+                    </SubSection>
+                    <SubSection label="Service">
+                      <ServiceCard />
+                    </SubSection>
+                  </div>
+                ),
+              },
+            ]}
+          />
         </Disclosure>
 
         <Disclosure title="Insights" subtitle="Executive Summary, Progress, Habit Ideas" icon={Sparkles}>

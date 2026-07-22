@@ -1,7 +1,7 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import TabbedCard from '@/components/TabbedCard'
-import { CloudSun, Calendar, Newspaper, LineChart, Coins, Trophy, Sparkles, Clock } from 'lucide-react'
+import { CloudSun, Calendar, Newspaper, LineChart, Coins, Trophy, Sparkles, Clock, BookOpen } from 'lucide-react'
 import WeatherCard from '@/features/weather/WeatherCard'
 import CalendarSection from '@/features/calendar/CalendarSection'
 import NewsCard from '@/features/news/NewsCard'
@@ -14,6 +14,10 @@ import DadJokeCard from '@/features/dadJoke/DadJokeCard'
 import MotivationCard from '@/features/motivation/MotivationCard'
 import WordOfDayCard from '@/features/wordOfDay/WordOfDayCard'
 import WorldClockCard from '@/features/worldclock/WorldClockCard'
+import HealthTrends from '@/features/exercise/HealthTrends'
+import SpanishWordCard from '@/features/spanish/SpanishWordCard'
+import CommunicationTipCard from '@/features/communication/CommunicationTipCard'
+import StoicQuoteCard from '@/features/stoic/StoicQuoteCard'
 
 /**
  * Daily Dashboard — "Your day. Your intelligence. Your edge." Leans
@@ -22,6 +26,13 @@ import WorldClockCard from '@/features/worldclock/WorldClockCard'
  * something you read. Motivation Quote and Word of the Day moved here
  * from Mind per the new reference map, which lists both under Daily
  * Dashboard alongside Fun Fact/Dad Joke.
+ *
+ * Reflect & Learn (new): Body/Mind/Soul retired as separate
+ * destinations — their reading-oriented content (Health Trends,
+ * Spanish/Communication Tip, Stoic Wisdom) consolidated here as
+ * pillar-tabbed sections, per direct feedback those 3 pages weren't
+ * earning visits on their own. "Do" content from the same pillars went
+ * to Mission Control's "Practices" instead — see that page.
  */
 export default function DailyDashboardPage() {
   return (
@@ -53,6 +64,24 @@ export default function DailyDashboardPage() {
 
         <Disclosure title="Sports" icon={Trophy}>
           <SportsCard />
+        </Disclosure>
+
+        <Disclosure title="Reflect & Learn" subtitle="Things you read, by pillar" icon={BookOpen} defaultOpen>
+          <TabbedCard
+            tabs={[
+              { label: 'Body', content: <HealthTrends /> },
+              {
+                label: 'Mind',
+                content: (
+                  <div className="space-y-3">
+                    <SpanishWordCard />
+                    <CommunicationTipCard />
+                  </div>
+                ),
+              },
+              { label: 'Soul', content: <StoicQuoteCard /> },
+            ]}
+          />
         </Disclosure>
 
         <Disclosure
