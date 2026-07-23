@@ -11,7 +11,6 @@ import CommunicationJournalCard from '@/features/communication/CommunicationJour
 import PrayerCard from '@/features/soul/PrayerCard'
 import GratitudeCard from '@/features/soul/GratitudeCard'
 import ServiceCard from '@/features/soul/ServiceCard'
-import EveningReviewForm from '@/features/eveningReview/EveningReviewForm'
 import type { PillarId } from '@/types/pillar'
 
 function AllHabits() {
@@ -93,9 +92,6 @@ export default function HabitsPage() {
           </PracticeSubItem>
           <PracticeSubItem label="Gratitude">
             <GratitudeCard />
-          </PracticeSubItem>
-          <PracticeSubItem label="Reflection — Evening Review">
-            <EveningReviewForm />
           </PracticeSubItem>
           <PracticeSubItem label="Service">
             <ServiceCard />

@@ -1,9 +1,10 @@
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
 import TabbedCard from '@/components/TabbedCard'
-import { CloudSun, Calendar, Newspaper, LineChart, Coins, Trophy, Sparkles, Clock, BookOpen } from 'lucide-react'
+import { CloudSun, Calendar, Newspaper, LineChart, Coins, Trophy, Sparkles, Clock, BookOpen, Moon } from 'lucide-react'
 import WeatherCard from '@/features/weather/WeatherCard'
 import CalendarSection from '@/features/calendar/CalendarSection'
+import EveningReviewForm from '@/features/eveningReview/EveningReviewForm'
 import NewsCard from '@/features/news/NewsCard'
 import StocksCard from '@/features/stocks/StocksCard'
 import CryptoCard from '@/features/crypto/CryptoCard'
@@ -26,7 +27,10 @@ import EtymologyCard from '@/features/etymology/EtymologyCard'
  * Morning Check-in moved to Mission Control since it's an input, not
  * something you read. Motivation Quote and Word of the Day moved here
  * from Mind per the new reference map, which lists both under Daily
- * Dashboard alongside Fun Fact/Dad Joke.
+ * Dashboard alongside Fun Fact/Dad Joke. Evening Reflection (the
+ * Evening Review form) moved here from Habits & Logbook per direct
+ * request — an exception to the reading-only lean, but matches how the
+ * page actually gets used.
  *
  * Reflect & Learn (new): Body/Mind/Soul retired as separate
  * destinations — their reading-oriented content (Health Trends,
@@ -49,6 +53,10 @@ export default function DailyDashboardPage() {
 
         <Disclosure title="Calendar" subtitle="Agenda and month view" icon={Calendar} defaultOpen>
           <CalendarSection />
+        </Disclosure>
+
+        <Disclosure title="Evening Reflection" subtitle="Day rating, tomorrow's focus" icon={Moon} defaultOpen>
+          <EveningReviewForm />
         </Disclosure>
 
         <Disclosure title="News" icon={Newspaper} defaultOpen>
