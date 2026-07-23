@@ -19,10 +19,19 @@ const moreScaleFields = [
  * symptoms, planned exercise, biggest concern) still exists and still
  * saves — just tucked behind "Add more details" for days worth going
  * deeper, rather than demanding all of it every time.
+ *
+ * Shows a read-only "already checked in" summary once today's check-in
+ * exists, requiring an explicit Edit tap to reopen the form — the
+ * backend already used upsert (one row per day, editing never created
+ * a duplicate), but the form always being live/re-submittable with no
+ * indication you'd already done it today felt like nothing was stopping
+ * you from doing it twice.
  */
 export default function CheckInForm() {
   const { checkin, loading, saving, saved, error, save } = useTodayCheckin()
   const [showMore, setShowMore] = useState(false)
+  const [editing, setEditing] = useState(false)
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false)
 
   const [form, setForm] = useState({
     sleep_duration: '',
@@ -67,6 +76,15 @@ export default function CheckInForm() {
     if (hasMoreData) setShowMore(true)
   }, [checkin])
 
+  // Once loading finishes for the first time: if a check-in already
+  // exists for today, default to the summary view, not the open form.
+  useEffect(() => {
+    if (loading || hasLoadedOnce) return
+    setHasLoadedOnce(true)
+    if (checkin) setEditing(false)
+    else setEditing(true)
+  }, [loading, checkin, hasLoadedOnce])
+
   function handleSave() {
     save({
       sleep_duration: form.sleep_duration ? Number(form.sleep_duration) : null,
@@ -81,9 +99,40 @@ export default function CheckInForm() {
       biggest_concern: form.biggest_concern || null,
       most_important_outcome: form.most_important_outcome || null,
     })
+    setEditing(false)
   }
 
   if (loading) return <p className="text-sm text-rdp-text-faint">Loading…</p>
+
+  if (checkin && !editing) {
+    return (
+      <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
+        <div className="flex items-center justify-between">
+          <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-good">
+            ✓ Checked in today
+          </p>
+          <button onClick={() => setEditing(true)} className="text-xs font-medium text-rdp-signal">
+            Edit
+          </button>
+        </div>
+        <div className="mt-3 grid grid-cols-2 gap-3">
+          <div>
+            <p className="font-mono text-lg tabular-nums text-rdp-text">{checkin.energy ?? '—'}/5</p>
+            <p className="text-xs text-rdp-text-faint">Energy</p>
+          </div>
+          <div>
+            <p className="font-mono text-lg tabular-nums text-rdp-text">{checkin.mood ?? '—'}/5</p>
+            <p className="text-xs text-rdp-text-faint">Mood</p>
+          </div>
+        </div>
+        {checkin.most_important_outcome && (
+          <p className="mt-3 border-t border-rdp-line pt-3 text-sm text-rdp-text">
+            {checkin.most_important_outcome}
+          </p>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
