@@ -89,6 +89,17 @@ export default async (req: Request, _context: Context) => {
         return json({ error: 'calories is required' }, 400)
       }
 
+      let loggedDate = body.loggedDate
+      if (!loggedDate) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('timezone')
+          .eq('id', userId)
+          .single()
+        if (profileError) return errorResponse(profileError, 500)
+        loggedDate = todayInTimezone(profile?.timezone || 'America/New_York')
+      }
+
       const { data, error } = await supabase
         .from('food_logs')
         .insert({
@@ -101,6 +112,7 @@ export default async (req: Request, _context: Context) => {
           fat_g: body.fatG ?? null,
           quantity: body.quantity ?? 1,
           fdc_id: body.fdcId ?? null,
+          logged_date: loggedDate,
         })
         .select()
         .single()
@@ -112,13 +124,14 @@ export default async (req: Request, _context: Context) => {
     if (req.method === 'PATCH' && id) {
       const body = await req.json()
       const updates: Record<string, unknown> = {}
-      for (const key of ['foodName', 'meal', 'calories', 'proteinG', 'carbsG', 'fatG', 'quantity'] as const) {
+      for (const key of ['foodName', 'meal', 'calories', 'proteinG', 'carbsG', 'fatG', 'quantity', 'loggedDate'] as const) {
         if (key in body) {
           const column =
             key === 'foodName' ? 'food_name'
             : key === 'proteinG' ? 'protein_g'
             : key === 'carbsG' ? 'carbs_g'
             : key === 'fatG' ? 'fat_g'
+            : key === 'loggedDate' ? 'logged_date'
             : key
           updates[column] = body[key]
         }

@@ -2,11 +2,17 @@ import { useCallback, useEffect, useState } from 'react'
 import { api } from '@/lib/api'
 import type { FoodLogEntry, Meal } from '@/types/foodLog'
 
-export function useFoodLog() {
+/**
+ * `date` (YYYY-MM-DD) lets Calorie Counter view/log for a day other
+ * than today — e.g. catching up on a missed day. Defaults to today
+ * (server-computed in the user's timezone) when omitted.
+ */
+export function useFoodLog(date?: string) {
   const [logs, setLogs] = useState<FoodLogEntry[]>([])
   const [totalCalories, setTotalCalories] = useState(0)
   const [dailyCalorieGoal, setDailyCalorieGoal] = useState<number | null>(null)
   const [caloriesBurnedToday, setCaloriesBurnedToday] = useState(0)
+  const [resolvedDate, setResolvedDate] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -14,22 +20,25 @@ export function useFoodLog() {
     setLoading(true)
     setError(null)
     try {
+      const query = date ? `?date=${date}` : ''
       const res = await api.get<{
         logs: FoodLogEntry[]
         totalCalories: number
         dailyCalorieGoal: number | null
         caloriesBurnedToday: number
-      }>('/food-log')
+        date: string
+      }>(`/food-log${query}`)
       setLogs(res.logs)
       setTotalCalories(res.totalCalories)
       setDailyCalorieGoal(res.dailyCalorieGoal)
       setCaloriesBurnedToday(res.caloriesBurnedToday)
+      setResolvedDate(res.date)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load food log')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [date])
 
   useEffect(() => {
     reload()
@@ -46,7 +55,7 @@ export function useFoodLog() {
     fdcId?: string | null
   }) {
     try {
-      await api.post('/food-log', entry)
+      await api.post('/food-log', { ...entry, loggedDate: date ?? resolvedDate ?? undefined })
       reload()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to log food')
@@ -75,5 +84,16 @@ export function useFoodLog() {
     }
   }
 
-  return { logs, totalCalories, dailyCalorieGoal, caloriesBurnedToday, loading, error, addEntry, updateEntry, deleteEntry }
+  return {
+    logs,
+    totalCalories,
+    dailyCalorieGoal,
+    caloriesBurnedToday,
+    resolvedDate,
+    loading,
+    error,
+    addEntry,
+    updateEntry,
+    deleteEntry,
+  }
 }

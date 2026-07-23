@@ -25,8 +25,20 @@ type PhotoEstimate = {
   confidenceNote: string
 }
 
+function yesterdayStr(): string {
+  const d = new Date()
+  d.setDate(d.getDate() - 1)
+  return d.toISOString().slice(0, 10)
+}
+
+function todayStr(): string {
+  return new Date().toISOString().slice(0, 10)
+}
+
 export default function CalorieCounterCard() {
-  const { logs, totalCalories, dailyCalorieGoal, caloriesBurnedToday, loading, error, addEntry, updateEntry, deleteEntry } = useFoodLog()
+  const [selectedDate, setSelectedDate] = useState<string | null>(null) // null = today
+  const { logs, totalCalories, dailyCalorieGoal, caloriesBurnedToday, loading, error, addEntry, updateEntry, deleteEntry } =
+    useFoodLog(selectedDate ?? undefined)
 
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<FoodSearchResult[]>([])
@@ -167,6 +179,37 @@ export default function CalorieCounterCard() {
           <BarcodeScanner onDetected={handleBarcodeDetected} onClose={() => setScanning(false)} />
         </Suspense>
       )}
+
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <button
+          onClick={() => setSelectedDate(null)}
+          className={`rounded-lg border px-2.5 py-1 text-xs font-medium ${
+            selectedDate === null ? 'border-rdp-signal bg-rdp-signal/15 text-rdp-signal' : 'border-rdp-line text-rdp-text-dim'
+          }`}
+        >
+          Today
+        </button>
+        <button
+          onClick={() => setSelectedDate(yesterdayStr())}
+          className={`rounded-lg border px-2.5 py-1 text-xs font-medium ${
+            selectedDate === yesterdayStr() ? 'border-rdp-signal bg-rdp-signal/15 text-rdp-signal' : 'border-rdp-line text-rdp-text-dim'
+          }`}
+        >
+          Yesterday
+        </button>
+        <input
+          type="date"
+          value={selectedDate ?? ''}
+          max={todayStr()}
+          onChange={(e) => setSelectedDate(e.target.value || null)}
+          className="rounded-lg border border-rdp-line bg-rdp-void px-2 py-1 text-xs text-rdp-text focus:border-rdp-signal focus:outline-none"
+        />
+        {selectedDate && (
+          <span className="text-xs text-rdp-amber">
+            Viewing/logging for {new Date(selectedDate + 'T00:00:00').toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+          </span>
+        )}
+      </div>
 
       <div className="rounded-xl border border-rdp-line bg-rdp-panel p-4">
         <div className="flex items-baseline justify-between">
