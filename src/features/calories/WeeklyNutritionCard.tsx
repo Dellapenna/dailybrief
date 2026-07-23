@@ -7,6 +7,8 @@ type Stats = {
   totalDaysInWindow: number
   avgDailyCalories: number
   dailyCalorieGoal: number | null
+  avgDailyProtein: number
+  dailyProteinGoal: number | null
   daysOverGoal: number | null
   daysUnderGoal: number | null
 }
@@ -53,6 +55,10 @@ export default function WeeklyNutritionCard() {
           <div>
             <p className="font-mono text-lg tabular-nums text-rdp-text">{stats.avgDailyCalories}</p>
             <p className="text-xs text-rdp-text-faint">Avg cal/day</p>
+          </div>
+          <div>
+            <p className="font-mono text-lg tabular-nums text-rdp-text">{stats.avgDailyProtein}g</p>
+            <p className="text-xs text-rdp-text-faint">Avg protein/day</p>
           </div>
           {stats.dailyCalorieGoal && (
             <>

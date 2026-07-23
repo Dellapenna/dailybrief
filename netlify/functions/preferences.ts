@@ -23,7 +23,7 @@ export default async (req: Request, _context: Context) => {
       const body = await req.json()
       const updates: Record<string, unknown> = {}
       for (const key of [
-        'locationLabel', 'locationLat', 'locationLng', 'weatherUnits', 'zodiacSign', 'dailyCalorieGoal',
+        'locationLabel', 'locationLat', 'locationLng', 'weatherUnits', 'zodiacSign', 'dailyCalorieGoal', 'dailyProteinGoal',
       ] as const) {
         if (key in body) {
           const column =
@@ -37,7 +37,9 @@ export default async (req: Request, _context: Context) => {
                     ? 'zodiac_sign'
                     : key === 'dailyCalorieGoal'
                       ? 'daily_calorie_goal'
-                      : 'weather_units'
+                      : key === 'dailyProteinGoal'
+                        ? 'daily_protein_goal'
+                        : 'weather_units'
           updates[column] = body[key]
         }
       }

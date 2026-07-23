@@ -13,6 +13,7 @@ type Preferences = {
   weather_units: 'imperial' | 'metric'
   zodiac_sign: string | null
   daily_calorie_goal: number | null
+  daily_protein_goal: number | null
 }
 
 const zodiacSigns = [
@@ -150,13 +151,17 @@ type SportsTeam = { id: string; team_name: string }
 
 function CalorieSettings() {
   const [goal, setGoal] = useState('')
+  const [proteinGoal, setProteinGoal] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     api
       .get<{ preferences: Preferences }>('/preferences')
-      .then((res) => setGoal(res.preferences.daily_calorie_goal?.toString() ?? ''))
+      .then((res) => {
+        setGoal(res.preferences.daily_calorie_goal?.toString() ?? '')
+        setProteinGoal(res.preferences.daily_protein_goal?.toString() ?? '')
+      })
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load preferences'))
   }, [])
 
@@ -164,7 +169,10 @@ function CalorieSettings() {
     setSaving(true)
     setError(null)
     try {
-      await api.patch('/preferences', { dailyCalorieGoal: goal ? Number(goal) : null })
+      await api.patch('/preferences', {
+        dailyCalorieGoal: goal ? Number(goal) : null,
+        dailyProteinGoal: proteinGoal ? Number(proteinGoal) : null,
+      })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save')
     } finally {
@@ -173,23 +181,34 @@ function CalorieSettings() {
   }
 
   return (
-    <Disclosure title="Daily Calorie Goal" subtitle="Used by the Calorie Counter on Body" icon={Utensils}>
+    <Disclosure title="Daily Calorie & Protein Goals" subtitle="Used by the Calorie Counter" icon={Utensils}>
       {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
-      <div className="flex gap-2">
-        <input
-          type="number"
-          value={goal}
-          onChange={(e) => setGoal(e.target.value)}
-          placeholder="e.g. 2200"
-          className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
-        />
-        <button
-          onClick={save}
-          disabled={saving}
-          className="rounded-lg bg-rdp-signal px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
-        >
-          {saving ? 'Saving…' : 'Save'}
-        </button>
+      <div className="space-y-2">
+        <div className="flex gap-2">
+          <input
+            type="number"
+            value={goal}
+            onChange={(e) => setGoal(e.target.value)}
+            placeholder="Calorie goal, e.g. 2200"
+            className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+          />
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="number"
+            value={proteinGoal}
+            onChange={(e) => setProteinGoal(e.target.value)}
+            placeholder="Protein goal in grams, e.g. 150"
+            className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+          />
+          <button
+            onClick={save}
+            disabled={saving}
+            className="rounded-lg bg-rdp-signal px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
+          >
+            {saving ? 'Saving…' : 'Save'}
+          </button>
+        </div>
       </div>
     </Disclosure>
   )

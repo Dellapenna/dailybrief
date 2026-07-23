@@ -43,7 +43,7 @@ export default async (_req: Request, _context: Context) => {
 
     const { data: logs, error: logsError } = await supabase
       .from('food_logs')
-      .select('logged_date, meal, calories, quantity')
+      .select('logged_date, meal, calories, protein_g, quantity')
       .eq('user_id', userId)
       .gte('logged_date', weekAgoStr)
       .lte('logged_date', today)
@@ -51,21 +51,26 @@ export default async (_req: Request, _context: Context) => {
 
     const { data: prefs, error: prefsError } = await supabase
       .from('user_preferences')
-      .select('daily_calorie_goal')
+      .select('daily_calorie_goal, daily_protein_goal')
       .eq('user_id', userId)
       .single()
     if (prefsError) return errorResponse(prefsError, 500)
     const goal = prefs?.daily_calorie_goal ?? null
+    const proteinGoal = prefs?.daily_protein_goal ?? null
 
     const byDay = new Map<string, number>()
+    const proteinByDay = new Map<string, number>()
     for (const log of logs ?? []) {
       const cal = log.calories * log.quantity
       byDay.set(log.logged_date, (byDay.get(log.logged_date) ?? 0) + cal)
+      proteinByDay.set(log.logged_date, (proteinByDay.get(log.logged_date) ?? 0) + (log.protein_g ?? 0) * log.quantity)
     }
 
     const daysLogged = byDay.size
     const dailyTotals = Array.from(byDay.values())
+    const proteinTotals = Array.from(proteinByDay.values())
     const avgDailyCalories = dailyTotals.length > 0 ? Math.round(dailyTotals.reduce((a, b) => a + b, 0) / dailyTotals.length) : 0
+    const avgDailyProtein = proteinTotals.length > 0 ? Math.round(proteinTotals.reduce((a, b) => a + b, 0) / proteinTotals.length) : 0
     const daysOverGoal = goal ? dailyTotals.filter((c) => c > goal).length : null
     const daysUnderGoal = goal ? dailyTotals.filter((c) => c <= goal).length : null
 
@@ -74,6 +79,8 @@ export default async (_req: Request, _context: Context) => {
       totalDaysInWindow: 7,
       avgDailyCalories,
       dailyCalorieGoal: goal,
+      avgDailyProtein,
+      dailyProteinGoal: proteinGoal,
       daysOverGoal,
       daysUnderGoal,
     }
@@ -105,7 +112,7 @@ export default async (_req: Request, _context: Context) => {
           messages: [
             {
               role: 'user',
-              content: `This week: logged food on ${daysLogged} of 7 days. Average daily calories on logged days: ${avgDailyCalories}. ${goal ? `Daily goal: ${goal}. Days over goal: ${daysOverGoal}, days at/under: ${daysUnderGoal}.` : 'No daily calorie goal is set.'} Give an honest assessment of the pattern.`,
+              content: `This week: logged food on ${daysLogged} of 7 days. Average daily calories on logged days: ${avgDailyCalories}. ${goal ? `Daily calorie goal: ${goal}. Days over goal: ${daysOverGoal}, days at/under: ${daysUnderGoal}.` : 'No daily calorie goal is set.'} Average daily protein: ${avgDailyProtein}g${proteinGoal ? ` (goal: ${proteinGoal}g)` : ' (no protein goal set)'}. Give an honest assessment of the pattern.`,
             },
           ],
         }),

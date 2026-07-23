@@ -48,10 +48,11 @@ export default async (req: Request, _context: Context) => {
       if (error) return errorResponse(error, 500)
 
       const totalCalories = (logs ?? []).reduce((sum, l) => sum + l.calories * l.quantity, 0)
+      const totalProtein = (logs ?? []).reduce((sum, l) => sum + (l.protein_g ?? 0) * l.quantity, 0)
 
       const { data: prefs, error: prefsError } = await supabase
         .from('user_preferences')
-        .select('daily_calorie_goal')
+        .select('daily_calorie_goal, daily_protein_goal')
         .eq('user_id', userId)
         .single()
       if (prefsError) return errorResponse(prefsError, 500)
@@ -75,6 +76,8 @@ export default async (req: Request, _context: Context) => {
         logs,
         totalCalories,
         dailyCalorieGoal: prefs?.daily_calorie_goal ?? null,
+        totalProtein: Math.round(totalProtein),
+        dailyProteinGoal: prefs?.daily_protein_goal ?? null,
         caloriesBurnedToday,
         date: logDate,
       })

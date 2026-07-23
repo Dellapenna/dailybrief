@@ -37,7 +37,7 @@ function todayStr(): string {
 
 export default function CalorieCounterCard() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null) // null = today
-  const { logs, totalCalories, dailyCalorieGoal, caloriesBurnedToday, loading, error, addEntry, updateEntry, deleteEntry } =
+  const { logs, totalCalories, dailyCalorieGoal, totalProtein, dailyProteinGoal, caloriesBurnedToday, loading, error, addEntry, updateEntry, deleteEntry } =
     useFoodLog(selectedDate ?? undefined)
 
   const [query, setQuery] = useState('')
@@ -51,6 +51,7 @@ export default function CalorieCounterCard() {
 
   const [manualName, setManualName] = useState('')
   const [manualCalories, setManualCalories] = useState('')
+  const [manualProtein, setManualProtein] = useState('')
 
   const photoInputRef = useRef<HTMLInputElement>(null)
   const [estimating, setEstimating] = useState(false)
@@ -158,9 +159,15 @@ export default function CalorieCounterCard() {
   async function logManual() {
     const cal = Number(manualCalories)
     if (!manualName.trim() || !cal) return
-    await addEntry({ foodName: manualName.trim(), calories: cal, meal })
+    await addEntry({
+      foodName: manualName.trim(),
+      calories: cal,
+      meal,
+      proteinG: manualProtein ? Number(manualProtein) : undefined,
+    })
     setManualName('')
     setManualCalories('')
+    setManualProtein('')
   }
 
   const effectiveGoal = dailyCalorieGoal ? dailyCalorieGoal + caloriesBurnedToday : null
@@ -252,6 +259,28 @@ export default function CalorieCounterCard() {
         )}
         {!dailyCalorieGoal && (
           <p className="mt-1 text-xs text-rdp-text-faint">Set a daily calorie goal in Settings to track against.</p>
+        )}
+
+        {(totalProtein > 0 || dailyProteinGoal) && (
+          <div className="mt-3 border-t border-rdp-line pt-3">
+            <div className="flex items-baseline justify-between">
+              <p className="text-xs text-rdp-text-faint">Protein</p>
+              <p className="font-mono text-sm tabular-nums text-rdp-text">
+                {totalProtein}g{dailyProteinGoal ? ` / ${dailyProteinGoal}g` : ''}
+              </p>
+            </div>
+            {dailyProteinGoal && (
+              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-rdp-line">
+                <div
+                  className="h-full rounded-full bg-sky-400"
+                  style={{ width: `${Math.min(100, Math.round((totalProtein / dailyProteinGoal) * 100))}%` }}
+                />
+              </div>
+            )}
+            {!dailyProteinGoal && (
+              <p className="mt-1 text-xs text-rdp-text-faint">Set a daily protein goal in Settings to track against.</p>
+            )}
+          </div>
         )}
       </div>
 
@@ -423,6 +452,13 @@ export default function CalorieCounterCard() {
             placeholder="Cal"
             className="w-20 rounded-lg border border-rdp-line bg-rdp-void px-2 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
           />
+          <input
+            type="number"
+            value={manualProtein}
+            onChange={(e) => setManualProtein(e.target.value)}
+            placeholder="Protein (g)"
+            className="w-24 rounded-lg border border-rdp-line bg-rdp-void px-2 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+          />
         </div>
         <div className="mt-2 flex gap-2">
           <select
@@ -465,6 +501,7 @@ export default function CalorieCounterCard() {
                     <div className="flex shrink-0 items-center gap-2">
                       <span className="font-mono text-xs tabular-nums text-rdp-text-faint">
                         {Math.round(log.calories * log.quantity)} cal
+                        {log.protein_g ? ` · ${Math.round(log.protein_g * log.quantity)}g protein` : ''}
                       </span>
                       <select
                         value={log.meal}

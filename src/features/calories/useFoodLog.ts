@@ -11,6 +11,8 @@ export function useFoodLog(date?: string) {
   const [logs, setLogs] = useState<FoodLogEntry[]>([])
   const [totalCalories, setTotalCalories] = useState(0)
   const [dailyCalorieGoal, setDailyCalorieGoal] = useState<number | null>(null)
+  const [totalProtein, setTotalProtein] = useState(0)
+  const [dailyProteinGoal, setDailyProteinGoal] = useState<number | null>(null)
   const [caloriesBurnedToday, setCaloriesBurnedToday] = useState(0)
   const [resolvedDate, setResolvedDate] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -25,12 +27,16 @@ export function useFoodLog(date?: string) {
         logs: FoodLogEntry[]
         totalCalories: number
         dailyCalorieGoal: number | null
+        totalProtein: number
+        dailyProteinGoal: number | null
         caloriesBurnedToday: number
         date: string
       }>(`/food-log${query}`)
       setLogs(res.logs)
       setTotalCalories(res.totalCalories)
       setDailyCalorieGoal(res.dailyCalorieGoal)
+      setTotalProtein(res.totalProtein)
+      setDailyProteinGoal(res.dailyProteinGoal)
       setCaloriesBurnedToday(res.caloriesBurnedToday)
       setResolvedDate(res.date)
     } catch (err) {
@@ -88,6 +94,8 @@ export function useFoodLog(date?: string) {
     logs,
     totalCalories,
     dailyCalorieGoal,
+    totalProtein,
+    dailyProteinGoal,
     caloriesBurnedToday,
     resolvedDate,
     loading,
