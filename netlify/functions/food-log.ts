@@ -49,10 +49,11 @@ export default async (req: Request, _context: Context) => {
 
       const totalCalories = (logs ?? []).reduce((sum, l) => sum + l.calories * l.quantity, 0)
       const totalProtein = (logs ?? []).reduce((sum, l) => sum + (l.protein_g ?? 0) * l.quantity, 0)
+      const totalSugar = (logs ?? []).reduce((sum, l) => sum + (l.sugar_g ?? 0) * l.quantity, 0)
 
       const { data: prefs, error: prefsError } = await supabase
         .from('user_preferences')
-        .select('daily_calorie_goal, daily_protein_goal')
+        .select('daily_calorie_goal, daily_protein_goal, daily_sugar_limit')
         .eq('user_id', userId)
         .single()
       if (prefsError) return errorResponse(prefsError, 500)
@@ -78,6 +79,8 @@ export default async (req: Request, _context: Context) => {
         dailyCalorieGoal: prefs?.daily_calorie_goal ?? null,
         totalProtein: Math.round(totalProtein),
         dailyProteinGoal: prefs?.daily_protein_goal ?? null,
+        totalSugar: Math.round(totalSugar),
+        dailySugarLimit: prefs?.daily_sugar_limit ?? null,
         caloriesBurnedToday,
         date: logDate,
       })
@@ -113,6 +116,7 @@ export default async (req: Request, _context: Context) => {
           protein_g: body.proteinG ?? null,
           carbs_g: body.carbsG ?? null,
           fat_g: body.fatG ?? null,
+          sugar_g: body.sugarG ?? null,
           quantity: body.quantity ?? 1,
           fdc_id: body.fdcId ?? null,
           logged_date: loggedDate,
@@ -127,13 +131,14 @@ export default async (req: Request, _context: Context) => {
     if (req.method === 'PATCH' && id) {
       const body = await req.json()
       const updates: Record<string, unknown> = {}
-      for (const key of ['foodName', 'meal', 'calories', 'proteinG', 'carbsG', 'fatG', 'quantity', 'loggedDate'] as const) {
+      for (const key of ['foodName', 'meal', 'calories', 'proteinG', 'carbsG', 'fatG', 'sugarG', 'quantity', 'loggedDate'] as const) {
         if (key in body) {
           const column =
             key === 'foodName' ? 'food_name'
             : key === 'proteinG' ? 'protein_g'
             : key === 'carbsG' ? 'carbs_g'
             : key === 'fatG' ? 'fat_g'
+            : key === 'sugarG' ? 'sugar_g'
             : key === 'loggedDate' ? 'logged_date'
             : key
           updates[column] = body[key]

@@ -22,6 +22,7 @@ type PhotoEstimate = {
   proteinG: number | null
   carbsG: number | null
   fatG: number | null
+  sugarG: number | null
   confidenceNote: string
 }
 
@@ -37,7 +38,21 @@ function todayStr(): string {
 
 export default function CalorieCounterCard() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null) // null = today
-  const { logs, totalCalories, dailyCalorieGoal, totalProtein, dailyProteinGoal, caloriesBurnedToday, loading, error, addEntry, updateEntry, deleteEntry } =
+  const {
+    logs,
+    totalCalories,
+    dailyCalorieGoal,
+    totalProtein,
+    dailyProteinGoal,
+    totalSugar,
+    dailySugarLimit,
+    caloriesBurnedToday,
+    loading,
+    error,
+    addEntry,
+    updateEntry,
+    deleteEntry,
+  } =
     useFoodLog(selectedDate ?? undefined)
 
   const [query, setQuery] = useState('')
@@ -52,6 +67,7 @@ export default function CalorieCounterCard() {
   const [manualName, setManualName] = useState('')
   const [manualCalories, setManualCalories] = useState('')
   const [manualProtein, setManualProtein] = useState('')
+  const [manualSugar, setManualSugar] = useState('')
 
   const photoInputRef = useRef<HTMLInputElement>(null)
   const [estimating, setEstimating] = useState(false)
@@ -133,6 +149,7 @@ export default function CalorieCounterCard() {
       proteinG: photoEstimate.proteinG,
       carbsG: photoEstimate.carbsG,
       fatG: photoEstimate.fatG,
+      sugarG: photoEstimate.sugarG,
     })
     setPhotoEstimate(null)
   }
@@ -148,6 +165,7 @@ export default function CalorieCounterCard() {
       proteinG: selected.proteinG,
       carbsG: selected.carbsG,
       fatG: selected.fatG,
+      sugarG: selected.sugarG,
       fdcId: selected.fdcId,
     })
     setSelected(null)
@@ -164,10 +182,12 @@ export default function CalorieCounterCard() {
       calories: cal,
       meal,
       proteinG: manualProtein ? Number(manualProtein) : undefined,
+      sugarG: manualSugar ? Number(manualSugar) : undefined,
     })
     setManualName('')
     setManualCalories('')
     setManualProtein('')
+    setManualSugar('')
   }
 
   const effectiveGoal = dailyCalorieGoal ? dailyCalorieGoal + caloriesBurnedToday : null
@@ -279,6 +299,28 @@ export default function CalorieCounterCard() {
             )}
             {!dailyProteinGoal && (
               <p className="mt-1 text-xs text-rdp-text-faint">Set a daily protein goal in Settings to track against.</p>
+            )}
+          </div>
+        )}
+
+        {(totalSugar > 0 || dailySugarLimit) && (
+          <div className="mt-3 border-t border-rdp-line pt-3">
+            <div className="flex items-baseline justify-between">
+              <p className="text-xs text-rdp-text-faint">Sugar</p>
+              <p className={`font-mono text-sm tabular-nums ${dailySugarLimit && totalSugar > dailySugarLimit ? 'text-rdp-risk' : 'text-rdp-text'}`}>
+                {totalSugar}g{dailySugarLimit ? ` / ${dailySugarLimit}g limit` : ''}
+              </p>
+            </div>
+            {dailySugarLimit && (
+              <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-rdp-line">
+                <div
+                  className={`h-full rounded-full ${totalSugar > dailySugarLimit ? 'bg-rdp-risk' : 'bg-rdp-amber'}`}
+                  style={{ width: `${Math.min(100, Math.round((totalSugar / dailySugarLimit) * 100))}%` }}
+                />
+              </div>
+            )}
+            {!dailySugarLimit && (
+              <p className="mt-1 text-xs text-rdp-text-faint">Set a daily sugar limit in Settings to track against.</p>
             )}
           </div>
         )}
@@ -437,27 +479,34 @@ export default function CalorieCounterCard() {
         <p className="font-mono text-[11px] font-medium uppercase tracking-widest text-rdp-text-faint">
           Or Log Manually
         </p>
-        <div className="mt-2 flex gap-2">
-          <input
-            type="text"
-            value={manualName}
-            onChange={(e) => setManualName(e.target.value)}
-            placeholder="Food name"
-            className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
-          />
+        <input
+          type="text"
+          value={manualName}
+          onChange={(e) => setManualName(e.target.value)}
+          placeholder="Food name"
+          className="mt-2 w-full rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+        />
+        <div className="mt-2 grid grid-cols-3 gap-2">
           <input
             type="number"
             value={manualCalories}
             onChange={(e) => setManualCalories(e.target.value)}
             placeholder="Cal"
-            className="w-20 rounded-lg border border-rdp-line bg-rdp-void px-2 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+            className="w-full min-w-0 rounded-lg border border-rdp-line bg-rdp-void px-2 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
           />
           <input
             type="number"
             value={manualProtein}
             onChange={(e) => setManualProtein(e.target.value)}
             placeholder="Protein (g)"
-            className="w-24 rounded-lg border border-rdp-line bg-rdp-void px-2 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+            className="w-full min-w-0 rounded-lg border border-rdp-line bg-rdp-void px-2 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+          />
+          <input
+            type="number"
+            value={manualSugar}
+            onChange={(e) => setManualSugar(e.target.value)}
+            placeholder="Sugar (g)"
+            className="w-full min-w-0 rounded-lg border border-rdp-line bg-rdp-void px-2 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
           />
         </div>
         <div className="mt-2 flex gap-2">
@@ -502,6 +551,7 @@ export default function CalorieCounterCard() {
                       <span className="font-mono text-xs tabular-nums text-rdp-text-faint">
                         {Math.round(log.calories * log.quantity)} cal
                         {log.protein_g ? ` · ${Math.round(log.protein_g * log.quantity)}g protein` : ''}
+                        {log.sugar_g ? ` · ${Math.round(log.sugar_g * log.quantity)}g sugar` : ''}
                       </span>
                       <select
                         value={log.meal}

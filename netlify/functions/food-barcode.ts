@@ -40,6 +40,7 @@ export default async (req: Request, _context: Context) => {
         proteinG: n['proteins_100g'] ?? null,
         carbsG: n['carbohydrates_100g'] ?? null,
         fatG: n['fat_100g'] ?? null,
+        sugarG: n['sugars_100g'] ?? null,
       },
     })
   } catch (err) {

@@ -44,7 +44,7 @@ export default async (req: Request, _context: Context) => {
           'creamy sauces, unclear portion size). Respond with ONLY a JSON object, no markdown ' +
           'fences, no preamble, matching this exact shape: ' +
           '{"description": string, "calories": number, "proteinG": number, "carbsG": number, ' +
-          '"fatG": number, "confidenceNote": string}. If the image does not show food, set ' +
+          '"fatG": number, "sugarG": number, "confidenceNote": string}. If the image does not show food, set ' +
           'calories to 0 and explain in confidenceNote.',
         messages: [
           {

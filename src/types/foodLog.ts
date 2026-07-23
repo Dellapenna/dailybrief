@@ -9,6 +9,7 @@ export type FoodLogEntry = {
   protein_g: number | null
   carbs_g: number | null
   fat_g: number | null
+  sugar_g: number | null
   quantity: number
   fdc_id: string | null
   logged_date: string
@@ -22,4 +23,5 @@ export type FoodSearchResult = {
   proteinG: number | null
   carbsG: number | null
   fatG: number | null
+  sugarG: number | null
 }

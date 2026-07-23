@@ -13,6 +13,8 @@ export function useFoodLog(date?: string) {
   const [dailyCalorieGoal, setDailyCalorieGoal] = useState<number | null>(null)
   const [totalProtein, setTotalProtein] = useState(0)
   const [dailyProteinGoal, setDailyProteinGoal] = useState<number | null>(null)
+  const [totalSugar, setTotalSugar] = useState(0)
+  const [dailySugarLimit, setDailySugarLimit] = useState<number | null>(null)
   const [caloriesBurnedToday, setCaloriesBurnedToday] = useState(0)
   const [resolvedDate, setResolvedDate] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
@@ -29,6 +31,8 @@ export function useFoodLog(date?: string) {
         dailyCalorieGoal: number | null
         totalProtein: number
         dailyProteinGoal: number | null
+        totalSugar: number
+        dailySugarLimit: number | null
         caloriesBurnedToday: number
         date: string
       }>(`/food-log${query}`)
@@ -37,6 +41,8 @@ export function useFoodLog(date?: string) {
       setDailyCalorieGoal(res.dailyCalorieGoal)
       setTotalProtein(res.totalProtein)
       setDailyProteinGoal(res.dailyProteinGoal)
+      setTotalSugar(res.totalSugar)
+      setDailySugarLimit(res.dailySugarLimit)
       setCaloriesBurnedToday(res.caloriesBurnedToday)
       setResolvedDate(res.date)
     } catch (err) {
@@ -58,6 +64,7 @@ export function useFoodLog(date?: string) {
     proteinG?: number | null
     carbsG?: number | null
     fatG?: number | null
+    sugarG?: number | null
     fdcId?: string | null
   }) {
     try {
@@ -96,6 +103,8 @@ export function useFoodLog(date?: string) {
     dailyCalorieGoal,
     totalProtein,
     dailyProteinGoal,
+    totalSugar,
+    dailySugarLimit,
     caloriesBurnedToday,
     resolvedDate,
     loading,

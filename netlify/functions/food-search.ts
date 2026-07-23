@@ -50,6 +50,7 @@ export default async (req: Request, _context: Context) => {
         proteinG: extractNutrient(f.foodNutrients, 'protein'),
         carbsG: extractNutrient(f.foodNutrients, 'carbohydrate'),
         fatG: extractNutrient(f.foodNutrients, 'lipid'),
+        sugarG: extractNutrient(f.foodNutrients, 'sugars'),
       }))
       .filter((r) => r.calories !== null)
 

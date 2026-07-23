@@ -14,6 +14,7 @@ type Preferences = {
   zodiac_sign: string | null
   daily_calorie_goal: number | null
   daily_protein_goal: number | null
+  daily_sugar_limit: number | null
 }
 
 const zodiacSigns = [
@@ -152,6 +153,7 @@ type SportsTeam = { id: string; team_name: string }
 function CalorieSettings() {
   const [goal, setGoal] = useState('')
   const [proteinGoal, setProteinGoal] = useState('')
+  const [sugarLimit, setSugarLimit] = useState('')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -161,6 +163,7 @@ function CalorieSettings() {
       .then((res) => {
         setGoal(res.preferences.daily_calorie_goal?.toString() ?? '')
         setProteinGoal(res.preferences.daily_protein_goal?.toString() ?? '')
+        setSugarLimit(res.preferences.daily_sugar_limit?.toString() ?? '')
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load preferences'))
   }, [])
@@ -172,6 +175,7 @@ function CalorieSettings() {
       await api.patch('/preferences', {
         dailyCalorieGoal: goal ? Number(goal) : null,
         dailyProteinGoal: proteinGoal ? Number(proteinGoal) : null,
+        dailySugarLimit: sugarLimit ? Number(sugarLimit) : null,
       })
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save')
@@ -181,7 +185,7 @@ function CalorieSettings() {
   }
 
   return (
-    <Disclosure title="Daily Calorie & Protein Goals" subtitle="Used by the Calorie Counter" icon={Utensils}>
+    <Disclosure title="Daily Calorie, Protein & Sugar" subtitle="Used by the Calorie Counter" icon={Utensils}>
       {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
       <div className="space-y-2">
         <div className="flex gap-2">
@@ -199,6 +203,15 @@ function CalorieSettings() {
             value={proteinGoal}
             onChange={(e) => setProteinGoal(e.target.value)}
             placeholder="Protein goal in grams, e.g. 150"
+            className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+          />
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="number"
+            value={sugarLimit}
+            onChange={(e) => setSugarLimit(e.target.value)}
+            placeholder="Sugar limit in grams, e.g. 50"
             className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
           />
           <button
