@@ -1,9 +1,23 @@
 /** Small helpers so every Function returns consistent JSON responses. */
 
+/**
+ * Bug fix: none of our responses set Cache-Control, which meant Netlify's
+ * CDN or the browser could silently cache a dynamic response — the
+ * likely cause of Horoscope (and potentially other endpoints) showing
+ * the same content across different days despite the backend correctly
+ * generating fresh content keyed by date. Every response now explicitly
+ * says not to cache, since everything here is either per-user dynamic
+ * data or has its own internal freshness logic (in-memory caches,
+ * date-keyed DB rows) that should always be the one source of truth —
+ * not an extra caching layer we don't control.
+ */
 export function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
+    },
   })
 }
 

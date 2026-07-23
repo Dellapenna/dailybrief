@@ -7,7 +7,7 @@ import type { Config, Context } from '@netlify/functions'
 export default async (_req: Request, _context: Context) => {
   return new Response(
     JSON.stringify({ status: 'ok', timestamp: new Date().toISOString() }),
-    { headers: { 'Content-Type': 'application/json' } },
+    { headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store, no-cache, must-revalidate' } },
   )
 }
 

@@ -1,6 +1,7 @@
 import type { Config, Context } from '@netlify/functions'
 import { getSupabaseAdmin } from './shared/supabaseAdmin'
 import { getPrimaryUserId } from './shared/primaryUser'
+import { json, errorResponse } from './shared/http'
 
 /**
  * Reads the single primary user's profile + preferences.
@@ -21,20 +22,12 @@ export default async (_req: Request, _context: Context) => {
       ])
 
     if (profileError || prefsError) {
-      return new Response(
-        JSON.stringify({ error: (profileError ?? prefsError)?.message ?? 'Unknown error' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } },
-      )
+      return errorResponse(profileError ?? prefsError, 500)
     }
 
-    return new Response(JSON.stringify({ profile, preferences }), {
-      headers: { 'Content-Type': 'application/json' },
-    })
+    return json({ profile, preferences })
   } catch (err) {
-    return new Response(
-      JSON.stringify({ error: err instanceof Error ? err.message : 'Unknown error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } },
-    )
+    return errorResponse(err)
   }
 }
 
