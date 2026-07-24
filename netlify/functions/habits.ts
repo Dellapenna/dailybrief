@@ -102,6 +102,7 @@ export default async (req: Request, _context: Context) => {
       const { data: habits, error } = await habitsQuery
       if (error) return errorResponse(error, 500)
 
+      const yesterdayStr = addDays(todayStr, -1)
       const results = await Promise.all(
         (habits ?? []).map(async (habit) => {
           const { data: entries, error: entriesError } = await supabase
@@ -111,7 +112,7 @@ export default async (req: Request, _context: Context) => {
             .eq('completed', true)
           if (entriesError) throw entriesError
           const dates = new Set((entries ?? []).map((e) => e.entry_date as string))
-          return { ...habit, ...computeStreaks(dates, todayStr) }
+          return { ...habit, ...computeStreaks(dates, todayStr), completedYesterday: dates.has(yesterdayStr) }
         }),
       )
 
@@ -141,24 +142,28 @@ export default async (req: Request, _context: Context) => {
     }
 
     if (req.method === 'POST' && id && isToggle) {
+      // Defaults to today; ?date=YYYY-MM-DD lets a past day be marked,
+      // e.g. catching up on something forgotten yesterday.
+      const requestedDate = url.searchParams.get('date') || todayStr
+
       const { data: existing, error: existingError } = await supabase
         .from('habit_entries')
         .select('id')
         .eq('habit_id', id)
-        .eq('entry_date', todayStr)
+        .eq('entry_date', requestedDate)
         .maybeSingle()
       if (existingError) return errorResponse(existingError, 500)
 
       if (existing) {
         const { error } = await supabase.from('habit_entries').delete().eq('id', existing.id)
         if (error) return errorResponse(error, 500)
-        return json({ completedToday: false })
+        return json({ date: requestedDate, completed: false })
       } else {
         const { error } = await supabase
           .from('habit_entries')
-          .insert({ habit_id: id, entry_date: todayStr, completed: true })
+          .insert({ habit_id: id, entry_date: requestedDate, completed: true })
         if (error) return errorResponse(error, 500)
-        return json({ completedToday: true })
+        return json({ date: requestedDate, completed: true })
       }
     }
 

@@ -15,4 +15,5 @@ export type Habit = {
   longestStreak: number
   successRate30d: number
   completedToday: boolean
+  completedYesterday: boolean
 }

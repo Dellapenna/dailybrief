@@ -10,29 +10,51 @@ import { PILLAR_LABELS, type PillarId } from '@/types/pillar'
  * Pillar selector shown when `showPillarSelector` — used on Mission
  * Control's consolidated all-habits view so a habit's pillar tag can be
  * set/changed without visiting that pillar's own page.
+ *
+ * A small "Y" toggle next to the main circle lets yesterday be marked
+ * too — the toggle previously only ever worked for today, so forgetting
+ * to log something had no way to be caught up on.
  */
 export default function HabitRow({
   habit,
   onToggle,
+  onToggleYesterday,
   onDelete,
   onPillarChange,
   showPillarSelector = false,
 }: {
   habit: Habit
   onToggle: (habit: Habit) => void
+  onToggleYesterday?: (habit: Habit) => void
   onDelete: (habit: Habit) => void
   onPillarChange?: (habit: Habit, pillarId: PillarId | null) => void
   showPillarSelector?: boolean
 }) {
   return (
     <div className="group flex items-center gap-3 border-b border-rdp-line px-1 py-3 last:border-b-0">
-      <button
-        onClick={() => onToggle(habit)}
-        aria-label={habit.completedToday ? 'Mark not done today' : 'Mark done today'}
-        className={`h-5 w-5 shrink-0 rounded-full border-2 transition-colors ${
-          habit.completedToday ? 'border-rdp-good bg-rdp-good' : 'border-rdp-text-faint hover:border-rdp-signal'
-        }`}
-      />
+      <div className="flex shrink-0 items-center gap-1.5">
+        <button
+          onClick={() => onToggle(habit)}
+          aria-label={habit.completedToday ? 'Mark not done today' : 'Mark done today'}
+          className={`h-5 w-5 rounded-full border-2 transition-colors ${
+            habit.completedToday ? 'border-rdp-good bg-rdp-good' : 'border-rdp-text-faint hover:border-rdp-signal'
+          }`}
+        />
+        {onToggleYesterday && (
+          <button
+            onClick={() => onToggleYesterday(habit)}
+            aria-label={habit.completedYesterday ? 'Unmark yesterday' : 'Mark done yesterday'}
+            title="Yesterday"
+            className={`flex h-5 w-5 items-center justify-center rounded-full border-2 font-mono text-[9px] transition-colors ${
+              habit.completedYesterday
+                ? 'border-rdp-good bg-rdp-good/20 text-rdp-good'
+                : 'border-rdp-line text-rdp-text-faint hover:border-rdp-signal'
+            }`}
+          >
+            Y
+          </button>
+        )}
+      </div>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm text-rdp-text">{habit.name}</p>
         <p className="mt-0.5 font-mono text-xs tabular-nums text-rdp-text-faint">

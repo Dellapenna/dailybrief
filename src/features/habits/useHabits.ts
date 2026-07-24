@@ -59,6 +59,26 @@ export function useHabits(pillar?: PillarId) {
     }
   }
 
+  /**
+   * Marks (or unmarks) yesterday specifically — for catching up on
+   * something forgotten. The toggle endpoint accepts any date via
+   * ?date=, this just wires the one-day-back case up as a dedicated
+   * action since that's by far the most common "I forgot" case.
+   */
+  async function toggleYesterday(habit: Habit) {
+    setHabits((prev) => prev.map((h) => (h.id === habit.id ? { ...h, completedYesterday: !h.completedYesterday } : h)))
+    try {
+      const yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      const dateStr = yesterday.toISOString().slice(0, 10)
+      await api.post(`/habits/${habit.id}/toggle?date=${dateStr}`)
+      reload()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update habit')
+      reload()
+    }
+  }
+
   async function updateHabit(id: string, updates: Partial<Pick<Habit, 'name' | 'pillar_id'>>) {
     setHabits((prev) => prev.map((h) => (h.id === id ? { ...h, ...updates } : h)))
     try {
@@ -83,5 +103,5 @@ export function useHabits(pillar?: PillarId) {
     }
   }
 
-  return { habits, loading, error, createHabit, toggleToday, updateHabit, deleteHabit }
+  return { habits, loading, error, createHabit, toggleToday, toggleYesterday, updateHabit, deleteHabit }
 }

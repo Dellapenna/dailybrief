@@ -14,7 +14,7 @@ import ServiceCard from '@/features/soul/ServiceCard'
 import type { PillarId } from '@/types/pillar'
 
 function AllHabits() {
-  const { habits, loading, error, createHabit, toggleToday, updateHabit, deleteHabit } = useHabits()
+  const { habits, loading, error, createHabit, toggleToday, toggleYesterday, updateHabit, deleteHabit } = useHabits()
   return (
     <div>
       <QuickAddBar onAdd={createHabit} placeholder="Add a daily habit…" />
@@ -30,6 +30,7 @@ function AllHabits() {
               key={habit.id}
               habit={habit}
               onToggle={toggleToday}
+              onToggleYesterday={toggleYesterday}
               onDelete={(h) => deleteHabit(h.id)}
               onPillarChange={(h, pillarId) => updateHabit(h.id, { pillar_id: pillarId as PillarId | null })}
               showPillarSelector
