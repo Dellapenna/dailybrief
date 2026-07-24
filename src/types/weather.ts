@@ -6,6 +6,8 @@ export type WeatherPeriod = {
   windSpeed: string
   windDirection: string
   isDaytime: boolean
+  probabilityOfPrecipitation?: { value: number | null } | null
+  icon?: string
 }
 
 export type WeatherResponse = {

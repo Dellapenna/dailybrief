@@ -61,7 +61,7 @@ export default async (req: Request, _context: Context) => {
       source: 'National Weather Service',
       today: periods[0] ?? null,
       tonight: periods[1] ?? null,
-      upcoming: periods.slice(2, 6),
+      upcoming: periods.slice(2, 8), // ~3 more days (day+night pairs)
     })
   } catch (err) {
     return errorResponse(err)
