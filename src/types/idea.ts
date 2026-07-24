@@ -5,6 +5,7 @@ export type Idea = {
   user_id: string
   title: string
   description: string | null
+  notes: string | null
   category: string | null
   potential_value: string | null
   estimated_effort: string | null

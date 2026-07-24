@@ -46,6 +46,7 @@ export default async (req: Request, _context: Context) => {
           user_id: userId,
           title: body.title,
           description: body.description ?? null,
+          notes: body.notes ?? null,
           category: body.category ?? null,
           status: body.status ?? 'captured',
         })
@@ -60,7 +61,7 @@ export default async (req: Request, _context: Context) => {
       const body = await req.json()
       const updates: Record<string, unknown> = {}
       for (const key of [
-        'title', 'description', 'category', 'potentialValue', 'estimatedEffort',
+        'title', 'description', 'notes', 'category', 'potentialValue', 'estimatedEffort',
         'strategicFit', 'status', 'nextReviewDate',
       ] as const) {
         if (key in body) {

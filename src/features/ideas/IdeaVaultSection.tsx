@@ -36,7 +36,7 @@ export default function IdeaVaultSection() {
             <IdeaRow
               key={idea.id}
               idea={idea}
-              onStatusChange={(i, status) => updateIdea(i.id, { status })}
+              onUpdate={(i, updates) => updateIdea(i.id, updates)}
               onDelete={(i) => deleteIdea(i.id)}
             />
           ))
