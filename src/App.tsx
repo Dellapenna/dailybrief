@@ -6,6 +6,7 @@ import DailyDashboardPage from '@/pages/DailyDashboardPage'
 import HabitsPage from '@/pages/HabitsPage'
 import TasksPage from '@/pages/TasksPage'
 import IdeasPage from '@/pages/IdeasPage'
+import BankingPage from '@/pages/BankingPage'
 import CaloriesPage from '@/pages/CaloriesPage'
 import SettingsPage from '@/pages/SettingsPage'
 import MorePage from '@/pages/MorePage'
@@ -80,6 +81,7 @@ function App() {
         <Route path="/habits" element={<HabitsPage />} />
         <Route path="/tasks" element={<TasksPage />} />
         <Route path="/ideas" element={<IdeasPage />} />
+        <Route path="/banking" element={<BankingPage />} />
         <Route
           path="/trends"
           element={

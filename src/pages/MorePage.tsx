@@ -10,6 +10,7 @@ const otherLinks = [
   { to: '/mission-control', label: 'Mission Control' },
   { to: '/ideas', label: 'Idea Vault' },
   { to: '/trends', label: 'Trends & Progress' },
+  { to: '/banking', label: 'Banking' },
   { to: '/settings', label: 'Settings' },
 ]
 

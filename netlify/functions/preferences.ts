@@ -22,28 +22,20 @@ export default async (req: Request, _context: Context) => {
     if (req.method === 'PATCH') {
       const body = await req.json()
       const updates: Record<string, unknown> = {}
-      for (const key of [
-        'locationLabel', 'locationLat', 'locationLng', 'weatherUnits', 'zodiacSign', 'dailyCalorieGoal', 'dailyProteinGoal', 'dailySugarLimit',
-      ] as const) {
-        if (key in body) {
-          const column =
-            key === 'locationLabel'
-              ? 'location_label'
-              : key === 'locationLat'
-                ? 'location_lat'
-                : key === 'locationLng'
-                  ? 'location_lng'
-                  : key === 'zodiacSign'
-                    ? 'zodiac_sign'
-                    : key === 'dailyCalorieGoal'
-                      ? 'daily_calorie_goal'
-                      : key === 'dailyProteinGoal'
-                        ? 'daily_protein_goal'
-                        : key === 'dailySugarLimit'
-                          ? 'daily_sugar_limit'
-                          : 'weather_units'
-          updates[column] = body[key]
-        }
+      const FIELD_MAP: Record<string, string> = {
+        locationLabel: 'location_label',
+        locationLat: 'location_lat',
+        locationLng: 'location_lng',
+        weatherUnits: 'weather_units',
+        zodiacSign: 'zodiac_sign',
+        dailyCalorieGoal: 'daily_calorie_goal',
+        dailyProteinGoal: 'daily_protein_goal',
+        dailySugarLimit: 'daily_sugar_limit',
+        bankStartingBalance: 'bank_starting_balance',
+        extraMonthlyDebtPayment: 'extra_monthly_debt_payment',
+      }
+      for (const [key, column] of Object.entries(FIELD_MAP)) {
+        if (key in body) updates[column] = body[key]
       }
 
       const { data, error } = await supabase

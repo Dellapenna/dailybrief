@@ -3,7 +3,7 @@ import { api } from '@/lib/api'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import PillarHero from '@/components/PillarHero'
 import Disclosure from '@/components/Disclosure'
-import { MapPin, Sparkles, Utensils, LineChart, Coins, Trophy, Calendar as CalendarIcon } from 'lucide-react'
+import { MapPin, Sparkles, Utensils, LineChart, Coins, Trophy, Calendar as CalendarIcon, Wallet } from 'lucide-react'
 import type { CalendarConnection, CalendarProvider } from '@/types/calendar'
 
 type Preferences = {
@@ -15,6 +15,7 @@ type Preferences = {
   daily_calorie_goal: number | null
   daily_protein_goal: number | null
   daily_sugar_limit: number | null
+  bank_starting_balance: number | null
 }
 
 const zodiacSigns = [
@@ -228,6 +229,53 @@ function CalorieSettings() {
 }
 
 type StockPref = { id: string; symbol: string; label: string | null }
+
+function BankingSettings() {
+  const [startingBalance, setStartingBalance] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    api
+      .get<{ preferences: Preferences }>('/preferences')
+      .then((res) => setStartingBalance(res.preferences.bank_starting_balance?.toString() ?? ''))
+      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load preferences'))
+  }, [])
+
+  async function save() {
+    setSaving(true)
+    setError(null)
+    try {
+      await api.patch('/preferences', { bankStartingBalance: startingBalance ? Number(startingBalance) : null })
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to save')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <Disclosure title="Banking — Starting Balance" subtitle="Used by the Register's running balance" icon={Wallet}>
+      {error && <p className="mb-2 text-sm text-rdp-risk">{error}</p>}
+      <div className="flex gap-2">
+        <input
+          type="number"
+          value={startingBalance}
+          onChange={(e) => setStartingBalance(e.target.value)}
+          placeholder="e.g. 1500.00"
+          className="flex-1 rounded-lg border border-rdp-line bg-rdp-void px-3 py-2 text-sm text-rdp-text placeholder:text-rdp-text-faint focus:border-rdp-signal focus:outline-none"
+        />
+        <button
+          onClick={save}
+          disabled={saving}
+          className="rounded-lg bg-rdp-signal px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
+        >
+          {saving ? 'Saving…' : 'Save'}
+        </button>
+      </div>
+    </Disclosure>
+  )
+}
 
 function StockSettings() {
   const [stocks, setStocks] = useState<StockPref[]>([])
@@ -600,6 +648,7 @@ export default function SettingsPage() {
         <LocationSettings />
         <CalorieSettings />
         <HoroscopeSettings />
+        <BankingSettings />
       </div>
 
       <p className="mt-6 font-mono text-[11px] uppercase tracking-widest text-rdp-text-faint">Watchlists</p>
