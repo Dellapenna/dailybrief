@@ -142,9 +142,16 @@ export default async (req: Request, _context: Context) => {
     }
 
     if (req.method === 'POST' && id && isToggle) {
-      // Defaults to today; ?date=YYYY-MM-DD lets a past day be marked,
-      // e.g. catching up on something forgotten yesterday.
-      const requestedDate = url.searchParams.get('date') || todayStr
+      // Defaults to today; ?date=YYYY-MM-DD or ?daysAgo=N lets a past
+      // day be marked (e.g. catching up on something forgotten
+      // yesterday). daysAgo is computed here, server-side, using the
+      // already-correct todayInTimezone() + addDays() — deliberately
+      // NOT left to the client to compute via `new Date()` math, which
+      // is a real bug class: local-time arithmetic followed by
+      // .toISOString() crosses the UTC boundary and can silently shift
+      // the date by a day, especially in the evening in US timezones.
+      const daysAgoParam = url.searchParams.get('daysAgo')
+      const requestedDate = url.searchParams.get('date') || (daysAgoParam ? addDays(todayStr, -Number(daysAgoParam)) : todayStr)
 
       const { data: existing, error: existingError } = await supabase
         .from('habit_entries')

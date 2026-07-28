@@ -61,17 +61,20 @@ export function useHabits(pillar?: PillarId) {
 
   /**
    * Marks (or unmarks) yesterday specifically — for catching up on
-   * something forgotten. The toggle endpoint accepts any date via
-   * ?date=, this just wires the one-day-back case up as a dedicated
-   * action since that's by far the most common "I forgot" case.
+   * something forgotten. Bug fix: this used to compute yesterday's date
+   * client-side via `new Date()` + `.toISOString()`, but that mixes
+   * local-time arithmetic (setDate) with a UTC conversion (toISOString) —
+   * in the evening in a US timezone, the UTC date is already "tomorrow,"
+   * so this was silently toggling *today's* entry instead of yesterday's.
+   * That one bug explained all three reported symptoms (toggle looking
+   * broken, corrupted streaks, habits landing on the wrong day). Now
+   * sends ?daysAgo=1 and lets the backend compute the date using the
+   * same timezone logic everything else already relies on correctly.
    */
   async function toggleYesterday(habit: Habit) {
     setHabits((prev) => prev.map((h) => (h.id === habit.id ? { ...h, completedYesterday: !h.completedYesterday } : h)))
     try {
-      const yesterday = new Date()
-      yesterday.setDate(yesterday.getDate() - 1)
-      const dateStr = yesterday.toISOString().slice(0, 10)
-      await api.post(`/habits/${habit.id}/toggle?date=${dateStr}`)
+      await api.post(`/habits/${habit.id}/toggle?daysAgo=1`)
       reload()
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update habit')
