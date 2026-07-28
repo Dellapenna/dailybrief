@@ -58,18 +58,17 @@ export default async (req: Request, _context: Context) => {
         .single()
       if (prefsError) return errorResponse(prefsError, 500)
 
-      // Exercise "earns back" calories — exercise_logs only has a
-      // timestamptz (not a plain date column like food_logs), so this
-      // uses the UTC day boundary of logDate as an approximation rather
-      // than an exact local-timezone match; close enough for a rough
-      // daily total, same tradeoff as anywhere a plain date comparison
-      // isn't available.
+      // Bug fix: this used to match "today's" exercise via a UTC day
+      // boundary around logged_at (a timestamptz) — evening workouts in
+      // US timezones could land on the next UTC calendar day and be
+      // missed entirely, showing +0 burned despite being logged.
+      // exercise_logs now stores a proper local logged_date (see 0022
+      // migration + exercise-log.ts), so this is an exact match now.
       const { data: exerciseLogs, error: exerciseError } = await supabase
         .from('exercise_logs')
         .select('calories_burned')
         .eq('user_id', userId)
-        .gte('logged_at', `${logDate}T00:00:00Z`)
-        .lt('logged_at', `${logDate}T23:59:59.999Z`)
+        .eq('logged_date', logDate)
       if (exerciseError) return errorResponse(exerciseError, 500)
       const caloriesBurnedToday = (exerciseLogs ?? []).reduce((sum, l) => sum + (l.calories_burned ?? 0), 0)
 

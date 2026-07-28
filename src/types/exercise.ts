@@ -9,5 +9,6 @@ export type ExerciseLog = {
   calories_burned: number | null
   notes: string | null
   logged_at: string
+  logged_date: string | null
   created_at: string
 }

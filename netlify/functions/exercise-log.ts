@@ -1,6 +1,7 @@
 import type { Config, Context } from '@netlify/functions'
 import { getSupabaseAdmin } from './shared/supabaseAdmin'
 import { getPrimaryUserId } from './shared/primaryUser'
+import { todayInTimezone } from './shared/userTimezone'
 import { json, errorResponse } from './shared/http'
 
 /**
@@ -14,6 +15,12 @@ import { json, errorResponse } from './shared/http'
  * MET-formula estimate computed client-side (see ExerciseLogCard.tsx) —
  * always editable before it's logged, never silently treated as more
  * precise than a category-level estimate actually is.
+ *
+ * logged_date stores the user's actual local calendar date (computed
+ * here at insert time), not derived later from logged_at's UTC
+ * timestamp — food-log.ts's "today's calories burned" query used to do
+ * that derivation via a UTC day-boundary approximation, which could
+ * miss evening workouts entirely in US timezones. See 0022 migration.
  */
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -49,6 +56,14 @@ export default async (req: Request, _context: Context) => {
         return json({ error: 'activity is required' }, 400)
       }
 
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('timezone')
+        .eq('id', userId)
+        .single()
+      if (profileError) return errorResponse(profileError, 500)
+      const loggedDate = body.loggedDate ?? todayInTimezone(profile?.timezone || 'America/New_York')
+
       const { data, error } = await supabase
         .from('exercise_logs')
         .insert({
@@ -59,6 +74,7 @@ export default async (req: Request, _context: Context) => {
           calories_burned: body.caloriesBurned ?? null,
           notes: body.notes ?? null,
           logged_at: body.loggedAt ?? new Date().toISOString(),
+          logged_date: loggedDate,
         })
         .select()
         .single()
